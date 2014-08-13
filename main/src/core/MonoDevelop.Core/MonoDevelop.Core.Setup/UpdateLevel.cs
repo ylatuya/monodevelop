@@ -31,6 +31,7 @@ namespace MonoDevelop.Core.Setup
 		Stable = 0,
 		Beta = 1,
 		Alpha = 2,
-		Test = 3
+		Test = 3,
+		Rolling = 4
 	}
 }

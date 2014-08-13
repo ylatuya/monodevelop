@@ -143,7 +143,7 @@ namespace MonoDevelop.Core
 		
 		static void RegisterAddinRepositories ()
 		{
-			var validUrls = Enum.GetValues (typeof(UpdateLevel)).Cast<UpdateLevel> ().Select (v => setupService.GetMainRepositoryUrl (v)).ToList ();
+			var validUrls = Enum.GetValues (typeof(UpdateLevel)).Cast<UpdateLevel> ().Where (l => l != UpdateLevel.Rolling).Select (v => setupService.GetMainRepositoryUrl (v)).ToList ();
 			
 			// Remove old repositories
 			
