@@ -470,6 +470,9 @@
     <Compile Include="MonoDevelop.Core.Web\CredentialProviderExtensions.cs" />
     <Compile Include="MonoDevelop.Core.Execution\IDebugConsole.cs" />
     <Compile Include="MonoDevelop.Projects\IDotNetFileContainer.cs" />
+    <Compile Include="MonoDevelop.Core.Setup\IUpdateLevel.cs" />
+    <Compile Include="MonoDevelop.Core.Setup\DynamicUpdateLevel.cs" />
+    <Compile Include="MonoDevelop.Core.Setup\StaticUpdateLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile.am" />

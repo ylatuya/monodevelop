@@ -53,8 +53,8 @@ namespace MonoDevelop.Ide.Updater
 		{
 			updateMonitor = monitor;
 			try {
-				if (UpdateService.UpdateLevel == UpdateLevel.Test)
-					Runtime.AddinSetupService.RegisterMainRepository (UpdateLevel.Test, true);
+				if (UpdateService.UpdateLevel == StaticUpdateLevel.Test)
+					Runtime.AddinSetupService.RegisterMainRepository (StaticUpdateLevel.Test, true);
 				using (ProgressStatusMonitor pm = new ProgressStatusMonitor (monitor)) {
 					Runtime.AddinSetupService.Repositories.UpdateAllRepositories (pm);
 					updates = Runtime.AddinSetupService.Repositories.GetAvailableUpdates ();
