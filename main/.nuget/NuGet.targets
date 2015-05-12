@@ -51,7 +51,7 @@
         <PackageSources Condition=" $(PackageSources) == '' ">@(PackageSource)</PackageSources>
 
         <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">"$(NuGetExePath)"</NuGetCommand>
-        <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 "$(NuGetExePath)"</NuGetCommand>
+        <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">nuget</NuGetCommand>
 
         <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(TargetDir.Trim('\\'))</PackageOutputDir>
 
@@ -62,7 +62,7 @@
         <PaddedSolutionDir Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)"</PaddedSolutionDir>
 
         <!-- Commands -->
-        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir $(PaddedSolutionDir)</RestoreCommand>
+        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir $(PaddedSolutionDir)</RestoreCommand>
         <BuildCommand>$(NuGetCommand) pack "$(ProjectPath)" -Properties "Configuration=$(Configuration);Platform=$(Platform)" $(NonInteractiveSwitch) -OutputDirectory "$(PackageOutputDir)" -symbols</BuildCommand>
 
         <!-- We need to ensure packages are restored prior to assembly resolve -->
@@ -80,7 +80,7 @@
 
     <Target Name="CheckPrerequisites">
         <!-- Raise an error if we're unable to locate nuget.exe  -->
-        <Error Condition="'$(DownloadNuGetExe)' != 'true' AND !Exists('$(NuGetExePath)')" Text="Unable to locate '$(NuGetExePath)'" />
+        <Error Condition="'$(DownloadNuGetExe)' != 'true' AND '$(OS)' == 'Windows_NT' AND !Exists('$(NuGetExePath)')" Text="Unable to locate '$(NuGetExePath)'" />
         <!--
         Take advantage of MsBuild's build dependency tracking to make sure that we only ever download nuget.exe once.
         This effectively acts as a lock that makes sure that the download operation will only happen once and all
