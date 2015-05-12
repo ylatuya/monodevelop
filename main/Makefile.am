@@ -173,6 +173,7 @@ app-dir: all
 EXTRA_DIST = $(bin_SCRIPTS) $(desktop_DATA) $(pixmap_DATA) \
 	monodevelop.xml $(pkgconfig_in_files) external/Makefile.in \
 	Main.sln \
+	.nuget/NuGet.targets \
 	md.targets
 
 DISTCLEANFILES = monodevelop intltool-extract intltool-merge intltool-update \
