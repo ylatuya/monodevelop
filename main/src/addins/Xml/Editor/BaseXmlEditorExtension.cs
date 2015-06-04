@@ -115,7 +115,7 @@ namespace MonoDevelop.Xml.Editor
 				ownerProjects = new List<DotNetProject> ();
 				return;
 			}
-			var projects = new HashSet<DotNetProject> (IdeApp.Workspace.GetAllSolutionItems<DotNetProject> ().Where (p => p.IsFileInProject (DocumentContext.Name)));
+			var projects = new HashSet<DotNetProject> (IdeApp.Workspace.GetAllItems<DotNetProject> ().Where (p => p.IsFileInProject (DocumentContext.Name)));
 			if (ownerProjects == null || !projects.SetEquals (ownerProjects)) {
 				ownerProjects = projects.OrderBy (p => p.Name).ToList ();
 				var dnp = DocumentContext.Project as DotNetProject;
@@ -143,8 +143,8 @@ namespace MonoDevelop.Xml.Editor
 			Editor.CaretPositionChanged -= HandleCaretPositionChanged;
 
 			if (tracker != null) {
+				tracker.Dispose ();
 				tracker = null;
-				base.Dispose ();
 			}
 
 			DocumentContext.DocumentParsed -= UpdateParsedDocument;
@@ -153,6 +153,8 @@ namespace MonoDevelop.Xml.Editor
 				IdeApp.Workspace.FileAddedToProject -= HandleProjectChanged;
 				IdeApp.Workspace.FileRemovedFromProject -= HandleProjectChanged;
 			}
+
+			base.Dispose ();
 		}
 
 		protected virtual void OnParsedDocumentUpdated ()
@@ -246,14 +248,13 @@ namespace MonoDevelop.Xml.Editor
 		
 		#region Code completion
 
-		public override ICompletionDataList CodeCompletionCommand (CodeCompletionContext completionContext)
+		public override Task<ICompletionDataList> CodeCompletionCommand (CodeCompletionContext completionContext)
 		{
 			int pos = completionContext.TriggerOffset;
 			if (pos <= 0)
 				return null;
 			tracker.UpdateEngine ();
-			var task = HandleCodeCompletion (completionContext, true, default(CancellationToken));
-			return task != null ? task.Result : null;
+			return HandleCodeCompletion (completionContext, true, default(CancellationToken));
 		}
 
 		public override Task<ICompletionDataList> HandleCodeCompletionAsync (CodeCompletionContext completionContext, char completionChar, CancellationToken token = default(CancellationToken))

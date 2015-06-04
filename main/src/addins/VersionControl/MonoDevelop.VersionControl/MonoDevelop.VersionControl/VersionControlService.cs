@@ -187,7 +187,7 @@ namespace MonoDevelop.VersionControl
 		}
 
 		internal static Dictionary<Repository, InternalRepositoryReference> referenceCache = new Dictionary<Repository, InternalRepositoryReference> ();
-		public static Repository GetRepository (IWorkspaceObject entry)
+		public static Repository GetRepository (WorkspaceObject entry)
 		{
 			if (IsGloballyDisabled)
 				return null;
@@ -462,7 +462,7 @@ namespace MonoDevelop.VersionControl
 		static void OnFileAdded (object s, ProjectFileEventArgs e)
 		{
 			FileUpdateEventArgs vargs = new FileUpdateEventArgs ();
-			IProgressMonitor monitor = null;
+			ProgressMonitor monitor = null;
 			try {
 				foreach (var repoFiles in e.GroupBy (i => i.Project)) {
 					Repository repo = GetRepository (repoFiles.Key);
@@ -509,10 +509,10 @@ namespace MonoDevelop.VersionControl
 			}
 		}
 */
-		static void SolutionItemAddFiles (string rootPath, SolutionItem entry, HashSet<string> files)
+		static void SolutionItemAddFiles (string rootPath, SolutionFolderItem entry, HashSet<string> files)
 		{
-			if (entry is SolutionEntityItem) {
-				foreach (var file in ((SolutionEntityItem)entry).GetItemFiles (false))
+			if (entry is SolutionItem) {
+				foreach (var file in ((SolutionItem)entry).GetItemFiles (false))
 					SolutionItemAddFile (rootPath, files, file);
 			}
 			
@@ -522,7 +522,7 @@ namespace MonoDevelop.VersionControl
 						SolutionItemAddFile (rootPath, files, file.FilePath);
 				}
 			} else if (entry is SolutionFolder) {
-				foreach (SolutionItem ent in ((SolutionFolder) entry).Items)
+				foreach (SolutionFolderItem ent in ((SolutionFolder) entry).Items)
 					SolutionItemAddFiles (rootPath, ent, files);
 			}
 		}
@@ -546,7 +546,7 @@ namespace MonoDevelop.VersionControl
 				return;
 
 			// handles addition of solutions and projects
-			SolutionItem parent = (SolutionItem) args.SolutionItem.ParentFolder;
+			SolutionFolderItem parent = (SolutionFolderItem) args.SolutionItem.ParentFolder;
 			
 			if (parent == null)
 				return;
@@ -556,7 +556,7 @@ namespace MonoDevelop.VersionControl
 			if (repo == null)
 				return;
 			
-			SolutionItem entry = args.SolutionItem;
+			SolutionFolderItem entry = args.SolutionItem;
 			Repository currentRepo = GetRepository (entry);
 			if (currentRepo != null && currentRepo.VersionControlSystem != repo.VersionControlSystem) {
 				// If the item is already under version control using a different version control system
@@ -573,7 +573,7 @@ namespace MonoDevelop.VersionControl
 			var files = new HashSet<string> { path };
 			SolutionItemAddFiles (path, entry, files);
 			
-			using (IProgressMonitor monitor = GetStatusMonitor ()) {
+			using (ProgressMonitor monitor = GetStatusMonitor ()) {
 				var status = repo.GetDirectoryVersionInfo (path, false, true);
 				foreach (var v in status) {
 					if (!v.IsVersioned && files.Contains (v.LocalPath))
@@ -587,12 +587,12 @@ namespace MonoDevelop.VersionControl
 			NotifyFileStatusChanged (new FileUpdateEventArgs (repo, parent.BaseDirectory, true));
 		}
 		
-		public static IProgressMonitor GetProgressMonitor (string operation)
+		public static ProgressMonitor GetProgressMonitor (string operation)
 		{
 			return GetProgressMonitor (operation, VersionControlOperationType.Other);
 		}
 		
-		public static IProgressMonitor GetProgressMonitor (string operation, VersionControlOperationType op)
+		public static ProgressMonitor GetProgressMonitor (string operation, VersionControlOperationType op)
 		{
 			IconId icon;
 			switch (op) {
@@ -601,7 +601,7 @@ namespace MonoDevelop.VersionControl
 			default: icon = "md-version-control"; break;
 			}
 
-			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor ("MonoDevelop.VersionControlOutput", "Version Control", "md-version-control", false, true);
+			ProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor ("MonoDevelop.VersionControlOutput", "Version Control", "md-version-control", false, true);
 			Pad outPad = IdeApp.Workbench.ProgressMonitors.GetPadForMonitor (monitor);
 			
 			AggregatedProgressMonitor mon = new AggregatedProgressMonitor (monitor);
@@ -609,7 +609,7 @@ namespace MonoDevelop.VersionControl
 			return mon;
 		}
 		
-		static IProgressMonitor GetStatusMonitor ()
+		static ProgressMonitor GetStatusMonitor ()
 		{
 			return IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor (GettextCatalog.GetString ("Updating version control repository"), "vc-remote-status", true);
 		}
@@ -755,7 +755,7 @@ namespace MonoDevelop.VersionControl
 			}
 		}
 		
-		public static CommitMessageFormat GetCommitMessageFormat (SolutionItem item)
+		public static CommitMessageFormat GetCommitMessageFormat (SolutionFolderItem item)
 		{
 			CommitMessageFormat format = new CommitMessageFormat ();
 			format.Style = item.Policies.Get<VersionControlPolicy> ().CommitMessageStyle;
@@ -776,7 +776,7 @@ namespace MonoDevelop.VersionControl
 						break;
 					}
 				} else {
-					project = IdeApp.Workspace.GetProjectContainingFile (item.LocalPath);
+					project = IdeApp.Workspace.GetProjectsContainingFile (item.LocalPath).FirstOrDefault ();
 				}
 			}
 			CommitMessageStyle style;

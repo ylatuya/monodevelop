@@ -50,6 +50,7 @@ using S = MonoDevelop.Xml.Parser;
 using MonoDevelop.AspNet.WebForms.Dom;
 using MonoDevelop.Xml.Parser;
 using MonoDevelop.Xml.Dom;
+using MonoDevelop.Projects;
 using Microsoft.CodeAnalysis;
 using MonoDevelop.Ide.Editor.Extension;
 using MonoDevelop.Ide.Editor.Projection;
@@ -61,7 +62,7 @@ namespace MonoDevelop.AspNet.WebForms
 		static readonly System.Text.RegularExpressions.Regex DocTypeRegex = new System.Text.RegularExpressions.Regex (@"(?:PUBLIC|public)\s+""(?<fpi>[^""]*)""\s+""(?<uri>[^""]*)""");
 
 		WebFormsParsedDocument aspDoc;
-		AspNetAppProject project;
+		DotNetProject project;
 		WebFormsTypeContext refman = new WebFormsTypeContext ();
 
 		ILanguageCompletionBuilder documentBuilder;
@@ -97,7 +98,7 @@ namespace MonoDevelop.AspNet.WebForms
 			if (HasDoc)
 				refman.Doc = aspDoc;
 
-			var newProj = base.DocumentContext.Project as AspNetAppProject;
+			var newProj = base.DocumentContext.Project as DotNetProject;
 			if (newProj != null) {
 				project = newProj;
 				refman.Project = newProj;
@@ -239,7 +240,7 @@ namespace MonoDevelop.AspNet.WebForms
 		}
 		
 		
-		public override ICompletionDataList CodeCompletionCommand (CodeCompletionContext completionContext)
+		public override Task<ICompletionDataList> CodeCompletionCommand (CodeCompletionContext completionContext)
 		{
 /*			//completion for ASP.NET expressions
 			// TODO: Detect <script> state here !!!

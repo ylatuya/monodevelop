@@ -32,6 +32,7 @@ using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MonoDevelop.Debugger
 {
@@ -39,35 +40,35 @@ namespace MonoDevelop.Debugger
 	{
 		public static bool CanDebug (this ProjectOperations opers, IBuildTarget entry)
 		{
-			ExecutionContext context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors, IdeApp.Workspace.ActiveExecutionTarget);
+			ExecutionContext context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors.ConsoleFactory, IdeApp.Workspace.ActiveExecutionTarget);
 			return opers.CanExecute (entry, context);
 		}
 
-		public static IAsyncOperation Debug (this ProjectOperations opers, IBuildTarget entry)
+		public static AsyncOperation Debug (this ProjectOperations opers, IBuildTarget entry, bool buildBeforeExecuting = true)
 		{
 			if (opers.CurrentRunOperation != null && !opers.CurrentRunOperation.IsCompleted)
 				return opers.CurrentRunOperation;
 
-			ExecutionContext context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors, IdeApp.Workspace.ActiveExecutionTarget);
+			ExecutionContext context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors.ConsoleFactory, IdeApp.Workspace.ActiveExecutionTarget);
 
-			IAsyncOperation op = opers.Execute (entry, context);
+			AsyncOperation op = opers.Execute (entry, context, buildBeforeExecuting);
 			SwitchToDebugLayout (op);
 			return op;
 		}
 
 		public static bool CanDebugFile (this ProjectOperations opers, string file)
 		{
-			var context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors, IdeApp.Workspace.ActiveExecutionTarget);
+			var context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors.ConsoleFactory, IdeApp.Workspace.ActiveExecutionTarget);
 			return opers.CanExecuteFile (file, context);
 		}
 
-		public static IAsyncOperation DebugFile (this ProjectOperations opers, string file)
+		public static AsyncOperation DebugFile (this ProjectOperations opers, string file)
 		{
-			var context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors, IdeApp.Workspace.ActiveExecutionTarget);
+			var context = new ExecutionContext (DebuggingService.GetExecutionHandler (), IdeApp.Workbench.ProgressMonitors.ConsoleFactory, IdeApp.Workspace.ActiveExecutionTarget);
 			return opers.ExecuteFile (file, context);
 		}
 
-		public static IAsyncOperation DebugApplication (this ProjectOperations opers, string executableFile, string args, string workingDir, IDictionary<string,string> envVars)
+		public static AsyncOperation DebugApplication (this ProjectOperations opers, string executableFile, string args, string workingDir, IDictionary<string,string> envVars)
 		{
 			if (opers.CurrentRunOperation != null && !opers.CurrentRunOperation.IsCompleted)
 				return opers.CurrentRunOperation;
@@ -77,19 +78,18 @@ namespace MonoDevelop.Debugger
 
 			var monitor = IdeApp.Workbench.ProgressMonitors.GetRunProgressMonitor ();
 
-			var oper = DebuggingService.Run (executableFile, args, workingDir, envVars, (IConsole) monitor);
-			oper.Completed += delegate {
-				monitor.Dispose ();
-				Gtk.Application.Invoke (delegate {
-					IdeApp.Workbench.CurrentLayout = oldLayout;
-				});
-			};
+			var oper = DebuggingService.Run (executableFile, args, workingDir, envVars, monitor.Console);
+			opers.CurrentRunOperation = oper;
 
-			opers.CurrentRunOperation = monitor.AsyncOperation;
-			return opers.CurrentRunOperation;
+			oper.Task.ContinueWith (t => {
+				monitor.Dispose ();
+				IdeApp.Workbench.CurrentLayout = oldLayout;
+			}, TaskScheduler.FromCurrentSynchronizationContext ());
+
+			return oper;
 		}
 
-		public static IAsyncOperation AttachToProcess (this ProjectOperations opers, DebuggerEngine debugger, ProcessInfo proc)
+		public static AsyncOperation AttachToProcess (this ProjectOperations opers, DebuggerEngine debugger, ProcessInfo proc)
 		{
 			if (opers.CurrentRunOperation != null && !opers.CurrentRunOperation.IsCompleted)
 				return opers.CurrentRunOperation;
@@ -101,26 +101,14 @@ namespace MonoDevelop.Debugger
 			return opers.CurrentRunOperation;
 		}
 
-		public static IAsyncOperation Debug (this Document doc)
-		{
-			return IdeApp.ProjectOperations.DebugFile (doc.FileName);
-		}
-
-		public static bool CanDebug (this Document doc)
-		{
-			return doc.FileName != FilePath.Null && IdeApp.ProjectOperations.CanDebugFile (doc.FileName);
-		}
-
-		static void SwitchToDebugLayout (IAsyncOperation oper)
+		static void SwitchToDebugLayout (AsyncOperation oper)
 		{
 			string oldLayout = IdeApp.Workbench.CurrentLayout;
 			IdeApp.Workbench.CurrentLayout = "Debug";
 
-			oper.Completed += delegate {
-				DispatchService.GuiDispatch (delegate {
-					IdeApp.Workbench.CurrentLayout = oldLayout;
-				});
-			};
+			oper.Task.ContinueWith (t => {
+				IdeApp.Workbench.CurrentLayout = oldLayout;
+			}, TaskScheduler.FromCurrentSynchronizationContext ());
 		}
 	}
 }

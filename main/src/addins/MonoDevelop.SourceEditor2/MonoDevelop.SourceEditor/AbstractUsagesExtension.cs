@@ -138,7 +138,7 @@ namespace MonoDevelop.SourceEditor
 
 				CancelTooltip ();
 				var token = tooltipCancelSrc.Token;
-				Task.Factory.StartNew (delegate {
+				Task.Run (delegate {
 					var list = GetReferences (result, token).ToList ();
 					if (!token.IsCancellationRequested) {
 						Gtk.Application.Invoke (delegate {

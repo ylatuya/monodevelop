@@ -48,7 +48,7 @@ namespace MonoDevelop.Ide.Desktop
 	public abstract class PlatformService
 	{
 		Hashtable iconHash = new Hashtable ();
-		const bool UsePlatformFileIcons = false;
+		static readonly bool UsePlatformFileIcons = false;
 		
 		public abstract string DefaultMonospaceFont { get; }
 		public virtual string DefaultSansFont { get { return null; } }
@@ -360,7 +360,7 @@ namespace MonoDevelop.Ide.Desktop
 		}
 
 		//must be implemented if CanOpenTerminal returns true
-		public virtual IProcessAsyncOperation StartConsoleProcess (
+		public virtual ProcessAsyncOperation StartConsoleProcess (
 			string command, string arguments, string workingDirectory,
 			IDictionary<string, string> environmentVariables,
 			string title, bool pauseWhenFinished)
@@ -434,7 +434,13 @@ namespace MonoDevelop.Ide.Desktop
 		/// </summary>
 		public virtual void GrabDesktopFocus (Gtk.Window window)
 		{
-			window.Present ();
+			if (Platform.IsWindows && window.IsRealized) {
+				/* On Windows calling Present() will break out of window edge snapping mode. */
+				window.GdkWindow.Focus (0);
+				window.GdkWindow.Raise ();
+			} else {
+				window.Present ();
+			}
 		}
 
 		internal virtual void RemoveWindowShadow (Gtk.Window window)

@@ -55,7 +55,7 @@ namespace MonoDevelop.Refactoring.Rename
 			try {
 				var result = new RenameRefactoring ().PerformChanges (symbol, new RenameProperties () { NewName = newName });
 
-				using (var monitor = new NullProgressMonitor ()) {
+				using (var monitor = new ProgressMonitor ()) {
 					if (result.Count > 0) {
 						RefactoringService.AcceptChanges (monitor, result);
 					}
@@ -96,7 +96,7 @@ namespace MonoDevelop.Refactoring.Rename
 
 			var projectChange = projectChanges [0];
 			var changes = projectChange.GetChangedDocuments ().ToList ();
-			if (changes.Count != 1) {
+			if (changes.Count != 1 || symbol.Kind == SymbolKind.NamedType) {
 				MessageService.ShowCustomDialog (new RenameItemDialog (symbol, this));
 				return;
 			}

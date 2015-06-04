@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -236,10 +236,7 @@
     <Compile Include="Razor\EditorParserFixed\RazorEditorParser.cs" />
     <Compile Include="Razor\EditorParserFixed\RazorEditorTrace.cs" />
     <Compile Include="Razor\EditorParserFixed\RazorResources.Designer.cs" />
-    <Compile Include="Projects\AspMvcProject.cs" />
     <Compile Include="Projects\AspMvcProjectConfiguration.cs" />
-    <Compile Include="Projects\AspNetAppProject.cs" />
-    <Compile Include="Projects\AspNetAppProjectBinding.cs" />
     <Compile Include="Projects\AspNetAppProjectConfiguration.cs" />
     <Compile Include="Projects\AspNetMSBuildImportProvider.cs" />
     <Compile Include="WebForms\MasterContentFileDescriptionTemplate.cs" />
@@ -341,6 +338,8 @@
     <Compile Include="Razor\RazorCSharpParsedDocument.cs" />
     <Compile Include="Razor\RazorPageInfo.cs" />
     <Compile Include="WebForms\WebFormsTypeContext.cs" />
+    <Compile Include="Projects\AspMvcProjectFlavor.cs" />
+    <Compile Include="Projects\AspNetAppProjectFlavor.cs" />
     <Compile Include="WebForms\CSharp\CSharpProjector.cs" />
     <Compile Include="Projects\AspNetProjectTemplateWizard.cs" />
     <Compile Include="Projects\AspNetProjectTemplateWizardPageWidget.cs" />

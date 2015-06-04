@@ -46,7 +46,7 @@ namespace MonoDevelop.Refactoring
 		{
 		}
 		
-		public abstract void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx);
+		public abstract void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx);
 	}
 	
 	public class TextReplaceChange : Change
@@ -114,7 +114,7 @@ namespace MonoDevelop.Refactoring
 				return GetTextEditorData (FileName);
 			}
 		}
-		public override void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx)
+		public override void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx)
 		{
 			if (rctx == null)
 				throw new InvalidOperationException ("Refactory context not available.");
@@ -156,11 +156,11 @@ namespace MonoDevelop.Refactoring
 			this.Description = string.Format (GettextCatalog.GetString ("Create file '{0}'"), Path.GetFileName (fileName));
 		}
 		
-		public override void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx)
+		public override void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx)
 		{
 			File.WriteAllText (FileName, Content);
 			rctx.DocumentContext.Project.AddFile (FileName);
-			IdeApp.ProjectOperations.Save (rctx.DocumentContext.Project);
+			IdeApp.ProjectOperations.SaveAsync (rctx.DocumentContext.Project);
 		}
 	}
 	
@@ -177,7 +177,7 @@ namespace MonoDevelop.Refactoring
 			this.Description = string.Format (GettextCatalog.GetString ("Open file '{0}'"), Path.GetFileName (fileName));
 		}
 		
-		public override void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx)
+		public override void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx)
 		{
 			IdeApp.Workbench.OpenDocument (FileName);
 		}
@@ -206,7 +206,7 @@ namespace MonoDevelop.Refactoring
 			this.Description = string.Format (GettextCatalog.GetString ("Rename file '{0}' to '{1}'"), Path.GetFileName (oldName), Path.GetFileName (newName));
 		}
 		
-		public override void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx)
+		public override void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx)
 		{
 			if (rctx == null)
 				throw new ArgumentNullException ("rctx");
@@ -214,7 +214,7 @@ namespace MonoDevelop.Refactoring
 			if (IdeApp.ProjectOperations.CurrentSelectedSolution != null) {
 				foreach (var p in IdeApp.ProjectOperations.CurrentSelectedSolution.GetAllProjects ()) {
 					if (p.GetProjectFile (NewName) != null)
-						IdeApp.ProjectOperations.Save (p);
+						IdeApp.ProjectOperations.SaveAsync (p);
 				}
 			}
 		}
@@ -233,9 +233,9 @@ namespace MonoDevelop.Refactoring
 			this.Description = string.Format (GettextCatalog.GetString ("Save project {0}"), project.Name);
 		}
 		
-		public override void PerformChange (IProgressMonitor monitor, RefactoringOptions rctx)
+		public override void PerformChange (ProgressMonitor monitor, RefactoringOptions rctx)
 		{
-			IdeApp.ProjectOperations.Save (this.Project);
+			IdeApp.ProjectOperations.SaveAsync (this.Project);
 		}
 	}
 }

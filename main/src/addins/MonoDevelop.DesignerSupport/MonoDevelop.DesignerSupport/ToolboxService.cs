@@ -540,7 +540,7 @@ namespace MonoDevelop.DesignerSupport
 			throw new InvalidOperationException ("Unexpected ToolboxItemFilterType value.");
 		}
 		
-		internal ComponentIndex GetComponentIndex (IProgressMonitor monitor)
+		internal ComponentIndex GetComponentIndex (ProgressMonitor monitor)
 		{
 			// Returns an index of all components that can be added to the toolbox.
 			
@@ -557,7 +557,7 @@ namespace MonoDevelop.DesignerSupport
 					todelete.Add (ia);
 				if (ia.NeedsUpdate)
 					toupdate.Add (ia);
-				if (monitor.IsCancelRequested)
+				if (monitor.CancellationToken.IsCancellationRequested)
 					return index;
 			}
 			
@@ -570,7 +570,7 @@ namespace MonoDevelop.DesignerSupport
 						index.Files.Add (c);
 						toupdate.Add (c);
 					}
-					if (monitor.IsCancelRequested)
+					if (monitor.CancellationToken.IsCancellationRequested)
 						return index;
 				}
 			}
@@ -586,7 +586,7 @@ namespace MonoDevelop.DesignerSupport
 					foreach (ComponentIndexFile ia in toupdate) {
 						ia.Update (ctx);
 						monitor.Step (1);
-						if (monitor.IsCancelRequested)
+						if (monitor.CancellationToken.IsCancellationRequested)
 							return index;
 					}
 				} finally {

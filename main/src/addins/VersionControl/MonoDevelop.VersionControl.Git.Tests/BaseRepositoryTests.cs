@@ -31,11 +31,12 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.VersionControl;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoDevelop.VersionControl.Tests
 {
 	[TestFixture]
-	abstract class BaseRepoUtilsTest
+	public abstract class BaseRepoUtilsTest
 	{
 		// [Git] Set user and email.
 		protected const string Author = "author";
@@ -56,6 +57,10 @@ namespace MonoDevelop.VersionControl.Tests
 		[TearDown]
 		public virtual void TearDown ()
 		{
+			if (Repo != null) {
+				Repo.Dispose ();
+				Repo = null;
+			}
 			DeleteDirectory (RemotePath);
 			DeleteDirectory (LocalPath);
 			AddedItems.Clear ();
@@ -183,7 +188,7 @@ namespace MonoDevelop.VersionControl.Tests
 
 			// Old cache.
 			vis = Repo.GetDirectoryVersionInfo (LocalPath, false, false);
-			Assert.AreEqual (1 + RepoItemsCount, vis.Length);
+			Assert.AreEqual (1 + RepoItemsCount, vis.Length, "Old DirectoryVersionInfo.");
 
 			// Query.
 			Repo.ClearCachedVersionInfo (LocalPath);
@@ -192,12 +197,12 @@ namespace MonoDevelop.VersionControl.Tests
 
 			// Cached.
 			vis = Repo.GetDirectoryVersionInfo (LocalPath, false, false);
-			Assert.AreEqual (2 + RepoItemsCount, vis.Length);
+			Assert.AreEqual (2 + RepoItemsCount, vis.Length, "New DirectoryVersionInfo.");
 
 			// Wait for result.
 			AddFile ("testfile3", null, true, false);
 			vis = Repo.GetDirectoryVersionInfo (LocalPath, false, true);
-			Assert.AreEqual (4 + RepoItemsCountRecursive, vis.Length);
+			Assert.AreEqual (4 + RepoItemsCountRecursive, vis.Length, "Recursive DirectoryVersionInfo.");
 		}
 
 		[Test]
@@ -240,20 +245,26 @@ namespace MonoDevelop.VersionControl.Tests
 			FilePath second = new FilePath (FileService.CreateTempDirectory () + Path.DirectorySeparatorChar);
 			Checkout (second, RemoteUrl);
 			Repo2 = GetRepo (second, RemoteUrl);
+			ModifyPath (Repo2, ref second);
 			string added = second + "testfile2";
 			File.Create (added).Close ();
-			Repo2.Add (added, false, new NullProgressMonitor ());
-			ChangeSet changes = Repo.CreateChangeSet (Repo.RootPath);
-			changes.AddFile (Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache));
+			Repo2.Add (added, false, new ProgressMonitor ());
+			ChangeSet changes = Repo2.CreateChangeSet (Repo2.RootPath);
+			changes.AddFile (Repo2.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache));
 			changes.GlobalComment = "test2";
-			Repo2.Commit (changes, new NullProgressMonitor ());
+			Repo2.Commit (changes, new ProgressMonitor ());
 
 			PostCommit (Repo2);
 
-			Repo.Update (Repo.RootPath, true, new NullProgressMonitor ());
+			Repo.Update (Repo.RootPath, true, new ProgressMonitor ());
 			Assert.True (File.Exists (LocalPath + "testfile2"));
 
+			Repo2.Dispose ();
 			DeleteDirectory (second);
+		}
+
+		protected virtual void ModifyPath (Repository repo, ref FilePath old)
+		{
 		}
 
 		[Test]
@@ -273,7 +284,7 @@ namespace MonoDevelop.VersionControl.Tests
 		public void DiffIsProper ()
 		{
 			AddFile ("testfile", null, true, true);
-			File.AppendAllText (LocalPath + "testfile", "text" + Environment.NewLine);
+			File.AppendAllText (LocalPath + "testfile", "text");
 
 			TestDiff ();
 		}
@@ -288,10 +299,30 @@ namespace MonoDevelop.VersionControl.Tests
 			AddFile ("testfile", null, true, true);
 			string added = LocalPath + "testfile";
 
+			// Force cache update.
+			Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
+
 			// Revert to head.
 			File.WriteAllText (added, content);
-			Repo.Revert (added, false, new NullProgressMonitor ());
+			Repo.Revert (added, false, new ProgressMonitor ());
 			Assert.AreEqual (Repo.GetBaseText (added), File.ReadAllText (added));
+		}
+
+		[TestCase (true)]
+		[TestCase (false)]
+		// Tests Repository.Revert
+		public void Reverts2 (bool stage)
+		{
+			AddFile ("init", null, true, true);
+
+			string added = LocalPath + "testfile";
+			AddFile ("testfile", "test", stage, false);
+
+			// Force cache evaluation.
+			Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
+
+			Repo.Revert (added, false, new ProgressMonitor ());
+			Assert.AreEqual (VersionStatus.Unversioned, Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache).Status);
 		}
 
 		[Test]
@@ -301,7 +332,7 @@ namespace MonoDevelop.VersionControl.Tests
 			AddFile ("testfile", "text", true, true);
 			// TODO: Extend and test each member and more types.
 			foreach (var rev in Repo.GetRevisionChanges (GetHeadRevision ())) {
-				Assert.AreEqual (rev.Action, RevisionAction.Add);
+				Assert.AreEqual (RevisionAction.Add, rev.Action);
 			}
 		}
 
@@ -317,7 +348,7 @@ namespace MonoDevelop.VersionControl.Tests
 			string added = LocalPath + "testfile2";
 			AddFile ("testfile", "text", true, true);
 			AddFile ("testfile2", "text2", true, true);
-			Repo.RevertRevision (added, GetHeadRevision (), new NullProgressMonitor ());
+			Repo.RevertRevision (added, GetHeadRevision (), new ProgressMonitor ());
 			Assert.IsFalse (File.Exists (added));
 		}
 
@@ -334,7 +365,7 @@ namespace MonoDevelop.VersionControl.Tests
 			AddFile ("testfile", null, true, true);
 			src = LocalPath + "testfile";
 			dst = src + "2";
-			Repo.MoveFile (src, dst, false, new NullProgressMonitor ());
+			Repo.MoveFile (src, dst, false, new ProgressMonitor ());
 			srcVi = Repo.GetVersionInfo (src, VersionInfoQueryFlags.IgnoreCache);
 			dstVi = Repo.GetVersionInfo (dst, VersionInfoQueryFlags.IgnoreCache);
 			const VersionStatus versionedStatus = VersionStatus.ScheduledDelete | VersionStatus.ScheduledReplace;
@@ -345,7 +376,7 @@ namespace MonoDevelop.VersionControl.Tests
 			AddFile ("addedfile", null, true, false);
 			src = LocalPath + "addedfile";
 			dst = src + "2";
-			Repo.MoveFile (src, dst, false, new NullProgressMonitor ());
+			Repo.MoveFile (src, dst, false, new ProgressMonitor ());
 			srcVi = Repo.GetVersionInfo (src, VersionInfoQueryFlags.IgnoreCache);
 			dstVi = Repo.GetVersionInfo (dst, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, srcVi.Status);
@@ -355,7 +386,7 @@ namespace MonoDevelop.VersionControl.Tests
 			AddFile ("unversionedfile", null, false, false);
 			src = LocalPath + "unversionedfile";
 			dst = src + "2";
-			Repo.MoveFile (src, dst, false, new NullProgressMonitor ());
+			Repo.MoveFile (src, dst, false, new ProgressMonitor ());
 			srcVi = Repo.GetVersionInfo (src, VersionInfoQueryFlags.IgnoreCache);
 			dstVi = Repo.GetVersionInfo (dst, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, srcVi.Status);
@@ -366,15 +397,15 @@ namespace MonoDevelop.VersionControl.Tests
 		// Tests Repository.MoveDirectory.
 		public virtual void MovesDirectory ()
 		{
-			string srcDir = LocalPath + "test";
-			string dstDir = LocalPath + "test2";
-			string src = srcDir + Path.DirectorySeparatorChar + "testfile";
-			string dst = dstDir + Path.DirectorySeparatorChar + "testfile";
+			string srcDir = LocalPath.Combine ("test");
+			string dstDir = LocalPath.Combine ("test2");
+			string src = Path.Combine (srcDir, "testfile");
+			string dst = Path.Combine (dstDir, "testfile");
 
 			AddDirectory ("test", true, false);
-			AddFile ("test" + Path.DirectorySeparatorChar + "testfile", null, true, true);
+			AddFile (Path.Combine ("test", "testfile"), null, true, true);
 
-			Repo.MoveDirectory (srcDir, dstDir, false, new NullProgressMonitor ());
+			Repo.MoveDirectory (srcDir, dstDir, false, new ProgressMonitor ());
 			VersionInfo srcVi = Repo.GetVersionInfo (src, VersionInfoQueryFlags.IgnoreCache);
 			VersionInfo dstVi = Repo.GetVersionInfo (dst, VersionInfoQueryFlags.IgnoreCache);
 			const VersionStatus expectedStatus = VersionStatus.ScheduledDelete | VersionStatus.ScheduledReplace;
@@ -388,36 +419,36 @@ namespace MonoDevelop.VersionControl.Tests
 			string added;
 			string postFix = keepLocal ? "2" : "";
 			// Versioned file.
-			added = LocalPath + "testfile1" + postFix;
+			added = LocalPath.Combine ("testfile1") + postFix;
 			AddFile ("testfile1" + postFix, null, true, true);
-			Repo.DeleteFile (added, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteFile (added, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.ScheduledDelete, vi.Status & VersionStatus.ScheduledDelete);
 			Assert.AreEqual (keepLocal, File.Exists (added));
 
 			// Just added file.
-			added = LocalPath + "testfile2" + postFix;
+			added = LocalPath.Combine ("testfile2") + postFix;
 			AddFile ("testfile2" + postFix, null, true, false);
-			Repo.DeleteFile (added, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteFile (added, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, vi.Status);
 			Assert.AreEqual (keepLocal, File.Exists (added));
 
 			// Non versioned file.
-			added = LocalPath + "testfile3" + postFix;
+			added = LocalPath.Combine ("testfile3") + postFix;
 			AddFile ("testfile3" + postFix, null, false, false);
-			Repo.DeleteFile (added, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteFile (added, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, vi.Status);
 			Assert.AreEqual (keepLocal, File.Exists (added));
 		}
 
-		[Test]
+		[TestCase(false)]
+		[TestCase(true)]
 		// Tests Repository.DeleteFile.
-		public virtual void DeletesFile ()
+		public virtual void DeletesFile (bool keepLocal)
 		{
-			DeleteFileTestHelper (false);
-			DeleteFileTestHelper (true);
+			DeleteFileTestHelper (keepLocal);
 		}
 
 		void DeleteTestDirectoryHelper (bool keepLocal)
@@ -428,34 +459,34 @@ namespace MonoDevelop.VersionControl.Tests
 			string postFix = keepLocal ? "2" : "";
 
 			// Versioned directory.
-			addedDir = LocalPath + "test1" + postFix;
-			added = addedDir + Path.DirectorySeparatorChar + "testfile";
+			addedDir = LocalPath.Combine ("test1") + postFix;
+			added = Path.Combine (addedDir, "testfile");
 			AddDirectory ("test1" + postFix, true, false);
-			AddFile ("test1" + postFix + Path.DirectorySeparatorChar + "testfile", null, true, true);
+			AddFile (Path.Combine ("test1" + postFix, "testfile"), null, true, true);
 
-			Repo.DeleteDirectory (addedDir, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteDirectory (addedDir, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.ScheduledDelete, vi.Status & VersionStatus.ScheduledDelete);
 			Assert.AreEqual (keepLocal, File.Exists (added));
 
 			// Just added directory.
-			addedDir = LocalPath + "test2" + postFix;
-			added = addedDir + Path.DirectorySeparatorChar + "testfile";
+			addedDir = LocalPath.Combine ("test2") + postFix;
+			added = Path.Combine (addedDir, "testfile");
 			AddDirectory ("test2" + postFix, true, false);
-			AddFile ("test2" + postFix + Path.DirectorySeparatorChar + "testfile", null, true, false);
+			AddFile (Path.Combine ("test2" + postFix, "testfile"), null, true, false);
 
-			Repo.DeleteDirectory (addedDir, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteDirectory (addedDir, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, vi.Status);
 			Assert.AreEqual (keepLocal, File.Exists (added));
 
 			// Non versioned file.
-			addedDir = LocalPath + "test3" + postFix;
-			added = addedDir + Path.DirectorySeparatorChar + "testfile";
+			addedDir = LocalPath.Combine ("test3") + postFix;
+			added = Path.Combine (addedDir, "testfile");
 			AddDirectory ("test3" + postFix, true, false);
-			AddFile ("test3" + postFix + Path.DirectorySeparatorChar + "testfile", null, false, false);
+			AddFile (Path.Combine ("test3" + postFix, "testfile"), null, false, false);
 
-			Repo.DeleteDirectory (addedDir, true, new NullProgressMonitor (), keepLocal);
+			Repo.DeleteDirectory (addedDir, true, new ProgressMonitor (), keepLocal);
 			vi = Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
 			Assert.AreEqual (VersionStatus.Unversioned, vi.Status);
 			Assert.AreEqual (keepLocal, File.Exists (added));
@@ -475,7 +506,7 @@ namespace MonoDevelop.VersionControl.Tests
 		{
 			string added = LocalPath + "testfile";
 			AddFile ("testfile", null, true, true);
-			Repo.Lock (new NullProgressMonitor (), added);
+			Repo.Lock (new ProgressMonitor (), added);
 
 			PostLock ();
 		}
@@ -490,8 +521,8 @@ namespace MonoDevelop.VersionControl.Tests
 		{
 			string added = LocalPath + "testfile";
 			AddFile ("testfile", null, true, true);
-			Repo.Lock (new NullProgressMonitor (), "testfile");
-			Repo.Unlock (new NullProgressMonitor (), added);
+			Repo.Lock (new ProgressMonitor (), "testfile");
+			Repo.Unlock (new ProgressMonitor (), added);
 
 			PostLock ();
 		}
@@ -524,18 +555,15 @@ namespace MonoDevelop.VersionControl.Tests
 		}
 
 		[Test]
-		[Ignore]
-		// TODO: Fix Subversion for Unix not returning the correct value.
 		// TODO: Fix SvnSharp logic failing to generate correct URL.
-		// TODO: Fix Git TreeWalk failing.
 		// Tests Repository.GetTextAtRevision.
-		public void CorrectTextAtRevision ()
+		public virtual void CorrectTextAtRevision ()
 		{
 			string added = LocalPath + "testfile";
 			AddFile ("testfile", "text1", true, true);
 			File.AppendAllText (added, "text2");
 			CommitFile (added);
-			string text = Repo.GetTextAtRevision (LocalPath, GetHeadRevision ());
+			string text = Repo.GetTextAtRevision (added, GetHeadRevision ());
 			Assert.AreEqual ("text1text2", text);
 		}
 
@@ -543,7 +571,7 @@ namespace MonoDevelop.VersionControl.Tests
 		// Tests Repository.GetAnnotations.
 		public void BlameIsCorrect ()
 		{
-			string added = LocalPath + "testfile";
+			string added = LocalPath.Combine ("testfile");
 			// Initial commit.
 			AddFile ("testfile", "blah" + Environment.NewLine, true, true);
 			// Second commit.
@@ -560,7 +588,7 @@ namespace MonoDevelop.VersionControl.Tests
 			}
 
 			BlameExtraInternals (annotations);
-			
+
 			Assert.False (annotations [2].HasEmail);
 			Assert.IsNotNull (annotations [2].Author);
 			Assert.IsNull (annotations [2].Email);
@@ -570,12 +598,42 @@ namespace MonoDevelop.VersionControl.Tests
 
 		protected abstract void BlameExtraInternals (Annotation [] annotations);
 
+		[Test]
+		// Tests bug #23275
+		public void MoveAndMoveBack ()
+		{
+			string added = LocalPath.Combine ("testfile");
+			string dir = LocalPath.Combine ("testdir");
+			string dirFile = Path.Combine (dir, "testfile");
+			AddFile ("testfile", "test", true, true);
+			AddDirectory ("testdir", true, false);
+			Repo.MoveFile (added, dirFile, true, new ProgressMonitor ());
+			Repo.MoveFile (dirFile, added, true, new ProgressMonitor ());
+
+			Assert.AreEqual (VersionStatus.Unversioned, Repo.GetVersionInfo (dirFile, VersionInfoQueryFlags.IgnoreCache).Status);
+			Assert.AreEqual (VersionStatus.Versioned, Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache).Status);
+		}
+
+		[Test]
+		public void RevertingADeleteMakesTheFileVersioned ()
+		{
+			var added = LocalPath.Combine ("testfile");
+			AddFile ("testfile", "test", true, true);
+
+			// Force cache update.
+			Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache);
+
+			Repo.DeleteFile (added, true, new ProgressMonitor (), false);
+			Repo.Revert (added, false, new ProgressMonitor ());
+
+			Assert.AreEqual (VersionStatus.Versioned, Repo.GetVersionInfo (added, VersionInfoQueryFlags.IgnoreCache).Status);
+		}
 		#region Util
 
 		protected void Checkout (string path, string url)
 		{
 			Repository _repo = GetRepo (path, url);
-			_repo.Checkout (path, true, new NullProgressMonitor ());
+			_repo.Checkout (path, true, new ProgressMonitor ());
 			if (Repo == null)
 				Repo = _repo;
 			else
@@ -589,7 +647,7 @@ namespace MonoDevelop.VersionControl.Tests
 				changes.AddFile (Repo.GetVersionInfo (item, VersionInfoQueryFlags.IgnoreCache));
 			}
 			changes.GlobalComment = String.Format ("Commit #{0}", CommitNumber);
-			Repo.Commit (changes, new NullProgressMonitor ());
+			Repo.Commit (changes, new ProgressMonitor ());
 			CommitNumber++;
 		}
 
@@ -603,7 +661,7 @@ namespace MonoDevelop.VersionControl.Tests
 
 			changes.AddFile (Repo.GetVersionInfo (path, VersionInfoQueryFlags.IgnoreCache));
 			changes.GlobalComment = String.Format ("Commit #{0}", CommitNumber);
-			Repo.Commit (changes, new NullProgressMonitor ());
+			Repo.Commit (changes, new ProgressMonitor ());
 			CommitNumber++;
 		}
 
@@ -626,7 +684,7 @@ namespace MonoDevelop.VersionControl.Tests
 				File.WriteAllText (added, contents);
 
 			if (toVcs)
-				Repo.Add (added, false, new NullProgressMonitor ());
+				Repo.Add (added, false, new ProgressMonitor ());
 
 			if (commit)
 				CommitFile (added);
@@ -656,4 +714,3 @@ namespace MonoDevelop.VersionControl.Tests
 		#endregion
 	}
 }
-

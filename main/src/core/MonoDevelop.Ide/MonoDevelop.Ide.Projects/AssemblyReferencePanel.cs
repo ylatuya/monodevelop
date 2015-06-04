@@ -206,7 +206,7 @@ namespace MonoDevelop.Ide.Projects
 					assemblies.Add (new AssemblyInfo (asm));
 			}
 
-			foreach (var pr in configureProject.ParentSolution.GetAllSolutionItems<DotNetProject> ().SelectMany (p => p.References).Where (r => r.ReferenceType == ReferenceType.Assembly && !string.IsNullOrEmpty (r.HintPath))) {
+			foreach (var pr in configureProject.ParentSolution.GetAllItems<DotNetProject> ().SelectMany (p => p.References).Where (r => r.ReferenceType == ReferenceType.Assembly && !string.IsNullOrEmpty (r.HintPath))) {
 				var file = new FilePath (pr.HintPath).CanonicalPath;
 				if (File.Exists (file) && !IsNuGetAssembly (file) && !assemblies.Any (a => a.File.Equals (file)))
 					assemblies.Add (new AssemblyInfo (pr.HintPath));
@@ -329,7 +329,7 @@ namespace MonoDevelop.Ide.Projects
 
 		void AddReference (FilePath path)
 		{
-			selectDialog.AddReference (new ProjectReference (ReferenceType.Assembly, path));
+			selectDialog.AddReference (ProjectReference.CreateAssemblyFileReference (path));
 		}
 
 		void RemoveReference (FilePath path)

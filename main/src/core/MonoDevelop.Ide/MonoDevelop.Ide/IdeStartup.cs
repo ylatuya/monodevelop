@@ -51,6 +51,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using MonoDevelop.Ide.Extensions;
 using MonoDevelop.Components.Extensions;
+using MonoDevelop.Ide.Desktop;
+using System.Threading.Tasks;
 using MonoDevelop.Components;
 
 namespace MonoDevelop.Ide
@@ -63,12 +65,12 @@ namespace MonoDevelop.Ide
 		internal static string DefaultTheme;
 		static readonly int ipcBasePort = 40000;
 		
-		int IApplication.Run (string[] args)
+		Task<int> IApplication.Run (string[] args)
 		{
 			var options = MonoDevelopOptions.Parse (args);
 			if (options.Error != null || options.ShowHelp)
-				return options.Error != null? -1 : 0;
-			return Run (options);
+				return Task.FromResult (options.Error != null? -1 : 0);
+			return Task.FromResult (Run (options));
 		}
 		
 		int Run (MonoDevelopOptions options)
@@ -165,7 +167,7 @@ namespace MonoDevelop.Ide
 			if (theme != DefaultTheme)
 				Gtk.Settings.Default.ThemeName = theme;
 			
-			IProgressMonitor monitor = new MonoDevelop.Core.ProgressMonitoring.ConsoleProgressMonitor ();
+			ProgressMonitor monitor = new MonoDevelop.Core.ProgressMonitoring.ConsoleProgressMonitor ();
 			
 			monitor.BeginTask (GettextCatalog.GetString ("Starting {0}", BrandingService.ApplicationName), 2);
 
@@ -202,12 +204,6 @@ namespace MonoDevelop.Ide
 			}
 			
 			Counters.Initialization.Trace ("Checking System");
-			string version = Assembly.GetEntryAssembly ().GetName ().Version.Major + "." + Assembly.GetEntryAssembly ().GetName ().Version.Minor;
-			
-			if (Assembly.GetEntryAssembly ().GetName ().Version.Build != 0)
-				version += "." + Assembly.GetEntryAssembly ().GetName ().Version.Build;
-			if (Assembly.GetEntryAssembly ().GetName ().Version.Revision != 0)
-				version += "." + Assembly.GetEntryAssembly ().GetName ().Version.Revision;
 
 			CheckFileWatcher ();
 			
@@ -229,9 +225,6 @@ namespace MonoDevelop.Ide
 				if (!CheckSCPlugin ())
 					return 1;
 
-				// no alternative for Application.ThreadException?
-				// Application.ThreadException += new ThreadExceptionEventHandler(ShowErrorBox);
-
 				Counters.Initialization.Trace ("Initializing IdeApp");
 				IdeApp.Initialize (monitor);
 
@@ -239,13 +232,14 @@ namespace MonoDevelop.Ide
 				Counters.Initialization.Trace ("Opening Files");
 
 				// load previous combine
+				RecentFile openedProject = null;
 				if (IdeApp.Preferences.LoadPrevSolutionOnStartup && !startupInfo.HasSolutionFile && !IdeApp.Workspace.WorkspaceItemIsOpening && !IdeApp.Workspace.IsOpen) {
-					var proj = DesktopService.RecentFiles.GetProjects ().FirstOrDefault ();
-					if (proj != null)
-						IdeApp.Workspace.OpenWorkspaceItem (proj.FileName).WaitForCompleted ();
+					openedProject = DesktopService.RecentFiles.GetProjects ().FirstOrDefault ();
+					if (openedProject != null)
+						IdeApp.Workspace.OpenWorkspaceItem (openedProject.FileName).ContinueWith (t => IdeApp.OpenFiles (startupInfo.RequestedFileList), TaskScheduler.FromCurrentSynchronizationContext ());
 				}
-
-				IdeApp.OpenFiles (startupInfo.RequestedFileList);
+				if (openedProject == null)
+					IdeApp.OpenFiles (startupInfo.RequestedFileList);
 				
 				monitor.Step (1);
 			

@@ -37,7 +37,7 @@ namespace MonoDevelop.PackageManagement
 {
 	public class PackageManagementEventsMonitor : IDisposable
 	{
-		IProgressMonitor progressMonitor;
+		ProgressMonitor progressMonitor;
 		IPackageManagementEvents packageManagementEvents;
 		IProgressProvider progressProvider;
 		FileConflictResolution lastFileConflictResolution;
@@ -47,7 +47,7 @@ namespace MonoDevelop.PackageManagement
 		List<IPackageManagementProject> projectsRequiringTypeSystemRefresh = new List<IPackageManagementProject> ();
 
 		public PackageManagementEventsMonitor (
-			IProgressMonitor progressMonitor,
+			ProgressMonitor progressMonitor,
 			IPackageManagementEvents packageManagementEvents,
 			IProgressProvider progressProvider)
 		{
@@ -195,7 +195,7 @@ namespace MonoDevelop.PackageManagement
 			packageManagementEvents.OnPackageOperationError (ex);
 		}
 
-		protected virtual void ShowPackageConsole (IProgressMonitor progressMonitor)
+		protected virtual void ShowPackageConsole (ProgressMonitor progressMonitor)
 		{
 			progressMonitor.ShowPackageConsole ();
 		}

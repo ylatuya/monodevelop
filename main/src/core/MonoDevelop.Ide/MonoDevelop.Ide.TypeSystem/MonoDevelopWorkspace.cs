@@ -38,15 +38,20 @@ using Microsoft.CodeAnalysis.Host;
 using MonoDevelop.Core.Text;
 using System.Collections.Concurrent;
 using MonoDevelop.Ide.CodeFormatting;
-using MonoDevelop.Core.ProgressMonitoring;
 using Gtk;
 using MonoDevelop.Ide.Editor.Projection;
+using System.Reflection;
+using Microsoft.CodeAnalysis.Host.Mef;
+using System.Text;
 
 namespace MonoDevelop.Ide.TypeSystem
 {
+
 	class MonoDevelopWorkspace : Workspace
 	{
-		readonly static HostServices services = Microsoft.CodeAnalysis.Host.Mef.MefHostServices.DefaultHost;
+		readonly static HostServices services;
+		public readonly WorkspaceId Id;
+
 		CancellationTokenSource src = new CancellationTokenSource ();
 		MonoDevelop.Projects.Solution currentMonoDevelopSolution;
 		object addLock = new object();
@@ -59,8 +64,18 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		public MonoDevelopWorkspace () : base (services, "MonoDevelopWorkspace")
+		static MonoDevelopWorkspace ()
 		{
+			List<Assembly> assemblies = new List<Assembly> ();
+			assemblies.AddRange(Microsoft.CodeAnalysis.Host.Mef.MefHostServices.DefaultAssemblies);
+
+			assemblies.Add (typeof(MonoDevelopWorkspace).Assembly);
+			services = Microsoft.CodeAnalysis.Host.Mef.MefHostServices.Create (assemblies);
+		}
+
+		public MonoDevelopWorkspace () : base (services, ServiceLayer.Desktop)
+		{
+			this.Id = WorkspaceId.Next ();
 			if (IdeApp.Workspace != null) {
 				IdeApp.Workspace.ActiveConfigurationChanged += HandleActiveConfigurationChanged;
 			}
@@ -72,7 +87,12 @@ namespace MonoDevelop.Ide.TypeSystem
 			if (IdeApp.Workspace != null) {
 				IdeApp.Workspace.ActiveConfigurationChanged -= HandleActiveConfigurationChanged;
 			}
-
+			if (currentMonoDevelopSolution != null) {
+				foreach (var prj in currentMonoDevelopSolution.GetAllProjects ()) {
+					UnloadMonoProject (prj);
+				}
+				currentMonoDevelopSolution = null;
+			}
 		}
 
 		internal void InformDocumentTextChange (DocumentId id, SourceText text)
@@ -120,43 +140,45 @@ namespace MonoDevelop.Ide.TypeSystem
 			});
 		}
 
-		void HandleActiveConfigurationChanged (object sender, EventArgs e)
+		async void HandleActiveConfigurationChanged (object sender, EventArgs e)
 		{
 			if (currentMonoDevelopSolution == null)
 				return;
 			ShowStatusIcon ();
 			CancelLoad ();
 			var token = src.Token;
-			Task.Run (() => {
-				try {
-					return CreateSolutionInfo (currentMonoDevelopSolution, token);
-				} catch (Exception ex) {
-					LoggingService.LogError ("Error while reloading solution.", ex); 
-					return null;
-				}
-			}).ContinueWith ((Task<SolutionInfo> t) => {
-				try {
-					if (t.Status == TaskStatus.RanToCompletion) {
-						if (t.Result == null)
-							return;
-						OnSolutionReloaded (t.Result);
-					}
-				} finally {
-					HideStatusIcon ();
-				}
-			});
+
+			var service = Services.GetService<IPersistentStorageService>();
+
+			try {
+				var si = await CreateSolutionInfo (currentMonoDevelopSolution, token);
+				if (si != null)
+					OnSolutionReloaded (si);
+			} catch (Exception ex) {
+				LoggingService.LogError ("Error while reloading solution.", ex);
+			} finally {
+				HideStatusIcon ();
+			}
 		}
 
-		SolutionInfo CreateSolutionInfo (MonoDevelop.Projects.Solution solution, CancellationToken token)
+		async Task<SolutionInfo> CreateSolutionInfo (MonoDevelop.Projects.Solution solution, CancellationToken token)
 		{
 			var projects = new ConcurrentBag<ProjectInfo> ();
 			var mdProjects = solution.GetAllProjects ();
 			projectionList.Clear ();
-			Parallel.ForEach (mdProjects, proj => {
+
+			List<Task> allTasks = new List<Task> ();
+			foreach (var proj in mdProjects) {
 				if (token.IsCancellationRequested)
-					return;
-				projects.Add (LoadProject (proj, token));
-			});
+					return null;
+				var tp = LoadProject (proj, token).ContinueWith (t => {
+					projects.Add (t.Result);
+				});
+				allTasks.Add (tp);
+			}
+
+			await Task.WhenAll (allTasks);
+
 			if (token.IsCancellationRequested)
 				return null;
 			var solutionInfo = SolutionInfo.Create (GetSolutionId (solution), VersionStamp.Create (), solution.FileName, projects);
@@ -319,7 +341,17 @@ namespace MonoDevelop.Ide.TypeSystem
 			return true;
 		}
 
-		ProjectInfo LoadProject (MonoDevelop.Projects.Project p, CancellationToken token)
+		void UnloadMonoProject (MonoDevelop.Projects.Project project)
+		{
+			if (project == null)
+				throw new ArgumentNullException (nameof (project));
+			project.FileAddedToProject -= OnFileAdded;
+			project.FileRemovedFromProject -= OnFileRemoved;
+			project.FileRenamedInProject -= OnFileRenamed;
+			project.Modified -= OnProjectModified;
+		}
+
+		async Task<ProjectInfo> LoadProject (MonoDevelop.Projects.Project p, CancellationToken token)
 		{
 			if (!projectIdMap.ContainsKey (p)) {
 				p.FileAddedToProject += OnFileAdded;
@@ -329,31 +361,36 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 
 			var projectId = GetOrCreateProjectId (p);
-			var projectData = GetOrCreateProjectData (projectId); 
-			var config = IdeApp.Workspace != null ? p.GetConfiguration (IdeApp.Workspace.ActiveConfiguration) as MonoDevelop.Projects.DotNetProjectConfiguration : null;
-			MonoDevelop.Projects.DotNetConfigurationParameters cp = null;
-			if (config != null)
-				cp = config.CompilationParameters as MonoDevelop.Projects.DotNetConfigurationParameters;
-			FilePath fileName = IdeApp.Workspace != null ? p.GetOutputFileName (IdeApp.Workspace.ActiveConfiguration) : (FilePath)"";
-			if (fileName.IsNullOrEmpty)
-				fileName = new FilePath (p.Name + ".dll");
-			var info = ProjectInfo.Create (
-				projectId,
-				VersionStamp.Create (),
-				p.Name, 
-				fileName.FileNameWithoutExtension,
-				LanguageNames.CSharp,
-				p.FileName,
-				fileName,
-				cp != null ? cp.CreateCompilationOptions () : null,
-				cp != null ? cp.CreateParseOptions () : null,
-				CreateDocuments (projectData, p, token),
-				CreateProjectReferences (p, token),
-				CreateMetadataReferences (p, projectId, token)
-			);
+			var projectData = GetOrCreateProjectData (projectId);
 
-			projectData.Info = info;
-			return info;
+			List<MetadataReference> references = await CreateMetadataReferences (p, projectId, token);
+
+			return await Task.Run (() => {
+				var config = IdeApp.Workspace != null ? p.GetConfiguration (IdeApp.Workspace.ActiveConfiguration) as MonoDevelop.Projects.DotNetProjectConfiguration : null;
+				MonoDevelop.Projects.DotNetCompilerParameters cp = null;
+				if (config != null)
+					cp = config.CompilationParameters;
+				FilePath fileName = IdeApp.Workspace != null ? p.GetOutputFileName (IdeApp.Workspace.ActiveConfiguration) : (FilePath)"";
+				if (fileName.IsNullOrEmpty)
+					fileName = new FilePath (p.Name + ".dll");
+				var info = ProjectInfo.Create (
+					projectId,
+					VersionStamp.Create (),
+					p.Name,
+					fileName.FileNameWithoutExtension,
+					LanguageNames.CSharp,
+					p.FileName,
+					fileName,
+					cp != null ? cp.CreateCompilationOptions () : null,
+					cp != null ? cp.CreateParseOptions () : null,
+					CreateDocuments (projectData, p, token),
+					CreateProjectReferences (p, token),
+					references
+				);
+
+				projectData.Info = info;
+				return info;
+			});
 		}
 
 		internal void UpdateProjectionEnntry (MonoDevelop.Projects.ProjectFile projectFile, IReadOnlyList<Projection> projections)
@@ -444,19 +481,22 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		static IEnumerable<MetadataReference> CreateMetadataReferences (MonoDevelop.Projects.Project p, ProjectId projectId, CancellationToken token)
+		static async Task<List<MetadataReference>> CreateMetadataReferences (MonoDevelop.Projects.Project p, ProjectId projectId, CancellationToken token)
 		{
+			List<MetadataReference> result = new List<MetadataReference> ();
+
 			var netProject = p as MonoDevelop.Projects.DotNetProject;
 			if (netProject == null)
-				yield break;
+				return result;
+			
 			var configurationSelector = IdeApp.Workspace?.ActiveConfiguration ?? MonoDevelop.Projects.ConfigurationSelector.Default;
 			var hashSet = new HashSet<string> (FilePath.PathComparer);
 
 			bool addFacadeAssemblies = false;
 
-			foreach (string file in netProject.GetReferencedAssemblies (configurationSelector, false)) {
+			foreach (string file in await netProject.GetReferencedAssemblies (configurationSelector, false).ConfigureAwait (false)) {
 				if (token.IsCancellationRequested)
-					yield break;
+					return result;
 				string fileName;
 				if (!Path.IsPathRooted (file)) {
 					fileName = Path.Combine (Path.GetDirectoryName (netProject.FileName), file);
@@ -468,7 +508,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				hashSet.Add (fileName);
 				if (!File.Exists (fileName))
 					continue;
-				yield return MetadataReferenceCache.LoadReference (projectId, fileName);
+				result.Add (MetadataReferenceCache.LoadReference (projectId, fileName));
 				addFacadeAssemblies |= MonoDevelop.Core.Assemblies.SystemAssemblyService.ContainsReferenceToSystemRuntime (fileName);
 			}
 
@@ -480,14 +520,14 @@ namespace MonoDevelop.Ide.TypeSystem
 					foreach (var facade in facades) {
 						if (!File.Exists (facade))
 							continue;
-						yield return MetadataReferenceCache.LoadReference (projectId, facade);
+						result.Add (MetadataReferenceCache.LoadReference (projectId, facade));
 					}
 				}
 			}
 
 			foreach (var pr in p.GetReferencedItems (configurationSelector)) {
 				if (token.IsCancellationRequested)
-					yield break;
+					return result;
 				var referencedProject = pr as MonoDevelop.Projects.DotNetProject;
 				if (referencedProject == null)
 					continue;
@@ -495,9 +535,10 @@ namespace MonoDevelop.Ide.TypeSystem
 					var fileName = referencedProject.GetOutputFileName (configurationSelector);
 					if (!File.Exists (fileName))
 						continue;
-					yield return MetadataReferenceCache.LoadReference (projectId, fileName);
+					result.Add (MetadataReferenceCache.LoadReference (projectId, fileName));
 				}
 			}
+			return result;
 		}
 
 		IEnumerable<ProjectReference> CreateProjectReferences (MonoDevelop.Projects.Project p, CancellationToken token)
@@ -571,7 +612,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				var data = GetMonoProject (projectChanges.NewProject);
 				if (data != null) {
 					Application.Invoke (delegate {
-						data.Save (new NullProgressMonitor ());	
+						data.SaveAsync (new ProgressMonitor ());	
 					});
 				}
 			} finally {
@@ -595,7 +636,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			lock (openDocuments) {
 				var openDoc = openDocuments.FirstOrDefault (d => d.Id == documentId);
 				if (openDoc != null) {
-//					openDoc.TextChanged -= HandleTextChanged;
+					openDoc.Dispose ();
 					openDocuments.Remove (openDoc);
 				}
 			}
@@ -729,7 +770,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				var file = new MonoDevelop.Projects.ProjectFile (path);
 				Application.Invoke (delegate {
 					mdProject.Files.Add (file);
-					IdeApp.ProjectOperations.Save (mdProject);
+					IdeApp.ProjectOperations.SaveAsync (mdProject);
 				});
 			}
 
@@ -788,17 +829,18 @@ namespace MonoDevelop.Ide.TypeSystem
 				if (monoProject != null) {
 					var pf = monoProject.GetProjectFile (fileName);
 					if (pf != null) {
-						TypeSystemService.ParseProjection (new ParseOptions { Project = monoProject, FileName = fileName, Content = new StringTextSource (text), BuildAction = pf.BuildAction },
-														   DesktopService.GetMimeTypeForUri (fileName));
+						var mimeType = DesktopService.GetMimeTypeForUri (fileName);
+						if (TypeSystemService.CanParseProjections (monoProject, mimeType, fileName))
+							TypeSystemService.ParseProjection (new ParseOptions { Project = monoProject, FileName = fileName, Content = new StringTextSource(text), BuildAction = pf.BuildAction }, mimeType);
 					}
 				}
 
 			}
 		}
 
-		public void AddProject (MonoDevelop.Projects.Project project)
+		public async Task AddProject (MonoDevelop.Projects.Project project)
 		{
-			var info = LoadProject (project, default(CancellationToken));
+			var info = await LoadProject (project, default(CancellationToken));
 			OnProjectAdded (info); 
 		}
 
@@ -816,10 +858,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				projectDataMap.TryRemove (id, out val2);
 				MetadataReferenceCache.RemoveReferences (id);
 
-				project.FileAddedToProject -= OnFileAdded;
-				project.FileRemovedFromProject -= OnFileRemoved;
-				project.FileRenamedInProject -= OnFileRenamed;
-				project.Modified -= OnProjectModified;
+				UnloadMonoProject (project);
 			}
 		}
 
@@ -888,7 +927,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		void OnProjectModified (object sender, MonoDevelop.Projects.SolutionItemModifiedEventArgs args)
+		async void OnProjectModified (object sender, MonoDevelop.Projects.SolutionItemModifiedEventArgs args)
 		{
 			if (internalChanges)
 				return;
@@ -896,7 +935,9 @@ namespace MonoDevelop.Ide.TypeSystem
 				return;
 			var project = (MonoDevelop.Projects.Project)sender;
 			var projectId = GetProjectId (project);
-			OnProjectReloaded (LoadProject (project, default(CancellationToken))); 
+			if (CurrentSolution.ContainsProject (projectId)) {
+				OnProjectReloaded (await LoadProject (project, default(CancellationToken)));
+			}
 		}
 
 		#endregion

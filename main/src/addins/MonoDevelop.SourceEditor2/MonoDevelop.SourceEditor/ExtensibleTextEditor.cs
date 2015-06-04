@@ -229,11 +229,19 @@ namespace MonoDevelop.SourceEditor
 			cachedVAdjustment = null;
 		}
 
+		internal bool IsDestroyed { get; private set; }
+
 		protected override void OnDestroyed ()
 		{
+			IsDestroyed = true;
 			UnregisterAdjustments ();
 			extensionContext = null;
 			view = null;
+			var disposableSyntaxMode = Document.SyntaxMode as IDisposable;
+			if (disposableSyntaxMode != null)  {
+				disposableSyntaxMode.Dispose ();
+				Document.SyntaxMode = null;
+			}
 			base.OnDestroyed ();
 			if (Options != null) {
 				Options.Dispose ();

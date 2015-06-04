@@ -40,6 +40,7 @@ using Mono.Cecil.Cil;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Core.Text;
 using Gtk;
+using System.Threading;
 
 namespace MonoDevelop.SourceEditor
 {
@@ -48,15 +49,17 @@ namespace MonoDevelop.SourceEditor
 		class ToolTipData
 		{
 			public readonly SymbolInfo SymbolInfo;
-			public ISymbol Symbol { get { return SymbolInfo.Symbol; } }
+			public ISymbol Symbol { get { return symbol; } }
 			public readonly SyntaxToken Token;
+			ISymbol symbol;
 
-			public ToolTipData (SymbolInfo symbol, SyntaxToken token)
+			public ToolTipData (SymbolInfo symbolInfo, ISymbol symbol, SyntaxToken token)
 			{
+				SymbolInfo = symbolInfo;
+				this.symbol = symbol;
 				Token = token;
-				SymbolInfo = symbol;
 			}
-			
+
 			public override string ToString ()
 			{
 				return string.Format ("[ToolTipData: Symbol={0}, Token={1}]", Symbol, Token);
@@ -84,8 +87,9 @@ namespace MonoDevelop.SourceEditor
 			}
 			if (!token.Span.IntersectsWith (offset))
 				return null;
-			var symbolInfo = unit.GetSymbolInfo (token.Parent); 
-			return new TooltipItem (new ToolTipData (symbolInfo, token), token.Span.Start, token.Span.Length);
+			var symbolInfo = unit.GetSymbolInfo (token.Parent);
+			var symbol = symbolInfo.Symbol ?? unit.GetDeclaredSymbol (token.Parent);
+			return new TooltipItem (new ToolTipData (symbolInfo, symbol, token), token.Span.Start, token.Span.Length);
 		}
 		
 		static TooltipInformationWindow lastWindow = null;
@@ -119,7 +123,6 @@ namespace MonoDevelop.SourceEditor
 			var tooltipInformation = CreateTooltip (titem, editor, ctx, offset, modifierState);
 			if (tooltipInformation == null || string.IsNullOrEmpty (tooltipInformation.SignatureMarkup))
 				return null;
-
 			var result = new TooltipInformationWindow ();
 			result.ShowArrow = true;
 			result.AddOverload (tooltipInformation);
@@ -129,7 +132,7 @@ namespace MonoDevelop.SourceEditor
 
 		TooltipInformation CreateTooltip (ToolTipData data, TextEditor editor, DocumentContext doc, int offset, Gdk.ModifierType modifierState)
 		{
-			bool createFooter = (modifierState & Gdk.ModifierType.Mod1Mask) != 0;
+			bool createFooter = true; //(modifierState & Gdk.ModifierType.Mod1Mask) != 0;
 			try {
 				TooltipInformation result;
 				var sig = new SignatureMarkupCreator (doc, offset);
@@ -176,7 +179,7 @@ namespace MonoDevelop.SourceEditor
 					return result;
 				
 				if (data.Symbol != null) {
-					result = RoslynSymbolCompletionData.CreateTooltipInformation (editor, doc, data.Symbol, false, createFooter);
+					result = RoslynSymbolCompletionData.CreateTooltipInformation (CancellationToken.None, editor, doc, data.Symbol, false, createFooter).Result;
 				}
 				
 //				if (result == null && parentKind == SyntaxKind.IdentifierName) {

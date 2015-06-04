@@ -31,7 +31,7 @@ namespace MonoDevelop.Components.AutoTest.Operations
 	public class ModelOperation : Operation
 	{
 		string ColumnName;
-		public ModelOperation (string columnName)
+		public ModelOperation (string columnName = null)
 		{
 			ColumnName = columnName;
 		}
@@ -52,7 +52,7 @@ namespace MonoDevelop.Components.AutoTest.Operations
 
 		public override string ToString ()
 		{
-			return string.Format ("Model ({0})", ColumnName);
+			return string.Format ("Model (\"{0}\")", ColumnName);
 		}
 	}
 }

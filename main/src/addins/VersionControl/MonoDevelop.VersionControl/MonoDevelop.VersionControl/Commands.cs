@@ -13,6 +13,7 @@ namespace MonoDevelop.VersionControl
 		Diff,
 		Log,
 		Status,
+		SolutionStatus,
 		Add,
 		Remove,
 		Publish,
@@ -37,7 +38,7 @@ namespace MonoDevelop.VersionControl
 			VersionControlItemList list = new VersionControlItemList ();
 			
 			WorkspaceItem wob;
-			SolutionItem sol;
+			SolutionFolderItem sol;
 			Repository repo = null;
 			wob = IdeApp.ProjectOperations.CurrentSelectedWorkspaceItem;
 			if (wob != null)

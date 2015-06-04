@@ -34,6 +34,7 @@ using MonoDevelop.Components;
 using System.Linq;
 using MonoDevelop.Ide.Editor.Extension;
 using System.ComponentModel;
+using System.Threading;
 
 namespace MonoDevelop.Ide.CodeCompletion
 {
@@ -43,6 +44,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 		TooltipInformationWindow declarationviewwindow;
 		CompletionData currentData;
+		CancellationTokenSource declarationViewCancelSource;
 		Widget parsingMessage;
 		int initialWordLength;
 		int previousWidth = -1, previousHeight = -1;
@@ -226,7 +228,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		
 		public void ToggleCategoryMode ()
 		{
-			ListWidget.EnableCompletionCategoryMode.Set (!ListWidget.EnableCompletionCategoryMode.Value); 
+			IdeApp.Preferences.EnableCompletionCategoryMode.Set (!IdeApp.Preferences.EnableCompletionCategoryMode.Value); 
 			List.UpdateCategoryMode ();
 			ResetSizes ();
 			List.QueueDraw ();
@@ -305,8 +307,12 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 		internal bool ShowListWindow (char firstChar, ICompletionDataList list, ICompletionWidget completionWidget, CodeCompletionContext completionContext)
 		{
-			if (list == null)
-				throw new ArgumentNullException ("list");
+			InitializeListWindow (completionWidget, completionContext);
+			return ShowListWindow (list, completionContext);
+		}
+
+		internal void InitializeListWindow (ICompletionWidget completionWidget, CodeCompletionContext completionContext)
+		{
 			if (completionWidget == null)
 				throw new ArgumentNullException ("completionWidget");
 			if (completionContext == null)
@@ -318,9 +324,22 @@ namespace MonoDevelop.Ide.CodeCompletion
 			}
 			ResetState ();
 			CompletionWidget = completionWidget;
-			CompletionDataList = list;
-
 			CodeCompletionContext = completionContext;
+
+			string text = CompletionWidget.GetCompletionText (CodeCompletionContext);
+			initialWordLength = CompletionWidget.SelectedLength > 0 ? 0 : text.Length;
+			StartOffset = CompletionWidget.CaretOffset - initialWordLength;
+		}
+
+		internal bool ShowListWindow (ICompletionDataList list, CodeCompletionContext completionContext)
+		{
+			if (list == null)
+				throw new ArgumentNullException ("list");
+			
+			CodeCompletionContext = completionContext;
+			CompletionDataList = list;
+			ResetState ();
+
 			mutableList = completionDataList as IMutableCompletionDataList;
 			PreviewCompletionString = completionDataList.CompletionSelectionMode == CompletionSelectionMode.OwnTextField;
 
@@ -331,19 +350,20 @@ namespace MonoDevelop.Ide.CodeCompletion
 				if (mutableList.IsChanging)
 					OnCompletionDataChanging (null, null);
 			}
+
 			if (FillList ()) {
 				AutoSelect = list.AutoSelect;
 				AutoCompleteEmptyMatch = list.AutoCompleteEmptyMatch;
 				AutoCompleteEmptyMatchOnCurlyBrace = list.AutoCompleteEmptyMatchOnCurlyBrace;
 				CloseOnSquareBrackets = list.CloseOnSquareBrackets;
 				// makes control-space in midle of words to work
-				string text = completionWidget.GetCompletionText (completionContext);
+				string text = CompletionWidget.GetCompletionText (CodeCompletionContext);
 				DefaultCompletionString = completionDataList.DefaultCompletionString ?? "";
 				if (text.Length == 0) {
 					UpdateWordSelection ();
 					initialWordLength = 0;
 					//completionWidget.SelectedLength;
-					StartOffset = completionWidget.CaretOffset;
+					StartOffset = CompletionWidget.CaretOffset;
 					ResetSizes ();
 					ShowAll ();
 					UpdateWordSelection ();
@@ -357,8 +377,8 @@ namespace MonoDevelop.Ide.CodeCompletion
 					return true;
 				}
 
-				initialWordLength = completionWidget.SelectedLength > 0 ? 0 : text.Length;
-				StartOffset = completionWidget.CaretOffset - initialWordLength;
+				initialWordLength = CompletionWidget.SelectedLength > 0 ? 0 : text.Length;
+				StartOffset = CompletionWidget.CaretOffset - initialWordLength;
 				HideWhenWordDeleted = initialWordLength != 0;
 				ResetSizes ();
 				UpdateWordSelection ();
@@ -572,6 +592,10 @@ namespace MonoDevelop.Ide.CodeCompletion
 		
 		void HideDeclarationView ()
 		{
+			if (declarationViewCancelSource != null) {
+				declarationViewCancelSource.Cancel ();
+				declarationViewCancelSource = null;
+			}
 			RemoveDeclarationViewTimer ();
 			if (declarationviewwindow != null) {
 				declarationviewwindow.Hide ();
@@ -621,12 +645,19 @@ namespace MonoDevelop.Ide.CodeCompletion
 			declarationviewwindow.ShowPopup (this, new Gdk.Rectangle (Gui.Styles.TooltipInfoSpacing, Math.Min (Allocation.Height, Math.Max (0, y)), Allocation.Width, rect.Height), PopupPosition.Left);
 			declarationViewHidden = false;
 		}
-		
+
 		bool DelayedTooltipShow ()
+		{
+			DelayedTooltipShowAsync ();
+			return false;
+		}
+
+		async void DelayedTooltipShowAsync ()
 		{
 			var selectedItem = List.SelectedItem;
 			if (selectedItem < 0 || selectedItem >= completionDataList.Count)
-				return false;
+				return;
+			
 			var data = completionDataList [selectedItem];
 
 			IEnumerable<CompletionData> filteredOverloads;
@@ -639,12 +670,20 @@ namespace MonoDevelop.Ide.CodeCompletion
 			EnsureDeclarationViewWindow ();
 			if (data != currentData) {
 				declarationviewwindow.Clear ();
+				currentData = data;
+				var cs = new CancellationTokenSource ();
+				declarationViewCancelSource = cs;
 				var overloads = new List<CompletionData> (filteredOverloads);
 				foreach (var overload in overloads) {
-					declarationviewwindow.AddOverload ((CompletionData)overload);
+					await declarationviewwindow.AddOverload ((CompletionData)overload, cs.Token);
 				}
+
+				if (cs.IsCancellationRequested)
+					return;
+
+				if (declarationViewCancelSource == cs)
+					declarationViewCancelSource = null;
 				
-				currentData = data;
 				if (data.HasOverloads) {
 					for (int i = 0; i < overloads.Count; i++) {
 						if (!overloads[i].DisplayFlags.HasFlag (DisplayFlags.Obsolete)) {
@@ -657,7 +696,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 
 			if (declarationviewwindow.Overloads == 0) {
 				HideDeclarationView ();
-				return false;
+				return;
 			}
 
 			if (declarationViewHidden && Visible) {
@@ -665,7 +704,6 @@ namespace MonoDevelop.Ide.CodeCompletion
 			}
 			
 			declarationViewTimer = 0;
-			return false;
 		}
 		
 		protected internal override void ResetState ()
@@ -680,7 +718,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		
 		int IListDataProvider.ItemCount 
 		{ 
-			get { return completionDataList.Count; } 
+			get { return completionDataList != null ? completionDataList.Count : 0; } 
 		}
 		
 		CompletionCategory IListDataProvider.GetCompletionCategory (int n)

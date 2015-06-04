@@ -90,9 +90,9 @@ namespace MonoDevelop.Ide.Tasks
 			IdeApp.Workbench.DocumentOpened += WorkbenchDocumentOpened;
 			IdeApp.Workbench.DocumentClosed += WorkbenchDocumentClosed;;
 
-			highPrioColor = StringToColor ((string)PropertyService.Get ("Monodevelop.UserTasksHighPrioColor", ""));
-			normalPrioColor = StringToColor ((string)PropertyService.Get ("Monodevelop.UserTasksNormalPrioColor", ""));
-			lowPrioColor = StringToColor ((string)PropertyService.Get ("Monodevelop.UserTasksLowPrioColor", ""));
+			highPrioColor = StringToColor (IdeApp.Preferences.UserTasksHighPrioColor);
+			normalPrioColor = StringToColor (IdeApp.Preferences.UserTasksNormalPrioColor);
+			lowPrioColor = StringToColor (IdeApp.Preferences.UserTasksLowPrioColor);
 
 			store = new Gtk.ListStore (
 				typeof (int),        // line
@@ -131,10 +131,10 @@ namespace MonoDevelop.Ide.Tasks
 
 			OnWorkspaceItemLoaded (null, EventArgs.Empty);
 
-			comments.TasksAdded += DispatchService.GuiDispatch<TaskEventHandler> (GeneratedTaskAdded);
-			comments.TasksRemoved += DispatchService.GuiDispatch<TaskEventHandler> (GeneratedTaskRemoved);
+			comments.TasksAdded += GeneratedTaskAdded;
+			comments.TasksRemoved += GeneratedTaskRemoved;
 
-			PropertyService.PropertyChanged += DispatchService.GuiDispatch<EventHandler<PropertyChangedEventArgs>> (OnPropertyUpdated);
+			PropertyService.PropertyChanged += OnPropertyUpdated;
 			
 			// Initialize with existing tags.
 			foreach (TaskListEntry t in comments)
@@ -146,10 +146,10 @@ namespace MonoDevelop.Ide.Tasks
 				CommentTag.SpecialCommentTagsChanged -= OnCommentTagsChanged;
 				MonoDevelopWorkspace.LoadingFinished -= OnWorkspaceItemLoaded;
 				IdeApp.Workspace.WorkspaceItemUnloaded -= OnWorkspaceItemUnloaded;
-				comments.TasksAdded -= DispatchService.GuiDispatch<TaskEventHandler> (GeneratedTaskAdded);
-				comments.TasksRemoved -= DispatchService.GuiDispatch<TaskEventHandler> (GeneratedTaskRemoved);
+				comments.TasksAdded -= GeneratedTaskAdded;
+				comments.TasksRemoved -= GeneratedTaskRemoved;
 
-				PropertyService.PropertyChanged -= DispatchService.GuiDispatch<EventHandler<PropertyChangedEventArgs>> (OnPropertyUpdated);
+				PropertyService.PropertyChanged -= OnPropertyUpdated;
 			};
 		}
 

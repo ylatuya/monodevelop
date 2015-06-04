@@ -108,12 +108,12 @@ namespace MonoDevelop.Ide.Templates
 			set { addStandardHeader = value; }
 		}
 		
-		public sealed override bool AddToProject (SolutionItem policyParent, Project project, string language, string directory, string name)
+		public sealed override bool AddToProject (SolutionFolderItem policyParent, Project project, string language, string directory, string name)
 		{
 			return AddFileToProject (policyParent, project, language, directory, name) != null;
 		}
 		
-		public ProjectFile AddFileToProject (SolutionItem policyParent, Project project, string language, string directory, string name)
+		public ProjectFile AddFileToProject (SolutionFolderItem policyParent, Project project, string language, string directory, string name)
 		{
 			generatedFile = SaveFile (policyParent, project, language, directory, name);
 			if (generatedFile != null) {		
@@ -137,7 +137,7 @@ namespace MonoDevelop.Ide.Templates
 						string res = netProject.AssemblyContext.GetAssemblyFullName (aref, netProject.TargetFramework);
 						res = netProject.AssemblyContext.GetAssemblyNameForVersion (res, netProject.TargetFramework);
 						if (!ContainsReference (netProject, res))
-							netProject.References.Add (new ProjectReference (ReferenceType.Package, aref));
+							netProject.References.Add (ProjectReference.CreateAssemblyReference (aref));
 					}
 				}
 				
@@ -190,7 +190,7 @@ namespace MonoDevelop.Ide.Templates
 		
 		// Creates a file and saves it to disk. Returns the path to the new file
 		// All parameters are optional (can be null)
-		public string SaveFile (SolutionItem policyParent, Project project, string language, string baseDirectory, string entryName)
+		public string SaveFile (SolutionFolderItem policyParent, Project project, string language, string baseDirectory, string entryName)
 		{
 			string file = GetFileName (policyParent, project, language, baseDirectory, entryName);
 			
@@ -238,7 +238,7 @@ namespace MonoDevelop.Ide.Templates
 			}
 		}
 
-		CombinedTagModel GetTagModel (SolutionItem policyParent, Project project, string language, string identifier, string fileName)
+		CombinedTagModel GetTagModel (SolutionFolderItem policyParent, Project project, string language, string identifier, string fileName)
 		{
 			var model = new CombinedTagModel { BaseModel = ProjectTagModel };
 			ModifyTags (policyParent, project, language, identifier, fileName, ref model.OverrideTags);
@@ -247,7 +247,7 @@ namespace MonoDevelop.Ide.Templates
 		
 		// Returns the name of the file that this template generates.
 		// All parameters are optional (can be null)
-		public virtual string GetFileName (SolutionItem policyParent, Project project, string language, string baseDirectory, string entryName)
+		public virtual string GetFileName (SolutionFolderItem policyParent, Project project, string language, string baseDirectory, string entryName)
 		{
 			if (string.IsNullOrEmpty (entryName) && !string.IsNullOrEmpty (defaultName))
 				entryName = defaultName;
@@ -287,7 +287,7 @@ namespace MonoDevelop.Ide.Templates
 
 		// Returns a stream with the content of the file.
 		// project and language parameters are optional
-		public virtual Stream CreateFileContent (SolutionItem policyParent, Project project, string language, string fileName, string identifier)
+		public virtual Stream CreateFileContent (SolutionFolderItem policyParent, Project project, string language, string fileName, string identifier)
 		{
 			var model = GetTagModel (policyParent, project, language, identifier, fileName);
 
@@ -359,12 +359,12 @@ namespace MonoDevelop.Ide.Templates
 		// We supply defaults whenever it is possible, to avoid having unsubstituted tags. However,
 		// do not substitute blanks when a sensible default cannot be guessed, because they result
 		//in less obvious errors.
-		public virtual void ModifyTags (SolutionItem policyParent, Project project, string language,
+		public virtual void ModifyTags (SolutionFolderItem policyParent, Project project, string language,
 			string identifier, string fileName, ref Dictionary<string,string> tags)
 		{
 			//DotNetProject netProject = project as DotNetProject;
 			string languageExtension = "";
-			ILanguageBinding binding = null;
+			LanguageBinding binding = null;
 			if (!string.IsNullOrEmpty (language)) {
 				binding = GetLanguageBinding (language);
 				if (binding != null)
@@ -392,9 +392,8 @@ namespace MonoDevelop.Ide.Templates
 				tags ["FullName"] = ns.Length > 0 ? ns + "." + identifier : identifier;
 				
 				//some .NET languages may be able to use keywords as identifiers if they're escaped
-				IDotNetLanguageBinding dnb = binding as IDotNetLanguageBinding;
-				if (dnb != null) {
-					System.CodeDom.Compiler.CodeDomProvider provider = dnb.GetCodeDomProvider ();
+				if (binding != null) {
+					System.CodeDom.Compiler.CodeDomProvider provider = binding.GetCodeDomProvider ();
 					if (provider != null) {
 						tags ["EscapedIdentifier"] = provider.CreateEscapedIdentifier (identifier);
 					}
@@ -447,7 +446,7 @@ namespace MonoDevelop.Ide.Templates
 		}
 
 		
-		protected ILanguageBinding GetLanguageBinding (string language)
+		protected LanguageBinding GetLanguageBinding (string language)
 		{
 			var binding = LanguageBindingService.GetBindingPerLanguageName (language);
 			if (binding == null)

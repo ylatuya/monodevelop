@@ -32,6 +32,8 @@ using MonoDevelop.Ide.Fonts;
 using System.Linq;
 using MonoDevelop.Ide.Editor;
 using MonoDevelop.Ide.Editor.Highlighting;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace MonoDevelop.Ide.CodeCompletion
 {
@@ -78,10 +80,10 @@ namespace MonoDevelop.Ide.CodeCompletion
 			ShowOverload ();
 		}
 
-		public void AddOverload (CompletionData data)
+		public async Task AddOverload (CompletionData data, CancellationToken cancelToken)
 		{
-			var tooltipInformation = data.CreateTooltipInformation (false);
-			if (tooltipInformation.IsEmpty)
+			var tooltipInformation = await data.CreateTooltipInformation (false, cancelToken);
+			if (tooltipInformation == null || tooltipInformation.IsEmpty || cancelToken.IsCancellationRequested)
 				return;
 
 			using (var layout = new Pango.Layout (PangoContext)) {
@@ -90,9 +92,11 @@ namespace MonoDevelop.Ide.CodeCompletion
 				int w, h;
 				layout.GetPixelSize (out w, out h);
 				if (w >= Allocation.Width - 10) {
-					tooltipInformation = data.CreateTooltipInformation (true);
+					tooltipInformation = await data.CreateTooltipInformation (true, cancelToken);
 				}
 			}
+			if (cancelToken.IsCancellationRequested)
+				return;
 			AddOverload (tooltipInformation);
 		}
 
@@ -122,13 +126,11 @@ namespace MonoDevelop.Ide.CodeCompletion
 					headLabel.WidthRequest = -1;
 				}
 				foreach (var cat in o.Categories) {
-					descriptionBox.PackStart (CreateCategory (cat.Item1, cat.Item2), true, true, 4);
+					descriptionBox.PackStart (CreateCategory (GetHeaderMarkup (cat.Item1), cat.Item2, foreColor), true, true, 4);
 				}
 
 				if (!string.IsNullOrEmpty (o.SummaryMarkup)) {
-					descriptionBox.PackStart (CreateCategory (
-						"<span foreground=\"#a7a79c\" size=\"larger\">" +
-						GettextCatalog.GetString ("Summary") +"</span>", o.SummaryMarkup, true), true, true, 4);
+					descriptionBox.PackStart (CreateCategory (GetHeaderMarkup (GettextCatalog.GetString ("Summary")), o.SummaryMarkup, foreColor), true, true, 4);
 				}
 				if (!string.IsNullOrEmpty (o.FooterMarkup)) {
 
@@ -152,6 +154,12 @@ namespace MonoDevelop.Ide.CodeCompletion
 				Theme.CurrentPage = current_overload;
 				QueueResize ();
 			}
+		}
+
+		internal static string GetHeaderMarkup (string headerName)
+		{
+			return headerName;
+			// return "<span foreground=\"#a7a79c\" size=\"larger\">" + headerName + "</span>";
 		}
 
 		public void OverloadLeft ()
@@ -194,7 +202,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 			current_overload = 0;
 		}
 
-		VBox CreateCategory (string categoryName, string categoryContentMarkup, bool useParagraphForContent = false)
+		internal static VBox CreateCategory (string categoryName, string categoryContentMarkup, Cairo.Color foreColor)
 		{
 			var vbox = new VBox ();
 
@@ -211,9 +219,8 @@ namespace MonoDevelop.Ide.CodeCompletion
 			var contentLabel = new FixedWidthWrapLabel ();
 			HBox hbox = new HBox ();
 
-			if (useParagraphForContent) {
-				hbox.PackStart (new Label(), false, true, 10);
-			}
+			// hbox.PackStart (new Label(), false, true, 10);
+
 
 			contentLabel.Wrap = Pango.WrapMode.WordChar;
 			contentLabel.BreakOnCamelCasing = false;

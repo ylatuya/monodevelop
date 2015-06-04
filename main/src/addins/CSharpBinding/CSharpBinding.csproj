@@ -255,7 +255,6 @@
     <Compile Include="MonoDevelop.CSharp.Formatting\CSharpFormattingPolicyPanel.cs" />
     <Compile Include="MonoDevelop.CSharp.Formatting\CSharpFormatter.cs" />
     <Compile Include="MonoDevelop.CSharp.Project\CSharpCompilerParameters.cs" />
-    <Compile Include="MonoDevelop.CSharp.Project\CSharpProjectParameters.cs" />
     <Compile Include="MonoDevelop.CSharp.Project\CSharpResourceIdBuilder.cs" />
     <Compile Include="MonoDevelop.CSharp.Project\CodeGenerationPanel.cs" />
     <Compile Include="MonoDevelop.CSharp.Project\CompilerOptionsPanelWidget.cs" />
@@ -263,7 +262,6 @@
     <Compile Include="gtk-gui\MonoDevelop.CSharp.Project.CompilerOptionsPanelWidget.cs" />
     <Compile Include="MonoDevelop.CSharp\CSharpBindingCompilerManager.cs" />
     <Compile Include="MonoDevelop.CSharp\CSharpEnhancedCodeProvider.cs" />
-    <Compile Include="MonoDevelop.CSharp\CSharpLanguageBinding.cs" />
     <Compile Include="MonoDevelop.CSharp.Formatting\Indent.cs" />
     <Compile Include="MonoDevelop.CSharp.Formatting\OnTheFlyFormatter.cs" />
     <Compile Include="MonoDevelop.CSharp.Highlighting\HighlightUsagesExtension.cs" />
@@ -310,6 +308,8 @@
     <Compile Include="AddinInfo.cs" />
     <Compile Include="MonoDevelop.CSharp.Refactoring\CSharpCodeGenerationService.cs" />
     <Compile Include="MonoDevelop.CSharp.CodeGeneration\ExportCodeGenerator.cs" />
+    <Compile Include="MonoDevelop.CSharp.Project\CSharpProjectExtension.cs" />
+    <Compile Include="MonoDevelop.CSharp.Project\PortableCSharpProjectFlavor.cs" />
     <Compile Include="MonoDevelop.CSharp.Completion\RoslynSymbolCompletionData.cs" />
     <Compile Include="MonoDevelop.CSharp.Completion\RoslynCodeCompletionFactory.cs" />
     <Compile Include="MonoDevelop.CSharp.Completion\RoslynParameterHintingFactory.cs" />

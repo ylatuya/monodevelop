@@ -61,10 +61,10 @@ namespace MonoDevelop.Projects.Formats.MSBuild
 
 		public MSBuildResult Run (
 			ProjectConfigurationInfo[] configurations, ILogWriter logWriter, MSBuildVerbosity verbosity,
-			string[] runTargets, string[] evaluateItems, string[] evaluateProperties)
+			string[] runTargets, string[] evaluateItems, string[] evaluateProperties, Dictionary<string,string> globalProperties, int taskId)
 		{
 			MSBuildResult result = null;
-			BuildEngine.RunSTA (delegate {
+			BuildEngine.RunSTA (taskId, delegate {
 				try {
 					var project = SetupProject (configurations);
 					currentLogWriter = logWriter;
@@ -79,9 +79,19 @@ namespace MonoDevelop.Projects.Formats.MSBuild
 					}
 
 					if (runTargets != null && runTargets.Length > 0) {
+						if (globalProperties != null) {
+							foreach (var p in globalProperties)
+								project.GlobalProperties.SetProperty (p.Key, p.Value);
+                        }
+
 						// We are using this BuildProject overload and the BuildSettings.None argument as a workaround to
 						// an xbuild bug which causes references to not be resolved after the project has been built once.
 						buildEngine.Engine.BuildProject (project, runTargets, new Hashtable (), BuildSettings.None);
+
+						if (globalProperties != null) {
+							foreach (var p in globalProperties.Keys)
+								project.GlobalProperties.RemoveProperty (p);
+						}
 					}
 
 					result = new MSBuildResult (logger.BuildResult.ToArray ());
@@ -136,7 +146,7 @@ namespace MonoDevelop.Projects.Formats.MSBuild
 					p = null;
 				}
 
-				Environment.CurrentDirectory = Path.GetDirectoryName (file);
+				Environment.CurrentDirectory = Path.GetDirectoryName (Path.GetFullPath (file));
 
 				if (p == null) {
 					p = new Project (buildEngine.Engine);
@@ -144,7 +154,7 @@ namespace MonoDevelop.Projects.Formats.MSBuild
 					if (content == null) {
 						p.Load (pc.ProjectFile);
 					} else {
-						p.FullFileName = pc.ProjectFile;
+						p.FullFileName = Path.GetFullPath (pc.ProjectFile);
 
 						if (HasXbuildFileBug ()) {
 							// Workaround for Xamarin bug #14295: Project.Load incorrectly resets the FullFileName property
@@ -167,7 +177,7 @@ namespace MonoDevelop.Projects.Formats.MSBuild
 					project = p;
 			}
 
-			Environment.CurrentDirectory = Path.GetDirectoryName (file);
+			Environment.CurrentDirectory = Path.GetDirectoryName (Path.GetFullPath (file));
 			return project;
 		}
 

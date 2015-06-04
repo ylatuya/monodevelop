@@ -72,6 +72,7 @@ namespace MonoDevelop.Ide.Tasks
 			};
 			
 			TextEditorService.LineCountChangesReset += delegate (object sender, TextFileEventArgs args) {
+				Runtime.AssertMainThread ();
 				TaskListEntry[] ctasks = GetFileTasks (args.TextFile.Name.FullPath);
 				foreach (TaskListEntry task in ctasks) {
 					if (task.SavedLine != -1) {
@@ -83,6 +84,7 @@ namespace MonoDevelop.Ide.Tasks
 			};
 			
 			TextEditorService.LineCountChanged += delegate (object sender, LineCountEventArgs args) {
+				Runtime.AssertMainThread ();
 				if (args.TextFile == null || args.TextFile.Name.IsNullOrEmpty)
 					return;
 				TaskListEntry[] ctasks = GetFileTasks (args.TextFile.Name.FullPath);
@@ -99,6 +101,7 @@ namespace MonoDevelop.Ide.Tasks
 		
 		public void Add (TaskListEntry task)
 		{
+			Runtime.AssertMainThread ();
 			tasks.Add (task);
 			OnTaskAdded (task);
 		}
@@ -129,12 +132,12 @@ namespace MonoDevelop.Ide.Tasks
 			}
 		}
 		
-		public void RemoveItemTasks (IWorkspaceObject parent)
+		public void RemoveItemTasks (WorkspaceObject parent)
 		{
 			RemoveRange (new List<TaskListEntry> (GetItemTasks (parent)));
 		}
 		
-		public void RemoveItemTasks (IWorkspaceObject parent, bool checkHierarchy)
+		public void RemoveItemTasks (WorkspaceObject parent, bool checkHierarchy)
 		{
 			RemoveRange (new List<TaskListEntry> (GetItemTasks (parent, checkHierarchy)));
 		}
@@ -146,6 +149,7 @@ namespace MonoDevelop.Ide.Tasks
 		
 		public void Remove (TaskListEntry task)
 		{
+			Runtime.AssertMainThread ();
 			if (tasks.Remove (task))
 				OnTaskRemoved (task);
 		}
@@ -206,12 +210,12 @@ namespace MonoDevelop.Ide.Tasks
 				return new TaskListEntry [0];
 		}
 		
-		public IEnumerable<TaskListEntry> GetItemTasks (IWorkspaceObject parent)
+		public IEnumerable<TaskListEntry> GetItemTasks (WorkspaceObject parent)
 		{
 			return GetItemTasks (parent, true);
 		}
 		
-		public IEnumerable<TaskListEntry> GetItemTasks (IWorkspaceObject parent, bool checkHierarchy)
+		public IEnumerable<TaskListEntry> GetItemTasks (WorkspaceObject parent, bool checkHierarchy)
 		{
 			foreach (TaskListEntry t in tasks) {
 				if (t.BelongsToItem (parent, checkHierarchy))
@@ -221,6 +225,7 @@ namespace MonoDevelop.Ide.Tasks
 		
 		public void BeginTaskUpdates ()
 		{
+			Runtime.AssertMainThread ();
 			if (taskUpdateCount++ != 0)
 				return;
 			tasksAdded = new List<TaskListEntry> ();
@@ -229,6 +234,7 @@ namespace MonoDevelop.Ide.Tasks
 		
 		public void EndTaskUpdates ()
 		{
+			Runtime.AssertMainThread ();
 			if (--taskUpdateCount != 0)
 				return;
 			List<TaskListEntry> oldAdded = tasksAdded;
@@ -271,7 +277,7 @@ namespace MonoDevelop.Ide.Tasks
 			}
 		}
 		
-		internal void OnTaskAdded (TaskListEntry t)
+		void OnTaskAdded (TaskListEntry t)
 		{
 			if (t.FileName != FilePath.Null) {
 				TaskListEntry[] ta;
@@ -289,7 +295,7 @@ namespace MonoDevelop.Ide.Tasks
 				NotifyTasksAdded (new TaskListEntry [] { t });
 		}
 		
-		internal void OnTaskRemoved (TaskListEntry t)
+		void OnTaskRemoved (TaskListEntry t)
 		{
 			if (t.FileName != FilePath.Null) {
 				TaskListEntry[] ta;

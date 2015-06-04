@@ -263,7 +263,7 @@ namespace MonoDevelop.Platform
 			return psi;
 		}
 
-		public override IProcessAsyncOperation StartConsoleProcess (
+		public override ProcessAsyncOperation StartConsoleProcess (
 			string command, string arguments, string workingDirectory,
 			IDictionary<string, string> environmentVariables,
 			string title, bool pauseWhenFinished)
@@ -274,7 +274,7 @@ namespace MonoDevelop.Platform
 				)
 			};
 			proc.Start ();
-			return proc;
+			return proc.ProcessAsyncOperation;
 		}
 
 		public override bool CanOpenTerminal {

@@ -59,8 +59,8 @@ namespace MonoDevelop.NUnit
 			resultsPath = MonoDevelop.NUnit.RootTest.GetTestResultsDirectory (project.BaseDirectory);
 			ResultsStore = new BinaryResultsStore (resultsPath, storeId);
 			this.project = project;
-			project.NameChanged += new SolutionItemRenamedEventHandler (OnProjectRenamed);
-			IdeApp.ProjectOperations.EndBuild += new BuildEventHandler (OnProjectBuilt);
+			project.NameChanged += OnProjectRenamed;
+			IdeApp.ProjectOperations.EndBuild += OnProjectBuilt;
 		}
 		
 		public static NUnitProjectTestSuite CreateTest (DotNetProject project)
@@ -126,8 +126,8 @@ namespace MonoDevelop.NUnit
 		
 		public override void Dispose ()
 		{
-			project.NameChanged -= new SolutionItemRenamedEventHandler (OnProjectRenamed);
-			IdeApp.ProjectOperations.EndBuild -= new BuildEventHandler (OnProjectBuilt);
+			project.NameChanged -= OnProjectRenamed;
+			IdeApp.ProjectOperations.EndBuild -= OnProjectBuilt;
 			base.Dispose ();
 		}
 		
@@ -151,16 +151,16 @@ namespace MonoDevelop.NUnit
 
 		public override void GetCustomTestRunner (out string assembly, out string type)
 		{
-			type = (string) project.ExtendedProperties ["TestRunnerType"];
-			var asm = project.ExtendedProperties ["TestRunnerAssembly"];
+			type = project.ProjectProperties.GetValue ("TestRunnerType");
+			var asm = project.ProjectProperties.GetValue ("TestRunnerAssembly");
 			assembly = asm != null ? project.BaseDirectory.Combine (asm.ToString ()).ToString () : null;
 		}
 
 		public override void GetCustomConsoleRunner (out string command, out string args)
 		{
-			var r = project.ExtendedProperties ["TestRunnerCommand"];
-			command = r != null ? project.BaseDirectory.Combine (r.ToString ()).ToString () : null;
-			args = (string)project.ExtendedProperties ["TestRunnerArgs"];
+			var r = project.ProjectProperties.GetPathValue ("TestRunnerCommand");
+			command = !string.IsNullOrEmpty (r) ? project.BaseDirectory.Combine (r).ToString () : null;
+			args = project.ProjectProperties.GetValue ("TestRunnerArgs");
 			if (command == null && args == null) {
 				var guiUnit = project.References.FirstOrDefault (pref => pref.ReferenceType == ReferenceType.Assembly && StringComparer.OrdinalIgnoreCase.Equals (Path.GetFileName (pref.Reference), "GuiUnit.exe"));
 				if (guiUnit != null) {

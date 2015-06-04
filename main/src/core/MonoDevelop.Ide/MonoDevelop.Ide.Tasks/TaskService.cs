@@ -159,7 +159,7 @@ namespace MonoDevelop.Ide.Tasks
 			return combinePath.Combine (item.FileName.FileNameWithoutExtension + ".usertasks");
 		}
 		
-		internal static void SaveUserTasks (IWorkspaceObject item)
+		internal static void SaveUserTasks (WorkspaceObject item)
 		{
 			string fileToSave = GetUserTasksFilename ((WorkspaceItem)item);
 			try {

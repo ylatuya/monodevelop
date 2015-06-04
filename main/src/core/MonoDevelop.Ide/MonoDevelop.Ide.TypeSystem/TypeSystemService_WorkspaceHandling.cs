@@ -105,6 +105,15 @@ namespace MonoDevelop.Ide.TypeSystem
 			return emptyWorkspace;
 		}
 
+		internal static MonoDevelopWorkspace GetWorkspace (WorkspaceId id)
+		{
+			foreach (var ws in Workspaces) {
+				if (ws.Id.Equals (id))
+					return ws;
+			}
+			return emptyWorkspace;
+		}
+
 		public static Microsoft.CodeAnalysis.Workspace Workspace {
 			get {
 				var solution = IdeApp.ProjectOperations?.CurrentSelectedSolution;
@@ -121,7 +130,7 @@ namespace MonoDevelop.Ide.TypeSystem
 				ws.UpdateFileContent (fileName, text);
 		}
 
-		internal static Microsoft.CodeAnalysis.Workspace Load (WorkspaceItem item, IProgressMonitor progressMonitor, bool loadInBackground = true)
+		internal static Microsoft.CodeAnalysis.Workspace Load (WorkspaceItem item, ProgressMonitor progressMonitor, bool loadInBackground = true)
 		{
 			using (Counters.ParserService.WorkspaceItemLoaded.BeginTiming ()) {
 				var workspace = new MonoDevelopWorkspace ();
@@ -135,7 +144,7 @@ namespace MonoDevelop.Ide.TypeSystem
 			}
 		}
 
-		static Task InternalLoad (MonoDevelop.Projects.WorkspaceItem item, IProgressMonitor progressMonitor, MonoDevelopWorkspace workspace, bool loadInBackground)
+		static Task InternalLoad (MonoDevelop.Projects.WorkspaceItem item, ProgressMonitor progressMonitor, MonoDevelopWorkspace workspace, bool loadInBackground)
 		{
 			var ws = item as MonoDevelop.Projects.Workspace;
 			if (ws != null) {
@@ -342,10 +351,12 @@ namespace MonoDevelop.Ide.TypeSystem
 
 		static void HandleActiveConfigurationChanged (object sender, EventArgs e)
 		{
-			foreach (var pr in IdeApp.ProjectOperations.CurrentSelectedSolution.GetAllProjects ()) {
-				var project = pr as DotNetProject;
-				if (project != null)
-					CheckProjectOutput (project, true);
+			if (IdeApp.ProjectOperations.CurrentSelectedSolution != null) {
+				foreach (var pr in IdeApp.ProjectOperations.CurrentSelectedSolution.GetAllProjects ()) {
+					var project = pr as DotNetProject;
+					if (project != null)
+						CheckProjectOutput (project, true);
+				}
 			}
 		}
 
@@ -353,7 +364,7 @@ namespace MonoDevelop.Ide.TypeSystem
 		{
 			if (project == null)
 				throw new ArgumentNullException ("project");
-			return project.GetProjectTypes ().Any (p => outputTrackedProjects.Contains (p, StringComparer.OrdinalIgnoreCase));
+			return project.GetTypeTags ().Any (p => outputTrackedProjects.Contains (p, StringComparer.OrdinalIgnoreCase));
 		}
 
 		static void CheckProjectOutput (DotNetProject project, bool autoUpdate)

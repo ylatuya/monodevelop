@@ -691,6 +691,7 @@ namespace MonoDevelop.AssemblyBrowser
 	
 		void SearchDoWork (object sender, DoWorkEventArgs e)
 		{
+			var publicOnly = PublicApiOnly;
 			BackgroundWorker worker = sender as BackgroundWorker;
 			try {
 				string pattern = e.Argument.ToString ().ToUpper ();
@@ -706,10 +707,14 @@ namespace MonoDevelop.AssemblyBrowser
 						foreach (var type in unit.UnresolvedAssembly.TopLevelTypeDefinitions) {
 							if (worker.CancellationPending)
 								return;
+							if (!type.IsPublic && publicOnly)
+								continue;
 							curType++;
 							foreach (var member in type.Members) {
 								if (worker.CancellationPending)
 									return;
+								if (!member.IsPublic && publicOnly)
+									continue;
 								if (member.Name.ToUpper ().Contains (pattern)) {
 									members.Add (member);
 								}
@@ -805,6 +810,8 @@ namespace MonoDevelop.AssemblyBrowser
 						foreach (var type in unit.UnresolvedAssembly.TopLevelTypeDefinitions) {
 							if (worker.CancellationPending)
 								return;
+							if (!type.IsPublic && publicOnly)
+								continue;
 							if (type.FullName.ToUpper ().IndexOf (pattern) >= 0)
 								typeList.Add (type);
 						}
@@ -829,6 +836,7 @@ namespace MonoDevelop.AssemblyBrowser
 			} finally {
 				Gtk.Application.Invoke (delegate {
 					IdeApp.Workbench.StatusBar.EndProgress ();
+					IdeApp.Workbench.StatusBar.ShowReady ();
 				});
 			}
 		}
@@ -1172,23 +1180,27 @@ namespace MonoDevelop.AssemblyBrowser
 		
 		internal void Open (string url, AssemblyLoader currentAssembly = null)
 		{
-			ITreeNavigator nav = SearchMember (url);
-			if (definitions == null) // we've been disposed
-				return;
-			if (nav != null)
-				return;
-			try {
-				if (currentAssembly != null) {
-					OpenFromAssembly (url, currentAssembly);
-				} else {
-					OpenFromAssemblyNames (url);
-				}
-			} catch (Exception e) {
-				LoggingService.LogError ("Error while opening the assembly browser with id:" + url, e); 
-			}
+			Task.WhenAll (this.definitions.Select (d => d.LoadingTask).ToArray ()).ContinueWith (d => {
+				Application.Invoke (delegate {
+					ITreeNavigator nav = SearchMember (url);
+					if (definitions == null) // we've been disposed
+						return;
+					if (nav != null)
+						return;
+					try {
+						if (currentAssembly != null) {
+							OpenFromAssembly (url, currentAssembly);
+						} else {
+							OpenFromAssemblyNames (url);
+						}
+					} catch (Exception e) {
+						LoggingService.LogError ("Error while opening the assembly browser with id:" + url, e);
+					}
+				});
+			});
 		}
 
-		void OpenFromAssembly (string url, AssemblyLoader currentAssembly)
+		async void OpenFromAssembly (string url, AssemblyLoader currentAssembly)
 		{
 			var cecilObject = loader.GetCecilObject (currentAssembly.UnresolvedAssembly);
 			if (cecilObject == null)
@@ -1210,7 +1222,6 @@ namespace MonoDevelop.AssemblyBrowser
 				}
 				var result = AddReferenceByFileName (fileName);
 				result.LoadingTask.ContinueWith (t2 => {
-					t2.Wait ();
 					if (definitions == null) // disposed
 						return;
 					Application.Invoke (delegate {
@@ -1436,7 +1447,7 @@ namespace MonoDevelop.AssemblyBrowser
 			result = new AssemblyLoader (this, fileName);
 			
 			definitions.Add (result);
-			result.LoadingTask.ContinueWith (delegate {
+			result.LoadingTask = result.LoadingTask.ContinueWith (task => {
 				Application.Invoke (delegate {
 					if (definitions == null)
 						return;
@@ -1454,8 +1465,9 @@ namespace MonoDevelop.AssemblyBrowser
 						LoggingService.LogError ("Error while adding assembly to the assembly list", e);
 					}
 				});
+				return task.Result;
 			}
-			);
+			                                                     );
 			return result;
 		}
 		

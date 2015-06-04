@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-using MonoDevelop.Core.ProgressMonitoring;
+using MonoDevelop.Core;
 using MonoDevelop.Ide.TypeSystem;
 using MonoDevelop.Projects;
 
@@ -35,7 +35,7 @@ namespace MonoDevelop.CSharpBinding
 	{
 		public static void LoadSolution (Solution solution)
 		{
-			using (var monitor = new NullProgressMonitor ())
+			using (var monitor = new ProgressMonitor ())
 				TypeSystemService.Load (solution, monitor, false);
 		}
 

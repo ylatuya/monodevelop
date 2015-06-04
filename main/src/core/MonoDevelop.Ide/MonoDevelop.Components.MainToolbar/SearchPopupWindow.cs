@@ -76,7 +76,7 @@ namespace MonoDevelop.Components.MainToolbar
 			{
 				throw new NotImplementedException ();
 			}
-			TooltipInformation ISearchDataSource.GetTooltip (int item)
+			Task<TooltipInformation> ISearchDataSource.GetTooltip (CancellationToken token, int item)
 			{
 				throw new NotImplementedException ();
 			}
@@ -256,11 +256,18 @@ namespace MonoDevelop.Components.MainToolbar
 				results.Clear ();
 				results.AddRange (incompleteResults);
 				topItem = null;
+
 				for (int i = 0; i < results.Count; i++) {
-					if (results[i].Item2.ItemCount == 0)
+					var tuple = results [i];
+					try {
+						if (tuple.Item2.ItemCount == 0)
+							continue;
+						if (topItem == null || topItem.DataSource.GetWeight (topItem.Item) < tuple.Item2.GetWeight (0))
+							topItem = new ItemIdentifier(tuple.Item1, tuple.Item2, 0);
+					} catch (Exception e) {
+						LoggingService.LogError ("Error while showing result " + i, e);
 						continue;
-					if (topItem == null || topItem.DataSource.GetWeight (topItem.Item) <  results[i].Item2.GetWeight (0)) 
-						topItem = new ItemIdentifier (results[i].Item1, results[i].Item2, 0);
+					}
 				}
 				selectedItem = topItem;
 
@@ -535,7 +542,7 @@ namespace MonoDevelop.Components.MainToolbar
 		}
 
 		CancellationTokenSource tooltipSrc = null;
-		void ShowTooltip ()
+		async void ShowTooltip ()
 		{
 			HideTooltip ();
 			var currentSelectedItem = selectedItem;
@@ -550,26 +557,20 @@ namespace MonoDevelop.Components.MainToolbar
 			tooltipSrc = new CancellationTokenSource ();
 			var token = tooltipSrc.Token;
 
-			ThreadPool.QueueUserWorkItem (delegate {
-				TooltipInformation tooltip;
-				try {
-					tooltip = currentSelectedItem.DataSource.GetTooltip (i);
-				} catch (Exception e) {
-					LoggingService.LogError ("Error while creating search popup window tooltip", e);
-					return;
-				}
-				if (tooltip == null || string.IsNullOrEmpty (tooltip.SignatureMarkup) || token.IsCancellationRequested)
-					return;
-				Application.Invoke (delegate {
-					if (token.IsCancellationRequested)
-						return;
-					declarationviewwindow.Clear ();
-					declarationviewwindow.AddOverload (tooltip);
-					declarationviewwindow.CurrentOverload = 0;
-					declarationViewTimer = GLib.Timeout.Add (250, DelayedTooltipShow);
-				});
-			});
-
+			TooltipInformation tooltip;
+			try {
+				tooltip = await currentSelectedItem.DataSource.GetTooltip (token, i);
+			} catch (Exception e) {
+				LoggingService.LogError ("Error while creating search popup window tooltip", e);
+				return;
+			}
+			if (tooltip == null || string.IsNullOrEmpty (tooltip.SignatureMarkup) || token.IsCancellationRequested)
+				return;
+			
+			declarationviewwindow.Clear ();
+			declarationviewwindow.AddOverload (tooltip);
+			declarationviewwindow.CurrentOverload = 0;
+			declarationViewTimer = GLib.Timeout.Add (250, DelayedTooltipShow);
 		}
 
 		bool DelayedTooltipShow ()

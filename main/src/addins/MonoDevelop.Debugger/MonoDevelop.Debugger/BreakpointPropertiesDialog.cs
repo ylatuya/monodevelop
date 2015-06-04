@@ -352,7 +352,7 @@ namespace MonoDevelop.Debugger
 
 			if (project != null) {
 				// Check the startup project of the solution too, since the current project may be a library
-				SolutionEntityItem startup = project.ParentSolution.StartupItem;
+				SolutionItem startup = project.ParentSolution.StartupItem;
 				entryConditionalExpression.Sensitive = DebuggingService.IsFeatureSupported (project, DebuggerFeatures.ConditionalBreakpoints) ||
 				DebuggingService.IsFeatureSupported (startup, DebuggerFeatures.ConditionalBreakpoints);
 

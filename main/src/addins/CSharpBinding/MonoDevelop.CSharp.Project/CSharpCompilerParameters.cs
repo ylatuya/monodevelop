@@ -33,6 +33,7 @@ using MonoDevelop.Core.Serialization;
 using MonoDevelop.Core;
 using Mono.Collections.Generic;
 using System.Linq;
+using MonoDevelop.Projects.Formats.MSBuild;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -52,7 +53,7 @@ namespace MonoDevelop.CSharp.Project
 	/// <summary>
 	/// This class handles project specific compiler parameters
 	/// </summary>
-	public class CSharpCompilerParameters: DotNetConfigurationParameters
+	public class CSharpCompilerParameters: DotNetCompilerParameters
 	{
 		// Configuration parameters
 		
@@ -92,77 +93,34 @@ namespace MonoDevelop.CSharp.Project
 		[ItemProperty("WarningsNotAsErrors", DefaultValue="")]
 		string warningsNotAsErrors = "";
 
-		[ItemProperty("DebugType", DefaultValue="")]
-		string debugType = "";
-		
-		#region Members required for backwards compatibility. Not used for anything else.
-		
-		[ItemProperty ("StartupObject", DefaultValue = null)]
-		internal string mainclass;
-		
-		[ProjectPathItemProperty ("ApplicationIcon", DefaultValue = null)]
-		internal string win32Icon;
-
-		[ProjectPathItemProperty ("Win32Resource", DefaultValue = null)]
-		internal string win32Resource;
-	
-		[ItemProperty ("CodePage", DefaultValue = null)]
-		internal string codePage;
-
-		[ItemProperty ("GenerateDocumentation", DefaultValue = null)]
-		bool? generateXmlDocumentation = null;
-		
-		#endregion
-		
-		
-		protected override void OnEndLoad ()
+		protected override void Write (IPropertySet pset, string toolsVersion)
 		{
-			base.OnEndLoad ();
-			
-			// Backwards compatibility. Move parameters to the project parameters object
-			if (ParentConfiguration != null && ParentConfiguration.ProjectParameters != null) {
-				CSharpProjectParameters cparams = (CSharpProjectParameters) ParentConfiguration.ProjectParameters;
-				if (win32Icon != null) {
-					cparams.Win32Icon = win32Icon;
-					win32Icon = null;
-				}
-				if (win32Resource != null) {
-					cparams.Win32Resource = win32Resource;
-					win32Resource = null;
-				}
-				if (mainclass != null) {
-					cparams.MainClass = mainclass;
-					mainclass = null;
-				}
-				if (!string.IsNullOrEmpty (codePage)) {
-					cparams.CodePage = int.Parse (codePage);
-					codePage = null;
-				}
-			}
+			pset.SetPropertyOrder ("DebugSymbols", "DebugType", "Optimize", "OutputPath", "DefineConstants", "ErrorReport", "WarningLevel", "TreatWarningsAsErrors", "DocumentationFile");
 
-			if (generateXmlDocumentation.HasValue && ParentConfiguration != null) {
-				if (generateXmlDocumentation.Value)
+			base.Write (pset, toolsVersion);
+		}
+
+		protected override void Read (IMSBuildEvaluatedPropertyCollection pset, string toolsVersion)
+		{
+			base.Read (pset, toolsVersion);
+
+			var prop = pset.GetProperty ("GenerateDocumentation");
+			if (prop != null && documentationFile != null) {
+				if (prop.GetValue<bool> ())
 					documentationFile = ParentConfiguration.CompiledOutputName.ChangeExtension (".xml");
 				else
 					documentationFile = null;
-				generateXmlDocumentation = null;
 			}
 		}
-	
 
 		public override Microsoft.CodeAnalysis.CompilationOptions CreateCompilationOptions ()
 		{
-			CSharpProjectParameters cparams;
-			if (ParentConfiguration != null && ParentConfiguration.ProjectParameters != null) {
-				cparams = (CSharpProjectParameters)ParentConfiguration.ProjectParameters;
-			} else {
-				cparams = new CSharpProjectParameters ();
-			}
+			var project = (CSharpProject) ParentProject;
 
 			return new Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions (
 				OutputKind.ConsoleApplication,
 				null,
-				cparams.MainClass,
+				project.MainClass,
 				"Script",
 				null,
 				OptimizationLevel.Debug,
@@ -212,7 +170,6 @@ namespace MonoDevelop.CSharp.Project
 
 #region Code Generation
 
-		[Obsolete]
 		public override void AddDefineSymbol (string symbol)
 		{
 			var symbols = new List<string> (GetDefineSymbols ());
@@ -225,7 +182,6 @@ namespace MonoDevelop.CSharp.Project
 			return definesymbols.Split (';', ',', ' ', '\t').Where (s => SyntaxFacts.IsValidIdentifier (s) && !string.IsNullOrWhiteSpace (s));
 		}
 
-		[Obsolete]
 		public override void RemoveDefineSymbol (string symbol)
 		{
 			var symbols = new List<string> (GetDefineSymbols ());
@@ -288,15 +244,6 @@ namespace MonoDevelop.CSharp.Project
 			}
 			set {
 				platformTarget = value ?? string.Empty;
-			}
-		}
-
-		public override string DebugType {
-			get {
-				return debugType;
-			}
-			set {
-				debugType = value;
 			}
 		}
 

@@ -28,6 +28,7 @@ using System;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Ide;
 using MonoDevelop.AspNet.Projects;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.AspNet.Commands
 {
@@ -41,7 +42,7 @@ namespace MonoDevelop.AspNet.Commands
 		protected override void Run ()
 		{
 			var doc = IdeApp.Workbench.ActiveDocument;
-			var project = (AspNetAppProject)doc.Project;
+			var project = (DotNetProject)doc.Project;
 
 			var method = MethodDeclarationAtCaret.Create (doc);
 			string controllerName = method.GetParentMvcControllerName ();
@@ -50,7 +51,7 @@ namespace MonoDevelop.AspNet.Commands
 			AddView (project, path, method.Name);
 		}
 
-		public static void AddView (AspNetAppProject project, string path, string name)
+		public static void AddView (DotNetProject project, string path, string name)
 		{
 			var provider = project.LanguageBinding.GetCodeDomProvider ();
 			if (provider == null)
@@ -121,7 +122,7 @@ namespace MonoDevelop.AspNet.Commands
 
 			if (System.IO.File.Exists (outputFile)) {
 				project.AddFile (outputFile);
-				IdeApp.ProjectOperations.Save (project);
+				IdeApp.ProjectOperations.SaveAsync (project);
 			}
 		}
 	}

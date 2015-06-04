@@ -41,8 +41,12 @@ namespace MonoDevelop.AspNet.Commands
 		protected override void Update (CommandInfo info)
 		{
 			var doc = IdeApp.Workbench.ActiveDocument;
-			AspNetAppProject project;
-			if (doc == null || (project = doc.Project as AspNetAppProject) == null || !project.IsAspMvcProject) {
+			if (doc == null || doc.Project == null) {
+				info.Enabled = info.Visible = false;
+				return;
+			}
+			var aspFlavor = doc.Project.GetService<AspNetAppProjectFlavor> ();
+			if (aspFlavor == null || !aspFlavor.IsAspMvcProject) {
 				info.Enabled = info.Visible = false;
 				return;
 			}

@@ -247,7 +247,7 @@ namespace MonoDevelop.AspNet.Razor
 			// Try to create host using web.config file
 			var webConfigMap = new WebConfigurationFileMap ();
 			if (context.AspProject != null) {
-				var vdm = new VirtualDirectoryMapping (context.AspProject.BaseDirectory.Combine ("Views"), true, "web.config");
+				var vdm = new VirtualDirectoryMapping (context.AspProject.Project.BaseDirectory.Combine ("Views"), true, "web.config");
 			webConfigMap.VirtualDirectories.Add ("/", vdm);
 			}
 			Configuration configuration;

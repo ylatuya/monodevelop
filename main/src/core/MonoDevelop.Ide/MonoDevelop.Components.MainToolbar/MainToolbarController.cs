@@ -53,7 +53,7 @@ namespace MonoDevelop.Components.MainToolbar
 			get { return ToolbarView.StatusBar; }
 		}
 
-		readonly PropertyWrapper<bool> searchForMembers = new PropertyWrapper<bool> ("MainToolbar.Search.IncludeMembers", true);
+		readonly ConfigurationProperty<bool> searchForMembers = ConfigurationProperty.Create ("MainToolbar.Search.IncludeMembers", true);
 		bool SearchForMembers {
 			get { return searchForMembers; }
 			set { searchForMembers.Value = value; }
@@ -63,7 +63,7 @@ namespace MonoDevelop.Components.MainToolbar
 		int ignoreConfigurationChangedCount, ignoreRuntimeChangedCount;
 		Solution currentSolution;
 		bool settingGlobalConfig;
-		SolutionEntityItem currentStartupProject;
+		SolutionItem currentStartupProject;
 		EventHandler executionTargetsChanged;
 
 		public MainToolbarController (IMainToolbarView toolbarView)
@@ -96,7 +96,7 @@ namespace MonoDevelop.Components.MainToolbar
 				UpdateSearchEntryLabel ();
 			};
 
-			executionTargetsChanged = DispatchService.GuiDispatch (new EventHandler ((sender, e) => UpdateCombos ()));
+			executionTargetsChanged = (sender, e) => UpdateCombos ();
 
 			IdeApp.Workspace.LastWorkspaceItemClosed += (sender, e) => StatusBar.ShowReady ();
 			IdeApp.Workspace.ActiveConfigurationChanged += (sender, e) => UpdateCombos ();
@@ -576,6 +576,7 @@ namespace MonoDevelop.Components.MainToolbar
 
 		public void FocusSearchBar ()
 		{
+			IdeApp.Workbench.Present ();
 			ToolbarView.FocusSearchBar ();
 		}
 

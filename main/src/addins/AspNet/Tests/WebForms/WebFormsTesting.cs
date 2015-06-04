@@ -52,7 +52,7 @@ namespace MonoDevelop.AspNet.Tests.WebForms
 			var ctx = textEditorCompletion.GetCodeCompletionContext (sev);
 
 			if (isCtrlSpace)
-				return textEditorCompletion.CodeCompletionCommand (ctx) as CompletionDataList;
+				return textEditorCompletion.CodeCompletionCommand (ctx).Result as CompletionDataList;
 			else {
 				var task = textEditorCompletion.HandleCodeCompletionAsync (ctx, editorText [cursorPosition - 1]);
 				if (task != null) {
@@ -75,9 +75,9 @@ namespace MonoDevelop.AspNet.Tests.WebForms
 				cursorPosition = endPos - 1;
 			}
 
-			var project = new AspNetAppProject ("C#");
-			project.References.Add (new ProjectReference (ReferenceType.Package, "System"));
-			project.References.Add (new ProjectReference (ReferenceType.Package, "System.Web"));
+			var project = Services.ProjectService.CreateDotNetProject ("C#");
+			project.References.Add (ProjectReference.CreateAssemblyReference ("System"));
+			project.References.Add (ProjectReference.CreateAssemblyReference ("System.Web"));
 			project.FileName = UnitTests.TestBase.GetTempFile (".csproj");
 			string file = UnitTests.TestBase.GetTempFile (extension);
 			project.AddFile (file);

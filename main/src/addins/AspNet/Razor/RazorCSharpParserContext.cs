@@ -52,8 +52,8 @@ namespace MonoDevelop.AspNet.Razor
 			get { return parseOptions.Project as DotNetProject; }
 		}
 
-		public AspNetAppProject AspProject {
-			get { return parseOptions.Project as AspNetAppProject; }
+		public AspNetAppProjectFlavor AspProject {
+			get { return parseOptions.Project.As<AspNetAppProjectFlavor> (); }
 		}
 
 		public string FileName {

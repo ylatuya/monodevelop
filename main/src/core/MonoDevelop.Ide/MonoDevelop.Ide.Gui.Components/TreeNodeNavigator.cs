@@ -369,6 +369,11 @@ namespace MonoDevelop.Ide.Gui.Components
 				}
 			}
 			
+			public T GetParentDataItem<T> (bool includeCurrent)
+			{
+				return (T)GetParentDataItem (typeof(T), includeCurrent);
+			}
+
 			public object GetParentDataItem (Type type, bool includeCurrent)
 			{
 				if (includeCurrent && type.IsInstanceOfType (DataItem))

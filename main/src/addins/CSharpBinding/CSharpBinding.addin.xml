@@ -7,8 +7,6 @@
 
 	<!-- Extensions -->
 
-	<ConditionType id="MSBuildTargetIsAvailable" type="MonoDevelop.Projects.Formats.MSBuild.TargetsAvailableCondition" />
-
 	<Extension path = "/MonoDevelop/Ide/Commands">
 		<Command id = "MonoDevelop.CodeGeneration.CodeGenerationCommands.ShowCodeGenerationWindow"
 				_label = "S_how Code Generation Window"
@@ -41,21 +39,17 @@
 		
 	
 	<Extension path = "/MonoDevelop/ProjectModel/MSBuildItemTypes">
-		<DotNetProject
+		<DotNetProjectType
 			language="C#"
 			extension="csproj"
 			guid="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-			import="$(MSBuildBinPath)\Microsoft.CSharp.targets"
-			resourceHandler="MonoDevelop.CSharp.Project.CSharpResourceIdBuilder"
+			type="MonoDevelop.CSharp.Project.CSharpProject"
 			/>
+	</Extension>
+
+	<Extension path = "/MonoDevelop/ProjectModel/ProjectModelExtensions">
 		<Condition id="MSBuildTargetIsAvailable" target="$(MSBuildExtensionsPath)\Microsoft\Portable\v4.0\Microsoft.Portable.CSharp.targets">
-			<DotNetProjectSubtype
-				guid="{786C830F-07A1-408B-BD7F-6EE04809D6DB}"
-				type="MonoDevelop.Projects.PortableDotNetProject"
-				useXBuild="true">
-				<AddImport language="C#" projects="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-				<RemoveImport language="C#" projects="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-			</DotNetProjectSubtype>
+			<ProjectFlavor guid="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" type="MonoDevelop.CSharp.Project.PortableCSharpProjectFlavor" alias="C#PortableLibrary"/>
 		</Condition>
 	</Extension>
 
@@ -83,7 +77,7 @@
 	</Extension>
 
 	<Extension path = "/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Build/General">
-		<Condition id="ActiveLanguage" value="C#">
+		<Condition id="ProjectTypeId" value="C#">
 			<Panel id = "CSharpCompilerOptionsPanel"
 			             _label = "C#"
 			             class = "MonoDevelop.CSharp.Project.CompilerOptionsPanel"/>
@@ -91,7 +85,7 @@
 	</Extension>
 
 	<Extension path = "/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Build/Compiler">
-		<Condition id="ActiveLanguage" value="C#">
+		<Condition id="ProjectTypeId" value="C#">
 			<Panel id = "CSharpCodeGenerationPanel"
 			             _label = "Compiler"
 			             class = "MonoDevelop.CSharp.Project.CodeGenerationPanel"/>
@@ -99,19 +93,17 @@
 	</Extension>
 
 	<Extension path = "/MonoDevelop/ProjectModel/LanguageBindings">
-		<LanguageBinding id    = "CSharp"
-		                 supportedextensions = ".cs"
-		                 class = "MonoDevelop.CSharp.CSharpLanguageBinding" />
+		<LanguageBinding id = "C#"
+		                 extensions = ".cs"
+		                 singleLineCommentTag = "//"
+		                 blockCommentStartTag = "/*"
+		                 blockCommentEndTag = "*/" 
+		                 codeDomType = "MonoDevelop.CSharp.CSharpEnhancedCodeProvider" />
 	</Extension>
 
 	<Extension path = "/MonoDevelop/Ide/ReferenceFinder">
 		<ReferenceFinder supportedmimetypes = "text/x-csharp"
 		                 class = "MonoDevelop.CSharp.Refactoring.CSharpReferenceFinder" />
-	</Extension>
-
-	<Extension path = "/MonoDevelop/ProjectModel/SerializableClasses">
-		<DataType class = "MonoDevelop.CSharp.Project.CSharpCompilerParameters" />
-		<DataType class = "MonoDevelop.CSharp.Project.CSharpProjectParameters" />
 	</Extension>
 
 	<Extension path = "/MonoDevelop/Ide/TextEditorExtensions">

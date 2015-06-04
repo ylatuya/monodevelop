@@ -29,6 +29,11 @@ using System.Text;
 using Gtk;
 using MonoDevelop.Components.AutoTest.Operations;
 using MonoDevelop.Components.AutoTest.Results;
+using System.Linq;
+
+#if MAC
+using AppKit;
+#endif
 
 namespace MonoDevelop.Components.AutoTest
 {
@@ -44,7 +49,7 @@ namespace MonoDevelop.Components.AutoTest
 			AppResult firstChild = null, lastChild = null;
 
 			foreach (var child in container.Children) {
-				AppResult node = new GtkWidgetResult (child);
+				AppResult node = new GtkWidgetResult (child) { SourceQuery = ToString () };
 				resultSet.Add (node);
 
 				// FIXME: Do we need to recreate the tree structure of the AppResults?
@@ -66,16 +71,46 @@ namespace MonoDevelop.Components.AutoTest
 			return firstChild;
 		}
 
-		List<AppResult> ResultSetFromWindowList (Gtk.Window[] windows)
+#if MAC
+		AppResult GenerateChildrenForNSView (NSView view, List<AppResult> resultSet)
 		{
+			AppResult firstChild = null, lastChild = null;
+
+			foreach (var child in view.Subviews) {
+				AppResult node = new NSObjectResult (child) { SourceQuery = ToString () };
+				resultSet.Add (node);
+
+				if (firstChild == null) {
+					firstChild = node;
+					lastChild = node;
+				} else {
+					lastChild.NextSibling = node;
+					node.PreviousSibling = lastChild;
+					lastChild = node;
+				}
+
+				if (child.Subviews != null) {
+					AppResult children = GenerateChildrenForNSView (child, resultSet);
+					node.FirstChild = children;
+				}
+			}
+
+			return firstChild;
+		}
+#endif
+
+		List<AppResult> ResultSetFromWindows ()
+		{
+			Gtk.Window[] windows = Gtk.Window.ListToplevels ();
+
 			// null for AppResult signifies root node
-			rootNode = new GtkWidgetResult (null);
+			rootNode = new GtkWidgetResult (null) { SourceQuery = ToString () };
 			List<AppResult> fullResultSet = new List<AppResult> ();
 
 			// Build the tree and full result set recursively
 			AppResult lastChild = null;
 			foreach (var window in windows) {
-				AppResult node = new GtkWidgetResult (window);
+				AppResult node = new GtkWidgetResult (window) { SourceQuery = ToString () };
 				fullResultSet.Add (node);
 
 				if (rootNode.FirstChild == null) {
@@ -93,6 +128,80 @@ namespace MonoDevelop.Components.AutoTest
 				node.FirstChild = children;
 			}
 
+#if MAC
+			NSWindow[] nswindows = NSApplication.SharedApplication.Windows;
+			if (nswindows != null) {
+				foreach (var window in nswindows) {
+					AppResult node = new NSObjectResult (window) { SourceQuery = ToString () };
+					AppResult nsWindowLastNode = null;
+					fullResultSet.Add (node);
+
+					if (rootNode.FirstChild == null) {
+						rootNode.FirstChild = node;
+						lastChild = node;
+					} else {
+						lastChild.NextSibling = node;
+						node.PreviousSibling = lastChild;
+						lastChild = node;
+					}
+
+					foreach (var child in window.ContentView.Subviews) {
+						AppResult childNode = new NSObjectResult (child) { SourceQuery = ToString () };
+						fullResultSet.Add (childNode);
+
+						if (node.FirstChild == null) {
+							node.FirstChild = childNode;
+							nsWindowLastNode = childNode;
+						} else {
+							nsWindowLastNode.NextSibling = childNode;
+							childNode.PreviousSibling = nsWindowLastNode;
+							nsWindowLastNode = childNode;
+						}
+
+						if (child.Subviews != null) {
+							AppResult children = GenerateChildrenForNSView (child, fullResultSet);
+							childNode.FirstChild = children;
+						}
+					}
+
+					NSToolbar toolbar = window.Toolbar;
+					AppResult toolbarNode = new NSObjectResult (toolbar) { SourceQuery = ToString () };
+
+					if (node.FirstChild == null) {
+						node.FirstChild = toolbarNode;
+						nsWindowLastNode = toolbarNode;
+					} else {
+						nsWindowLastNode.NextSibling = toolbarNode;
+						toolbarNode.PreviousSibling = nsWindowLastNode;
+						nsWindowLastNode = toolbarNode;
+					}
+
+					if (toolbar != null) {
+						AppResult lastItemNode = null;
+						foreach (var item in toolbar.Items) {
+							if (item.View != null) {
+								AppResult itemNode = new NSObjectResult (item.View) { SourceQuery = ToString () };
+								fullResultSet.Add (itemNode);
+
+								if (toolbarNode.FirstChild == null) {
+									toolbarNode.FirstChild = itemNode;
+									lastItemNode = itemNode;
+								} else {
+									lastItemNode.NextSibling = itemNode;
+									itemNode.PreviousSibling = lastItemNode;
+									lastItemNode = itemNode;
+								}
+
+								if (item.View.Subviews != null) {
+									AppResult children = GenerateChildrenForNSView (item.View, fullResultSet);
+									itemNode.FirstChild = children;
+								}
+							}
+						}
+					}
+				}
+			}
+#endif
 			return fullResultSet;
 		}
 
@@ -102,7 +211,8 @@ namespace MonoDevelop.Components.AutoTest
 
 		public AppResult[] Execute ()
 		{
-			List<AppResult> resultSet = ResultSetFromWindowList (Gtk.Window.ListToplevels ());
+			List<AppResult> resultSet = ResultSetFromWindows ();
+
 			foreach (var subquery in operations) {
 				// Some subqueries can select different results
 				resultSet = subquery.Execute (resultSet);
@@ -124,40 +234,40 @@ namespace MonoDevelop.Components.AutoTest
 			return this;
 		}
 
-		public AppQuery CheckType (Type desiredType)
+		public AppQuery CheckType (Type desiredType, string name = null)
 		{
-			operations.Add (new TypeOperation (desiredType));
+			operations.Add (new TypeOperation (desiredType, name));
 			return this;
 		}
 
 		public AppQuery Button ()
 		{
-			return CheckType (typeof(Button));
+			return CheckType (typeof(Button), "Button");
 		}
 
 		public AppQuery Textfield ()
 		{
-			return CheckType (typeof(Entry));
+			return CheckType (typeof(Entry), "Textfield");
 		}
 
 		public AppQuery CheckButton ()
 		{
-			return CheckType (typeof(CheckButton));
+			return CheckType (typeof(CheckButton), "CheckButton");
 		}
 
 		public AppQuery RadioButton ()
 		{
-			return CheckType (typeof(RadioButton));
+			return CheckType (typeof(RadioButton), "RadioButton");
 		}
 
 		public AppQuery TreeView ()
 		{
-			return CheckType (typeof(TreeView));
+			return CheckType (typeof(TreeView), "TreeView");
 		}
 
 		public AppQuery Window ()
 		{
-			return CheckType (typeof(Window));
+			return CheckType (typeof(Window), "Window");
 		}
 
 		public AppQuery Text (string text)
@@ -172,7 +282,7 @@ namespace MonoDevelop.Components.AutoTest
 			return this;
 		}
 
-		public AppQuery Model (string column)
+		public AppQuery Model (string column = null)
 		{
 			operations.Add (new ModelOperation (column));
 			return this;
@@ -214,14 +324,16 @@ namespace MonoDevelop.Components.AutoTest
 			return this;
 		}
 
+		public AppQuery Children ()
+		{
+			operations.Add (new ChildrenOperation ());
+			return this;
+		}
+
 		public override string ToString ()
 		{
-			StringBuilder builder = new StringBuilder ();
-			foreach (var subquery in operations) {
-				builder.Append (subquery.ToString ());
-			}
-
-			return builder.ToString ();
+			var operationChain = string.Join (".", operations.Select (x => x.ToString ()));
+			return string.Format ("c => c.{0};", operationChain);
 		}		
 	}
 }

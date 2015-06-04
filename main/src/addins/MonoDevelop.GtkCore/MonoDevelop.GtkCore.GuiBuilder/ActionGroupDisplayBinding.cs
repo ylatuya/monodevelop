@@ -36,6 +36,7 @@ using MonoDevelop.Projects;
 using MonoDevelop.GtkCore.Dialogs;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.TypeSystem;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -94,7 +95,7 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 		
 		Stetic.ActionGroupInfo GetActionGroup (string file)
 		{
-			var project = IdeApp.Workspace.GetProjectContainingFile (file);
+			var project = IdeApp.Workspace.GetProjectsContainingFile (file).FirstOrDefault ();
 			if (!GtkDesignInfo.HasDesignedObjects (project))
 				return null;
 				

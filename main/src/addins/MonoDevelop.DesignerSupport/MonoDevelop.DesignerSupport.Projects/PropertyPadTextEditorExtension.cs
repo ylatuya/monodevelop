@@ -63,7 +63,7 @@ namespace MonoDevelop.DesignerSupport.Projects
 		public void OnChanged (object obj)
 		{
 			if (DocumentContext.HasProject)
-				IdeApp.ProjectOperations.Save (DocumentContext.Project);
+				IdeApp.ProjectOperations.SaveAsync (DocumentContext.Project);
 		}
 	}
 }

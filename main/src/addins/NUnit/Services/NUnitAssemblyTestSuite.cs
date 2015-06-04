@@ -45,6 +45,7 @@ using MonoDevelop.Ide;
 using System.Xml.Linq;
 using System.Linq;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace MonoDevelop.NUnit
 {
@@ -69,7 +70,7 @@ namespace MonoDevelop.NUnit
 		{
 		}
 
-		public NUnitAssemblyTestSuite (string name, SolutionItem ownerSolutionItem): base (name, ownerSolutionItem)
+		public NUnitAssemblyTestSuite (string name, WorkspaceObject ownerSolutionItem): base (name, ownerSolutionItem)
 		{
 		}
 		
@@ -145,10 +146,9 @@ namespace MonoDevelop.NUnit
 			}
 		}
 
-		public override IAsyncOperation Refresh ()
+		public override Task Refresh (CancellationToken ct)
 		{
-			AsyncOperation oper = new AsyncOperation ();
-			System.Threading.ThreadPool.QueueUserWorkItem (delegate {
+			return Task.Run (delegate {
 				lock (locker) {
 					try {
 						while (Status == TestStatus.Loading) {
@@ -162,13 +162,10 @@ namespace MonoDevelop.NUnit
 								Monitor.Wait (locker);
 							}
 						}
-						oper.SetCompleted (true);
 					} catch {
-						oper.SetCompleted (false);
 					}
 				}
 			});
-			return oper;
 		}
 		
 		DateTime GetAssemblyTime ()
@@ -396,15 +393,6 @@ namespace MonoDevelop.NUnit
 				} else {
 					filter = new TestNameFilter (test.TestId);
 				}
-			} else {
-				NUnitCategoryOptions categoryOptions = (NUnitCategoryOptions) test.GetOptions (typeof(NUnitCategoryOptions));
-				if (categoryOptions.EnableFilter && categoryOptions.Categories.Count > 0) {
-					string[] cats = new string [categoryOptions.Categories.Count];
-					categoryOptions.Categories.CopyTo (cats, 0);
-					filter = new CategoryFilter (cats);
-					if (categoryOptions.Exclude)
-						filter = new NotFilter (filter);
-				}
 			}
 
 			RunData rd = new RunData ();
@@ -509,7 +497,7 @@ namespace MonoDevelop.NUnit
 					testContext.Monitor.CancelRequested += p.Cancel;
 					if (testContext.Monitor.IsCancelRequested)
 						p.Cancel ();
-					p.WaitForCompleted ();
+					p.Task.Wait ();
 					
 					if (new FileInfo (outFile).Length == 0)
 						throw new Exception ("Command failed");
@@ -530,8 +518,8 @@ namespace MonoDevelop.NUnit
 					var root = doc.Root.Elements ("test-suite").FirstOrDefault ();
 					if (root != null) {
 						cons.SetDone ();
-						var ot = cons.Out.ReadToEnd ();
-						var et = cons.Error.ReadToEnd ();
+						var ot = cons.OutReader.ReadToEnd ();
+						var et = cons.ErrorReader.ReadToEnd ();
 						testContext.Monitor.WriteGlobalLog (ot);
 						if (!string.IsNullOrEmpty (et)) {
 							testContext.Monitor.WriteGlobalLog ("ERROR:\n");
@@ -548,8 +536,8 @@ namespace MonoDevelop.NUnit
 				throw new Exception ("Test results could not be parsed.");
 			} catch (Exception ex) {
 				cons.SetDone ();
-				var ot = cons.Out.ReadToEnd ();
-				var et = cons.Error.ReadToEnd ();
+				var ot = cons.OutReader.ReadToEnd ();
+				var et = cons.ErrorReader.ReadToEnd ();
 				testContext.Monitor.WriteGlobalLog (ot);
 				if (!string.IsNullOrEmpty (et)) {
 					testContext.Monitor.WriteGlobalLog ("ERROR:\n");

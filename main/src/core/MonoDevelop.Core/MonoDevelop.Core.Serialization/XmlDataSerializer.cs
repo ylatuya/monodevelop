@@ -39,6 +39,8 @@ namespace MonoDevelop.Core.Serialization
 		
 		public bool StoreAllInElements { get; set; }
 		
+		public string Namespace { get; set; }
+
 		public XmlDataSerializer (DataContext ctx) : this (new DataSerializer (ctx))
 		{	
 		}
@@ -81,6 +83,7 @@ namespace MonoDevelop.Core.Serialization
 		{
 			DataNode data = serializer.Serialize (obj, type);
 			XmlConfigurationWriter cw = new XmlConfigurationWriter ();
+			cw.Namespace = Namespace;
 			cw.StoreAllInElements = StoreAllInElements;
 			cw.Write (writer, data);
 		}
@@ -115,13 +118,15 @@ namespace MonoDevelop.Core.Serialization
 		public bool StoreAllInElements = false;
 		
 		public string[] StoreInElementExceptions { get; set; }
+
+		public string Namespace { get; set; }
 		
 		public void Write (XmlWriter writer, DataNode data)
 		{
 			if (data is DataValue)
 				writer.WriteElementString (data.Name, ((DataValue)data).Value);
 			else if (data is DataItem) {
-				writer.WriteStartElement (data.Name);
+				writer.WriteStartElement (data.Name, Namespace);
 				WriteAttributes (writer, (DataItem) data);
 				WriteChildren (writer, (DataItem) data);
 				writer.WriteEndElement ();
@@ -130,7 +135,7 @@ namespace MonoDevelop.Core.Serialization
 		
 		public XmlElement Write (XmlDocument doc, DataNode data)
 		{
-			XmlElement elem = doc.CreateElement (data.Name);
+			XmlElement elem = doc.CreateElement (data.Name, Namespace);
 			if (data is DataValue) {
 				elem.InnerText = ((DataValue)data).Value;
 			}

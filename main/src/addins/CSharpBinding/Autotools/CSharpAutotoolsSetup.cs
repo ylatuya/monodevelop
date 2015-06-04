@@ -43,7 +43,7 @@ namespace CSharpBinding.Autotools
 			if ( config == null ) return "";
 			
 			CSharpCompilerParameters parameters = (CSharpCompilerParameters) config.CompilationParameters;
-			CSharpProjectParameters projectParameters = (CSharpProjectParameters) config.ProjectParameters;
+			ICSharpProject projectParameters = config.ParentItem as ICSharpProject;
 			
 			StringWriter writer = new StringWriter();
 			
@@ -63,7 +63,7 @@ namespace CSharpBinding.Autotools
 				writer.Write(" \"-nowarn:" + parameters.NoWarnings + '"');
 			}
 
-			if(config.DebugMode) {
+			if(config.DebugSymbols) {
 				writer.Write(" -debug");
 				//Check whether we have a DEBUG define
 				bool hasDebugDefine = false;

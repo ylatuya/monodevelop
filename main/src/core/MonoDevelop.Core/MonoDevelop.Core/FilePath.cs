@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Linq;
 
@@ -192,6 +193,11 @@ namespace MonoDevelop.Core
 			return new FilePath (Path.Combine (fileName, Path.Combine (paths)));
 		}
 		
+		public Task DeleteAsync ()
+		{
+			return Task.Run ((System.Action)Delete);
+		}
+
 		public void Delete ()
 		{
 			// Ensure that this file/directory and all children are writable

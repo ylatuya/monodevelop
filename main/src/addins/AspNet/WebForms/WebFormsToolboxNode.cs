@@ -156,7 +156,7 @@ namespace MonoDevelop.AspNet.WebForms
 		
 		public bool IsCompatibleWith (MonoDevelop.Ide.Gui.Document document)
 		{
-			switch (AspNetAppProject.DetermineWebSubtype (document.FileName)) {
+			switch (AspNetAppProjectFlavor.DetermineWebSubtype (document.FileName)) {
 			case WebSubtype.WebForm:
 			case WebSubtype.MasterPage:
 			case WebSubtype.WebControl:
@@ -166,7 +166,7 @@ namespace MonoDevelop.AspNet.WebForms
 			}
 			
 			var clrVersion = ClrVersion.Net_2_0;
-			var aspProj = document.Project as AspNetAppProject;
+			var aspProj = document.Project as DotNetProject;
 			if (aspProj != null && aspProj.TargetFramework.ClrVersion != ClrVersion.Default)
 				clrVersion = aspProj.TargetFramework.ClrVersion;
 			

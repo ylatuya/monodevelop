@@ -52,12 +52,11 @@ namespace MonoDevelop.SourceEditor
 		static FileRegistry ()
 		{
 			fileSystemWatcher = new FileSystemWatcher ();
-			fileSystemWatcher.Created += (FileSystemEventHandler)DispatchService.GuiDispatch (new FileSystemEventHandler (OnFileChanged));
-			fileSystemWatcher.Changed += (FileSystemEventHandler)DispatchService.GuiDispatch (new FileSystemEventHandler (OnFileChanged));
+			fileSystemWatcher.Created += (s,e) => Runtime.RunInMainThread (() => OnFileChanged (s,e));
+			fileSystemWatcher.Changed += (s,e) => Runtime.RunInMainThread (() => OnFileChanged (s,e));
 
-			var fileChanged = DispatchService.GuiDispatch (new EventHandler<FileEventArgs> (HandleFileServiceChange));
-			FileService.FileCreated += fileChanged;
-			FileService.FileChanged += fileChanged;
+			FileService.FileCreated += HandleFileServiceChange;
+			FileService.FileChanged += HandleFileServiceChange;
 
 		}
 
@@ -80,7 +79,7 @@ namespace MonoDevelop.SourceEditor
 		static void HandleFileServiceChange (object sender, FileEventArgs e)
 		{
 			// The Ide.Document generates a file service changed event this needs to be skipped.
-			if (!TypeSystemService.TrackFileChanges)
+			if (!TypeSystemService.TrackFileChanges || SuspendFileWatch)
 				return;
 			bool foundOneChange = false;
 			foreach (var file in e) {

@@ -2676,9 +2676,7 @@
     <Compile Include="MonoDevelop.Ide.ExternalTools\ExternalToolPanel.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Ide.ExternalTools.ExternalToolPanelWidget.cs" />
     <Compile Include="MonoDevelop.Ide.Gui\MonoDevelopStatusBar.cs" />
-    <Compile Include="MonoDevelop.Ide.Gui\DocumentSwitcher.cs">
-      <DependentUpon>GuiSyncContext.cs</DependentUpon>
-    </Compile>
+    <Compile Include="MonoDevelop.Ide.Gui\DocumentSwitcher.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.OptionPanels\IDEStyleOptionsPanel.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Ide.Gui.OptionPanels.IDEStyleOptionsPanelWidget.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Content\IZoomable.cs" />
@@ -2780,9 +2778,7 @@
     <Compile Include="MonoDevelop.Ide.Extensions\IOpenFileDialogHandler.cs" />
     <Compile Include="MonoDevelop.Ide.Extensions\IAddFileDialogHandler.cs" />
     <Compile Include="MonoDevelop.Ide.Extensions\TextEditorExtensionNode.cs" />
-    <Compile Include="MonoDevelop.Ide.Gui\DockItemToolbarLoader.cs">
-      <DependentUpon>DisplayBindingService.cs</DependentUpon>
-    </Compile>
+    <Compile Include="MonoDevelop.Ide.Gui\DockItemToolbarLoader.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Components\LogView.cs" />
     <Compile Include="MonoDevelop.Ide.Gui\WorkbenchContext.cs" />
     <Compile Include="MonoDevelop.Ide.Extensions\LayoutExtensionNode.cs" />
@@ -3127,8 +3123,6 @@
     <Compile Include="gtk-gui\MonoDevelop.Ide.Projects.ProjectSelectorDialog.cs" />
     <Compile Include="MonoDevelop.Ide.Projects\ImportProjectPolicyDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Ide.Projects.ImportProjectPolicyDialog.cs" />
-    <Compile Include="MonoDevelop.Ide.ProgressMonitoring\ProgressBarMonitor.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Ide.ProgressMonitoring.ProgressBarMonitor.cs" />
     <Compile Include="MonoDevelop.Ide.Projects\AddExternalFileDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Ide.Projects.AddExternalFileDialog.cs" />
     <Compile Include="MonoDevelop.Ide.Gui.Components\PriorityList.cs" />
@@ -3268,7 +3262,6 @@
     <Compile Include="MonoDevelop.Components.MainToolbar\MainStatusBarContextImpl.cs" />
     <Compile Include="MonoDevelop.Components.Commands\ICommandDelegator.cs" />
     <Compile Include="MonoDevelop.Ide.CustomTools\ResXFileCodeGenerator.cs" />
-    <Compile Include="MonoDevelop.Ide.CustomTools\ThreadAsyncOperation.cs" />
     <Compile Include="MonoDevelop.Components\CellRendererImage.cs" />
     <Compile Include="MonoDevelop.Components\ImageView.cs" />
     <Compile Include="MonoDevelop.Ide.Projects\IdeFileSystemExtensionExtension.cs" />
@@ -3491,6 +3484,12 @@
     <Compile Include="MonoDevelop.Ide.Editor.Extension\AbstractBraceMatcher.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension\BraceMatcherTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension\BraceMatchingResult.cs" />
+    <Compile Include="MonoDevelop.Components.AutoTest.Operations\ChildrenOperation.cs" />
+    <Compile Include="MonoDevelop.Components.AutoTest.Results\NSObjectResult.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem\MonoDevelopTemporaryStorageServiceFactory.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem\WorkspaceId.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem\MonoDevelopPersistentStorageServiceFactory.cs" />
+    <Compile Include="MonoDevelop.Ide.TypeSystem\SolutionSizeTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile.am" />

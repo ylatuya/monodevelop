@@ -101,10 +101,8 @@ namespace MonoDevelop.Ide.CodeCompletion
 			set;
 		}
 
-		public readonly static PropertyWrapper<bool> EnableCompletionCategoryMode = PropertyService.Wrap("EnableCompletionCategoryMode", false);
-
 		public bool InCategoryMode {
-			get { return EnableCompletionCategoryMode && categories.Count > 1; }
+			get { return IdeApp.Preferences.EnableCompletionCategoryMode && categories.Count > 1; }
 		}
 
 		internal void UpdateCategoryMode ()
@@ -427,7 +425,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 				int height = alloc.Height;
 				context.Rectangle (args.Area.X, args.Area.Y, args.Area.Width, args.Area.Height);
 				var backgroundColor = ColorScheme.CompletionWindow.Color;
-				var textColor = ColorScheme.CompletionText.Foreground;
+				var textColor = ColorScheme.GetForeground (ColorScheme.CompletionText);
 				context.SetSourceColor (backgroundColor);
 				context.Fill ();
 				int xpos = iconTextSpacing;
@@ -508,7 +506,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 								} else {
 									stringStyle= ColorScheme.CompletionMatchingSubstring;
 								}
-								var highlightColor = (Cairo.Color)stringStyle.Foreground;
+								var highlightColor = (Cairo.Color)ColorScheme.GetForeground (stringStyle);
 								var fg = new AttrForeground ((ushort)(highlightColor.R * ushort.MaxValue), (ushort)(highlightColor.G * ushort.MaxValue), (ushort)(highlightColor.B * ushort.MaxValue));
 								fg.StartIndex = (uint)idx;
 								fg.EndIndex = (uint)(idx + 1);
@@ -562,7 +560,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 						context.DrawImage (this, icon, xpos, iypos);
 						xpos += iconTextSpacing;
 					}
-					context.SetSourceColor (item == SelectedItem ? ColorScheme.CompletionSelectedText.Foreground : textColor);
+					context.SetSourceColor (item == SelectedItem ? ColorScheme.GetForeground (ColorScheme.CompletionSelectedText) : textColor);
 					var textXPos = xpos + iconWidth + 2;
 					context.MoveTo (textXPos, typos);
 					layout.Width = (int)((Allocation.Width - textXPos) * Pango.Scale.PangoScale);
@@ -680,7 +678,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 		
 		void SelectFirstItemInCategory ()
 		{
-			if (string.IsNullOrEmpty (CompletionString) && EnableCompletionCategoryMode)
+			if (string.IsNullOrEmpty (CompletionString) && IdeApp.Preferences.EnableCompletionCategoryMode)
 				selection = categories.First ().Items.First ();
 		}
 
@@ -752,7 +750,7 @@ namespace MonoDevelop.Ide.CodeCompletion
 			var icon = ImageService.GetIcon (TypeSystem.Stock.Namespace, IconSize.Menu);
 			rowHeight = Math.Max (1, (int)icon.Height + 2);
 
-			int newHeight = rowHeight * CompletionTextEditorExtension.CompletionListRows;
+			int newHeight = rowHeight * IdeApp.Preferences.CompletionListRows;
 			if (Allocation.Width != listWidth || Allocation.Height != newHeight)
 				this.SetSizeRequest (listWidth, newHeight);
 			SetAdjustments ();

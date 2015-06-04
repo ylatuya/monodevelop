@@ -34,9 +34,9 @@ namespace MonoDevelop.PackageManagement
 	public class PackageUpdatesEventMonitor : IDisposable
 	{
 		IPackageManagementEvents packageEvents;
-		IProgressMonitor progressMonitor;
+		ProgressMonitor progressMonitor;
 
-		public PackageUpdatesEventMonitor (IProgressMonitor progressMonitor)
+		public PackageUpdatesEventMonitor (ProgressMonitor progressMonitor)
 			: this (
 				progressMonitor,
 				PackageManagementServices.PackageManagementEvents)
@@ -44,7 +44,7 @@ namespace MonoDevelop.PackageManagement
 		}
 
 		public PackageUpdatesEventMonitor (
-			IProgressMonitor progressMonitor,
+			ProgressMonitor progressMonitor,
 			IPackageManagementEvents packageEvents)
 		{
 			this.progressMonitor = progressMonitor;

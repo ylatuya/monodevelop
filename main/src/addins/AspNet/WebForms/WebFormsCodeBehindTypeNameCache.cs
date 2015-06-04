@@ -32,13 +32,14 @@ using MonoDevelop.Ide.TypeSystem;
 using MonoDevelop.Ide;
 using MonoDevelop.AspNet.WebForms;
 using MonoDevelop.AspNet.Projects;
+using MonoDevelop.Projects;
 using MonoDevelop.Core.Text;
 
 namespace MonoDevelop.AspNet.WebForms
 {
-	class WebFormsCodeBehindTypeNameCache : ProjectFileCache<AspNetAppProject,string>
+	class WebFormsCodeBehindTypeNameCache : ProjectFileCache<Project,string>
 	{
-		public WebFormsCodeBehindTypeNameCache (AspNetAppProject proj) : base (proj)
+		public WebFormsCodeBehindTypeNameCache (Project proj) : base (proj)
 		{
 		}
 

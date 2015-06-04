@@ -182,7 +182,7 @@ namespace MonoDevelop.Refactoring.Rename
 			var properties = Properties;
 			((Widget)this).Destroy ();
 			var changes = this.rename (properties);
-			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetBackgroundProgressMonitor (Title, null);
+			ProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetBackgroundProgressMonitor (Title, null);
 			RefactoringService.AcceptChanges (monitor, changes);
 		}
 		

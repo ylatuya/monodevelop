@@ -57,6 +57,7 @@ namespace MonoDevelop.NUnit
 
 		public override void Dispose ()
 		{
+			src.Cancel ();
 			NUnitService.Instance.TestSessionCompleted -= HandleTestSessionCompleted;
 			RemoveHandler ();
 			DocumentContext.DocumentParsed -= HandleDocumentParsed; 
@@ -67,24 +68,24 @@ namespace MonoDevelop.NUnit
 
 		public abstract Task<IList<UnitTestLocation>> GatherUnitTests (CancellationToken token);
 
-		readonly static PropertyWrapper<bool> EnableUnitTestEditorIntegration = new PropertyWrapper<bool> ("Testing.EnableUnitTestEditorIntegration", false);
-
 		void HandleDocumentParsed (object sender, EventArgs e)
 		{
-			if (!EnableUnitTestEditorIntegration)
+			if (!IdeApp.Preferences.EnableUnitTestEditorIntegration)
 				return;
 			src.Cancel ();
 			src = new CancellationTokenSource ();
 			var token = src.Token;
 			ThreadPool.QueueUserWorkItem (delegate {
-				if (token.IsCancellationRequested)
+				if (token.IsCancellationRequested || DocumentContext == null)
 					return;
 				try {
 					GatherUnitTests (token).ContinueWith (task => {
 						var foundTests = task.Result;
-						if (foundTests == null)
+						if (foundTests == null || DocumentContext == null)
 							return;
 						Application.Invoke (delegate {
+							if (token.IsCancellationRequested || DocumentContext == null)
+								return;
 							foreach (var oldMarker in currentMarker)
 								Editor.RemoveMarker (oldMarker);
 							var newMarkers = new List<IUnitTestMarker> ();

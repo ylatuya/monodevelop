@@ -117,7 +117,7 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 			if (System.IO.File.Exists (fileName)) {
 				watcher.Path = Path.GetDirectoryName (fileName);
 				watcher.Filter = Path.GetFileName (fileName);
-				watcher.Changed += (FileSystemEventHandler) DispatchService.GuiDispatch (new FileSystemEventHandler (OnSteticFileChanged));
+				watcher.Changed += DispatchService.GuiDispatchDelegate (new FileSystemEventHandler (OnSteticFileChanged));
 				watcher.EnableRaisingEvents = true;
 			}
 		}	
@@ -222,7 +222,7 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 			}
 				
 			if (GtkDesignInfo.FromProject (project).UpdateGtkFolder () && saveMdProject)
-				IdeApp.ProjectOperations.Save (project);
+				IdeApp.ProjectOperations.SaveAsync (project);
 		}
 		
 		public string File {
@@ -651,7 +651,7 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 			if (hasError)
 				return files;
 
-			IDotNetLanguageBinding binding = LanguageBindingService.GetBindingPerLanguageName (project.LanguageName) as IDotNetLanguageBinding;
+			var binding = LanguageBindingService.GetBindingPerLanguageName (project.LanguageName);
 			string path = Path.Combine (guiFolder, binding.GetFileName ("generated"));
 			if (!System.IO.File.Exists (path)) {
 				// Generate an empty build class

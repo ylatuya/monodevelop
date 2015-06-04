@@ -43,36 +43,37 @@ using MonoDevelop.Refactoring;
 using ICSharpCode.NRefactory6.CSharp;
 using System.Threading;
 using MonoDevelop.Ide.TypeSystem;
+using System.Threading.Tasks;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.CSharp.Completion
 {
 	class EventCreationCompletionData : AnonymousMethodCompletionData
 	{
-		readonly CSharpCompletionTextEditorExtension ext;
+		readonly RoslynCodeCompletionFactory factory;
 		readonly ITypeSymbol delegateType;
 		readonly INamedTypeSymbol curType;
 		readonly string varName;
 		
-		public override TooltipInformation CreateTooltipInformation (bool smartWrap)
+		public override Task<TooltipInformation> CreateTooltipInformation (bool smartWrap, CancellationToken token)
 		{
-			var tooltipInfo = new TooltipInformation ();
-			return tooltipInfo;
+			return Task.FromResult (new TooltipInformation ());
 		}
 
-		public EventCreationCompletionData (ICSharpCode.NRefactory6.CSharp.Completion.ICompletionKeyHandler keyHandler, CSharpCompletionTextEditorExtension ext, ITypeSymbol delegateType, string varName, INamedTypeSymbol curType) : base (keyHandler)
+		public EventCreationCompletionData (ICSharpCode.NRefactory6.CSharp.Completion.ICompletionKeyHandler keyHandler, RoslynCodeCompletionFactory factory, ITypeSymbol delegateType, string varName, INamedTypeSymbol curType) : base (keyHandler)
 		{
 			this.curType = curType;
 			this.varName = varName;
 			this.DisplayText = varName;
 			this.delegateType = delegateType;
-			this.ext = ext;
+			this.factory = factory;
 			this.Icon = "md-newmethod";
 		}
 
 		public override void InsertCompletionText (CompletionListWindow window, ref KeyActions ka, KeyDescriptor descriptor)
 		{
 			// insert add/remove event handler code after +=/-=
-			var editor = ext.Editor;
+			var editor = factory.Ext.Editor;
 
 
 			bool AddSemicolon = true;
@@ -91,11 +92,10 @@ namespace MonoDevelop.CSharp.Completion
 				document.Editor,
 				parsedDocument,
 				declaringType,
-				declaringType.Locations.First()
+				editor.CaretOffset
 			);
-
 			var options = new InsertionModeOptions (
-				"Create new method",
+				GettextCatalog.GetString ("Create new method"),
 				insertionPoints,
 				async point => {
 					if (!point.Success) 
