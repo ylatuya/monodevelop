@@ -1,0 +1,26 @@
+include "gtkrc.mac"
+
+style "default" {
+    font_name = ".SFNSDisplay-Regular 13"
+}
+
+style "dialog-button" {
+    fg[ACTIVE] = @selected_fg_color
+    font_name = ".SFNSDisplay-Regular 13"
+}
+
+style "button" {
+    font_name = ".SFNSDisplay-Regular 13"
+}
+
+style "menu" {
+    font_name = ".SFNSDisplay-Regular 14"
+}
+
+style "combo-box-menu" {
+    font_name = ".SFNSDisplay-Regular 12"
+}
+
+style "tooltip" {
+    font_name = ".SFNSDisplay-Regular 12"
+}

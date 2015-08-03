@@ -3433,6 +3433,9 @@
     <Content Include="gtkrc.mac-yosemite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="gtkrc.mac-elcapitan">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="gtkrc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

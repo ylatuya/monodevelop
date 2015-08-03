@@ -352,8 +352,11 @@ namespace MonoDevelop.Ide
 					gtkrc += ".mac";
 
 					var osv = Platform.OSVersion;
-					if (osv.Major == 10 && osv.Minor >= 10) {
-						gtkrc += "-yosemite";
+					if (osv.Major == 10) {
+						if (osv.Minor == 10)
+							gtkrc += "-yosemite";
+						else if (osv.Minor >= 11)
+							gtkrc += "-elcapitan";
 					}
 				}
 				Environment.SetEnvironmentVariable ("GTK2_RC_FILES", PropertyService.EntryAssemblyPath.Combine (gtkrc));
