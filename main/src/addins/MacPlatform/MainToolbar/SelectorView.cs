@@ -56,7 +56,9 @@ namespace MonoDevelop.MacIntegration.MainToolbar
 		{
 			Title = "";
 			BezelStyle = NSBezelStyle.TexturedRounded;
-			AddSubview (new PathSelectorView (new CGRect (6, 0, 1, 1)));
+			var pathSelectorView = new PathSelectorView (new CGRect (6, 0, 1, 1));
+			pathSelectorView.UnregisterDraggedTypes ();
+			AddSubview (pathSelectorView);
 		}
 
 		public override void DrawRect (CGRect dirtyRect)
@@ -99,14 +101,21 @@ namespace MonoDevelop.MacIntegration.MainToolbar
 
 			void CreateMenuItem (NSMenu menu, IRuntimeModel runtime)
 			{
-				var menuItem = new NSMenuItem {
-					IndentationLevel = runtime.IsIndented ? 2 : 1,
-					Enabled = runtime.Enabled,
-					Hidden = !runtime.Visible,
-					AttributedTitle = new NSAttributedString (runtime.DisplayString, new NSStringAttributes {
-						Font = runtime.Notable ? NSFontManager.SharedFontManager.ConvertFont (menu.Font, NSFontTraitMask.Bold) : menu.Font,
-					}),
-				};
+				NSMenuItem menuItem;
+				string runtimeFullDisplayString;
+
+				using (var mutableModel = runtime.GetMutableModel ()) {
+					runtimeFullDisplayString = mutableModel.FullDisplayString;
+
+					menuItem = new NSMenuItem {
+						IndentationLevel = runtime.IsIndented ? 2 : 1,
+						AttributedTitle = new NSAttributedString (mutableModel.DisplayString, new NSStringAttributes {
+							Font = runtime.Notable ? NSFontManager.SharedFontManager.ConvertFont (menu.Font, NSFontTraitMask.Bold) : menu.Font,
+						}),
+						Enabled = mutableModel.Enabled,
+						Hidden = !mutableModel.Visible,
+					};
+				}
 
 				var subMenu = CreateSubMenuForRuntime (runtime);
 				if (subMenu != null) {
@@ -114,14 +123,27 @@ namespace MonoDevelop.MacIntegration.MainToolbar
 					menuItem.Enabled = true;
 				} else {
 					menuItem.Activated += (o2, e2) => {
-						string old = ActiveRuntime.FullDisplayString;
-						ActiveRuntime = runtimeModel.First (r => r.FullDisplayString == runtime.FullDisplayString);
+						string old;
+						using (var activeMutableModel = ActiveRuntime.GetMutableModel ())
+							old = activeMutableModel.FullDisplayString;
+
+						IRuntimeModel newRuntime = runtimeModel.FirstOrDefault (r => {
+							using (var newRuntimeMutableModel = r.GetMutableModel ())
+								return newRuntimeMutableModel.FullDisplayString == runtimeFullDisplayString;
+						});
+						if (newRuntime == null)
+							return;
+
+						ActiveRuntime = newRuntime;
 						var ea = new HandledEventArgs ();
 						if (RuntimeChanged != null)
 							RuntimeChanged (o2, ea);
 
 						if (ea.Handled)
-							ActiveRuntime = runtimeModel.First (r => r.FullDisplayString == old);
+							ActiveRuntime = runtimeModel.First (r => {
+								using (var newRuntimeMutableModel = r.GetMutableModel ())
+									return newRuntimeMutableModel.FullDisplayString == old;
+							});
 					};
 				}
 				menu.AddItem (menuItem);
@@ -179,18 +201,22 @@ namespace MonoDevelop.MacIntegration.MainToolbar
 							++i;
 						}
 					} else if (object.ReferenceEquals (ClickedPathComponentCell, PathComponentCells [RuntimeIdx])) {
-						foreach (var runtime in RuntimeModel) {
-							if (idx == -1 && runtime.DisplayString == ActiveRuntime.DisplayString)
-								idx = i;
+						using (var activeMutableModel = ActiveRuntime.GetMutableModel ()) {
+							foreach (var runtime in RuntimeModel) {
+								using (var mutableModel = runtime.GetMutableModel ()) {
+									if (idx == -1 && mutableModel.DisplayString == activeMutableModel.DisplayString)
+										idx = i;
+								}
 
-							if (runtime.HasParent)
-								continue;
+								if (runtime.HasParent)
+									continue;
 
-							if (runtime.IsSeparator)
-								menu.AddItem (NSMenuItem.SeparatorItem);
-							else
-								CreateMenuItem (menu, runtime);
-							++i;
+								if (runtime.IsSeparator)
+									menu.AddItem (NSMenuItem.SeparatorItem);
+								else
+									CreateMenuItem (menu, runtime);
+								++i;
+							}
 						}
 					} else
 						throw new NotSupportedException ();
@@ -249,7 +275,8 @@ namespace MonoDevelop.MacIntegration.MainToolbar
 				get { return activeRuntime; }
 				set {
 					activeRuntime = value;
-					UpdatePathText (RuntimeIdx, value.FullDisplayString);
+					using (var mutableModel = value.GetMutableModel ())
+						UpdatePathText (RuntimeIdx, mutableModel.FullDisplayString);
 				}
 			}
 

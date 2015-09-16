@@ -359,7 +359,10 @@ namespace MonoDevelop.Ide
 							gtkrc += "-elcapitan";
 					}
 				}
-				Environment.SetEnvironmentVariable ("GTK2_RC_FILES", PropertyService.EntryAssemblyPath.Combine (gtkrc));
+
+				var gtkrcf = PropertyService.EntryAssemblyPath.Combine (gtkrc);
+				LoggingService.LogInfo ("GTK: Using gtkrc from {0}", gtkrcf);
+				Environment.SetEnvironmentVariable ("GTK2_RC_FILES", gtkrcf);
 			}
 		}
 
@@ -734,6 +737,10 @@ namespace MonoDevelop.Ide
 				Console.WriteLine (BrandingService.ApplicationName + " " + BuildInfo.VersionLabel);
 				Console.WriteLine ("Options:");
 				optSet.WriteOptionDescriptions (Console.Out);
+				const string openFileText = "      file.ext;line;column";
+				Console.Write (openFileText);
+				Console.Write (new string (' ', 29 - openFileText.Length));
+				Console.WriteLine ("Opens a file at specified integer line and column");
 			}
 			
 			return opt;
