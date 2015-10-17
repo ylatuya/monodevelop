@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:f72fc4c5dc9b46300a134940cbfb43c4:ca432a777343565480027a5022bdbb2a:94278ab1ddf40eb168e464b2a837aa3c$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="ide.png" width="303" height="303">
+    <sprite n="add-16.png" x="168" y="80" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="add-namespace-16.png" x="44" y="152" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="assembly-project-16.png" x="177" y="30" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="assembly-reference-overlay-16.png" x="271" y="40" w="10" h="9" pX="0.5" pY="0.5" oX="6" oY="7" oW="16" oH="16"/>
+    <sprite n="breadcrumb-next-16.png" x="296" y="225" w="5" h="9" pX="0.5" pY="0.5" oX="6" oY="3" oW="16" oH="16"/>
+    <sprite n="breadcrumb-prev-16.png" x="298" y="234" w="5" h="9" pX="0.5" pY="0.5" oX="5" oY="3" oW="16" oH="16"/>
+    <sprite n="breakpoint-16.png" x="182" y="80" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="breakpoint-disable-all-16.png" x="160" y="48" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="breakpoint-disabled-16.png" x="133" y="225" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="breakpoint-invalid-16.png" x="131" y="252" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="breakpoint-new-16.png" x="102" y="213" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="breakpoint-on-off-16.png" x="163" y="223" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="build-project-16.png" x="88" y="45" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="build-solution-16.png" x="88" y="61" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="catchpoint-16.png" x="163" y="237" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="catchpoint-disabled-16.png" x="116" y="268" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="clear-16.png" x="178" y="185" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="clear-all-bookmarks-16.png" x="102" y="181" w="15" h="16" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="close-all-documents-16.png" x="178" y="94" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="close-solution-16.png" x="88" y="77" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="2" oW="16" oH="16"/>
+    <sprite n="command-16.png" x="193" y="44" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="command-16~sel.png" x="219" y="52" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="comment-16.png" x="60" y="152" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="copy-16.png" x="281" y="44" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="copy-16~sel.png" x="176" y="195" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="disclose-arrow-down-16.png" x="231" y="52" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="disclose-arrow-up-16.png" x="281" y="71" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="done-16.png" x="104" y="43" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="done-24.png" x="281" y="0" w="22" h="22" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="24"/>
+    <sprite n="done-32.png" x="44" y="90" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="done-48.png" x="0" y="45" w="44" h="45" pX="0.5" pY="0.5" oX="2" oY="2" oW="48" oH="48"/>
+    <sprite n="edit-16.png" x="176" y="209" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="edit-find-next-16.png" x="120" y="43" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="edit-select-all-16.png" x="117" y="193" w="14" h="16" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="element-class-16.png" x="245" y="83" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-class-16~sel.png" x="281" y="83" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-constant-16.png" x="293" y="82" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-constant-16~sel.png" x="293" y="92" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-delegate-16.png" x="217" y="91" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-delegate-16~sel.png" x="217" y="103" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-enum-16.png" x="217" y="115" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-enum-16~sel.png" x="229" y="90" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-event-16.png" x="293" y="102" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-event-16~sel.png" x="293" y="112" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-exception-16.png" x="229" y="102" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-exception-16~sel.png" x="229" y="114" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-extensionmethod-16.png" x="241" y="210" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-extensionmethod-16~sel.png" x="241" y="220" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-field-16.png" x="253" y="223" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-field-16~sel.png" x="288" y="248" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-fs-field-16.png" x="274" y="259" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-fs-field-16~sel.png" x="230" y="271" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-interface-16.png" x="241" y="95" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-interface-16~sel.png" x="253" y="95" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-keyword-16.png" x="284" y="259" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-keyword-16~sel.png" x="240" y="263" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-method-16.png" x="240" y="273" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-method-16~sel.png" x="250" y="267" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-method-new-16.png" x="175" y="172" w="13" h="13" pX="0.5" pY="0.5" oX="3" oY="0" oW="16" oH="16"/>
+    <sprite n="element-method-new-16~sel.png" x="193" y="164" w="13" h="13" pX="0.5" pY="0.5" oX="3" oY="0" oW="16" oH="16"/>
+    <sprite n="element-module-16.png" x="241" y="107" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-module-16~sel.png" x="265" y="95" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-namespace-16.png" x="253" y="107" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-namespace-16~sel.png" x="277" y="95" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-other-declaration-16.png" x="265" y="107" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-other-declaration-16~sel.png" x="277" y="107" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-property-16.png" x="250" y="277" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-property-16~sel.png" x="240" y="283" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-struct-16.png" x="218" y="127" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-struct-16~sel.png" x="218" y="139" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-template-16.png" x="240" y="293" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-template-16~sel.png" x="250" y="287" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-template-surroundwith-16.png" x="260" y="269" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-template-surroundwith-16~sel.png" x="260" y="279" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-type-16.png" x="218" y="151" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-type-16~sel.png" x="218" y="163" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="element-variable-16.png" x="270" y="269" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-variable-16~sel.png" x="270" y="279" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-and-protected-overlay-16.png" x="289" y="105" w="4" h="8" pX="0.5" pY="0.5" oX="0" oY="4" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-and-protected-overlay-16~sel.png" x="289" y="113" w="4" h="8" pX="0.5" pY="0.5" oX="0" oY="4" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-or-protected-overlay-16.png" x="185" y="265" w="4" h="10" pX="0.5" pY="0.5" oX="0" oY="3" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-or-protected-overlay-16~sel.png" x="289" y="95" w="4" h="10" pX="0.5" pY="0.5" oX="0" oY="3" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-overlay-16.png" x="146" y="90" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-internal-overlay-16~sel.png" x="185" y="275" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-private-overlay-16.png" x="267" y="44" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-private-overlay-16~sel.png" x="185" y="275" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-protected-overlay-16.png" x="241" y="90" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-protected-overlay-16~sel.png" x="185" y="275" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-static-overlay-16.png" x="265" y="233" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="element-visibility-static-overlay-16~sel.png" x="185" y="275" w="4" h="4" pX="0.5" pY="0.5" oX="0" oY="6" oW="16" oH="16"/>
+    <sprite n="empty-16.png" x="229" y="126" w="1" h="1" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="error-16.png" x="104" y="59" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="error-24.png" x="281" y="22" w="22" h="22" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="24"/>
+    <sprite n="error-32.png" x="136" y="0" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="error-48.png" x="48" y="0" w="44" h="45" pX="0.5" pY="0.5" oX="2" oY="2" oW="48" oH="48"/>
+    <sprite n="feedback-16.png" x="16" y="291" w="14" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="file-class-32.png" x="257" y="0" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-enum-32.png" x="74" y="90" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-generic-16.png" x="102" y="167" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-generic-32.png" x="74" y="118" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-gtk-32.png" x="30" y="167" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-header-16.png" x="193" y="30" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-header-32.png" x="30" y="195" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-interface-32.png" x="30" y="223" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-resource-16.png" x="74" y="279" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-resource-32.png" x="30" y="251" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-script-16.png" x="128" y="282" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-script-32.png" x="136" y="31" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-source-16.png" x="130" y="268" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-source-32.png" x="54" y="167" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-struct-32.png" x="54" y="195" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-text-16.png" x="193" y="94" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-text-32.png" x="54" y="223" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-unit-test-32.png" x="54" y="251" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-web-16.png" x="193" y="108" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-web-32.png" x="78" y="167" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="file-xml-16.png" x="193" y="122" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="file-xml-32.png" x="78" y="195" w="24" h="28" pX="0.5" pY="0.5" oX="4" oY="2" oW="32" oH="32"/>
+    <sprite n="find-16.png" x="178" y="109" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="find-16~sel.png" x="178" y="124" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="find-and-replace-16.png" x="178" y="139" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="find-and-replace-16~sel.png" x="178" y="154" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="find-in-files-16.png" x="120" y="59" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="folder-component-mac-16.png" x="104" y="75" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="folder-component-win-16.png" x="136" y="59" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="folder-generic-mac-16.png" x="120" y="75" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="folder-generic-win-16.png" x="102" y="197" w="15" h="16" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="folder-new-16.png" x="136" y="75" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="folder-special-mac-16.png" x="114" y="154" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="folder-special-win-16.png" x="117" y="209" w="15" h="16" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="folder-web-reference-mac-16.png" x="130" y="154" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="folder-web-reference-win-16.png" x="98" y="90" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="go-back-16.png" x="298" y="243" w="5" h="9" pX="0.5" pY="0.5" oX="5" oY="3" oW="16" oH="16"/>
+    <sprite n="go-down-16.png" x="190" y="288" w="9" h="5" pX="0.5" pY="0.5" oX="3" oY="6" oW="16" oH="16"/>
+    <sprite n="go-forward-16.png" x="280" y="289" w="5" h="9" pX="0.5" pY="0.5" oX="6" oY="3" oW="16" oH="16"/>
+    <sprite n="go-up-16.png" x="217" y="253" w="9" h="5" pX="0.5" pY="0.5" oX="3" oY="5" oW="16" oH="16"/>
+    <sprite n="goto-next-bookmark-16.png" x="131" y="193" w="15" h="16" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="goto-prev-bookmark-16.png" x="98" y="106" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="group-by-category-16.png" x="166" y="185" w="12" h="8" pX="0.5" pY="0.5" oX="2" oY="4" oW="16" oH="16"/>
+    <sprite n="home-16.png" x="74" y="293" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="home-16~sel.png" x="164" y="293" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="information-16.png" x="98" y="122" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="information-24.png" x="30" y="279" w="22" h="22" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="24"/>
+    <sprite n="information-32.png" x="0" y="167" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="information-48.png" x="0" y="90" w="44" h="45" pX="0.5" pY="0.5" oX="2" oY="2" oW="48" oH="48"/>
+    <sprite n="invalid-reference-overlay-16.png" x="263" y="225" w="9" h="8" pX="0.5" pY="0.5" oX="7" oY="8" oW="16" oH="16"/>
+    <sprite n="jump-to-16.png" x="260" y="289" w="10" h="9" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="link-overlay-16.png" x="294" y="258" w="9" h="9" pX="0.5" pY="0.5" oX="7" oY="7" oW="16" oH="16"/>
+    <sprite n="media-play-16.png" x="270" y="57" w="11" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="missing-image-16.png" x="177" y="223" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="monodevelop-16.png" x="127" y="169" w="16" h="14" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="monodevelop-22.png" x="76" y="146" w="22" h="21" pX="0.5" pY="0.5" oX="0" oY="1" oW="22" oH="22"/>
+    <sprite n="monodevelop-32.png" x="166" y="0" w="31" h="30" pX="0.5" pY="0.5" oX="0" oY="2" oW="32" oH="32"/>
+    <sprite n="monodevelop-48.png" x="0" y="0" w="48" h="45" pX="0.5" pY="0.5" oX="0" oY="3" oW="48" oH="48"/>
+    <sprite n="navigate-next-16.png" x="98" y="138" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="navigate-previous-16.png" x="114" y="90" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="open-16.png" x="152" y="80" w="16" h="14" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="package-16.png" x="0" y="291" w="16" h="12" pX="0.5" pY="0.5" oX="0" oY="2" oW="16" oH="16"/>
+    <sprite n="package-24.png" x="78" y="244" w="22" h="17" pX="0.5" pY="0.5" oX="1" oY="4" oW="24" oH="24"/>
+    <sprite n="package-32.png" x="227" y="0" w="30" h="23" pX="0.5" pY="0.5" oX="1" oY="6" oW="32" oH="32"/>
+    <sprite n="package-48.png" x="0" y="135" w="44" h="32" pX="0.5" pY="0.5" oX="2" oY="9" oW="48" oH="48"/>
+    <sprite n="package-source-16.png" x="114" y="106" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="pad-application-output-16.png" x="98" y="154" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-error-list-16.png" x="177" y="237" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-error-list-errors-16.png" x="205" y="29" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-error-list-warnings-16.png" x="86" y="277" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-generic-pad-16.png" x="100" y="276" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-help-16.png" x="114" y="122" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="pad-immediate-16.png" x="146" y="158" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="pad-search-results-16.png" x="114" y="138" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="pad-task-list-16.png" x="114" y="282" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="parser-16.png" x="193" y="136" w="13" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="parser-16~sel.png" x="193" y="150" w="13" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="pin-down-16.png" x="193" y="177" w="13" h="13" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="pin-up-16.png" x="146" y="193" w="15" h="15" pX="0.5" pY="0.5" oX="0" oY="1" oW="16" oH="16"/>
+    <sprite n="platform-android-16.png" x="147" y="249" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="platform-cross-platform-16.png" x="161" y="251" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="platform-ios-16.png" x="175" y="251" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="platform-mac-16.png" x="190" y="190" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="platform-other-16.png" x="190" y="204" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="popup-close-16.png" x="151" y="296" w="7" h="7" pX="0.5" pY="0.5" oX="5" oY="4" oW="16" oH="16"/>
+    <sprite n="popup-close-hover-16.png" x="206" y="183" w="7" h="7" pX="0.5" pY="0.5" oX="5" oY="4" oW="16" oH="16"/>
+    <sprite n="preferences-16.png" x="230" y="126" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-author-information-16.png" x="191" y="218" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-author-information-16~sel.png" x="191" y="232" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-build-16.png" x="271" y="28" w="10" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-build-16~sel.png" x="117" y="181" w="10" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-code-formatting-16.png" x="230" y="138" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-code-formatting-16~sel.png" x="230" y="150" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-code-templates-16.png" x="230" y="162" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-code-templates-16~sel.png" x="218" y="175" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-dotnet-naming-policies-16.png" x="176" y="293" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-dotnet-naming-policies-16~sel.png" x="188" y="293" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-external-tools-16.png" x="242" y="179" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-external-tools-16~sel.png" x="254" y="179" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-fonts-16.png" x="114" y="296" w="13" h="7" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="prefs-fonts-16~sel.png" x="127" y="296" w="13" h="7" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="prefs-generic-16.png" x="193" y="44" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-generic-16~sel.png" x="219" y="52" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-header-16.png" x="140" y="282" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-header-16~sel.png" x="152" y="282" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-key-bindings-16.png" x="230" y="174" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-key-bindings-16~sel.png" x="215" y="187" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-language-16.png" x="140" y="184" w="12" h="9" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-language-16~sel.png" x="289" y="122" w="12" h="9" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-load-save-16.png" x="215" y="199" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-load-save-16~sel.png" x="242" y="119" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-name-conventions-16.png" x="266" y="179" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-name-conventions-16~sel.png" x="278" y="179" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-play-16.png" x="293" y="58" w="10" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-play-16~sel.png" x="293" y="70" w="10" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="prefs-sdk-locations-16.png" x="290" y="179" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-sdk-locations-16~sel.png" x="230" y="186" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-source-16.png" x="178" y="279" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-source-16~sel.png" x="203" y="260" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-task-list-16.png" x="230" y="252" w="11" h="9" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-task-list-16~sel.png" x="241" y="254" w="11" h="9" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="prefs-updates-16.png" x="191" y="246" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="prefs-updates-16~sel.png" x="189" y="260" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="preview-16.png" x="152" y="185" w="14" h="8" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="preview-16~sel.png" x="142" y="274" w="14" h="8" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="preview-active-16.png" x="205" y="43" w="14" h="8" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="preview-hover-16.png" x="190" y="56" w="14" h="8" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="preview-hover-16~sel.png" x="267" y="49" w="14" h="8" pX="0.5" pY="0.5" oX="1" oY="4" oW="16" oH="16"/>
+    <sprite n="project-16.png" x="130" y="90" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="project-32.png" x="44" y="121" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="project-console-overlay-32.png" x="143" y="171" w="16" h="13" pX="0.5" pY="0.5" oX="15" oY="19" oW="32" oH="32"/>
+    <sprite n="project-gui-overlay-32.png" x="159" y="172" w="16" h="13" pX="0.5" pY="0.5" oX="16" oY="19" oW="32" oH="32"/>
+    <sprite n="project-library-overlay-32.png" x="162" y="142" w="16" h="15" pX="0.5" pY="0.5" oX="16" oY="17" oW="32" oH="32"/>
+    <sprite n="project-new-16.png" x="117" y="225" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="2" oW="16" oH="16"/>
+    <sprite n="project-nunit-overlay-32.png" x="147" y="223" w="16" h="13" pX="0.5" pY="0.5" oX="16" oY="19" oW="32" oH="32"/>
+    <sprite n="project-package-overlay-32.png" x="132" y="209" w="14" h="16" pX="0.5" pY="0.5" oX="18" oY="16" oW="32" oH="32"/>
+    <sprite n="project-reference-overlay-16.png" x="280" y="269" w="10" h="10" pX="0.5" pY="0.5" oX="6" oY="6" oW="16" oH="16"/>
+    <sprite n="project-shared-assets-overlay-32.png" x="168" y="64" w="14" h="16" pX="0.5" pY="0.5" oX="18" oY="16" oW="32" oH="32"/>
+    <sprite n="project-status-error-16.png" x="157" y="265" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="project-status-information-16.png" x="171" y="265" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="project-status-warning-16.png" x="164" y="279" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="project-web-overlay-32.png" x="160" y="31" w="17" h="17" pX="0.5" pY="0.5" oX="0" oY="15" oW="32" oH="32"/>
+    <sprite n="properties-16.png" x="190" y="274" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="question-16.png" x="130" y="106" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="question-24.png" x="52" y="279" w="22" h="22" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="24"/>
+    <sprite n="question-32.png" x="0" y="198" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="question-48.png" x="44" y="45" w="44" h="45" pX="0.5" pY="0.5" oX="2" oY="2" oW="48" oH="48"/>
+    <sprite n="reference-16.png" x="176" y="48" w="14" h="16" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="refresh-16.png" x="242" y="189" w="12" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="remove-16.png" x="204" y="274" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="replace-in-files-16.png" x="130" y="122" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="save-16.png" x="200" y="288" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="save-all-16.png" x="214" y="288" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="searchbox-clear-16.png" x="280" y="279" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="searchbox-search-16.png" x="242" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="solution-16.png" x="130" y="138" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="solution-32.png" x="0" y="229" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="solution-folder-new-16.png" x="131" y="239" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="2" oW="16" oH="16"/>
+    <sprite n="solution-new-16.png" x="147" y="236" w="16" h="13" pX="0.5" pY="0.5" oX="0" oY="2" oW="16" oH="16"/>
+    <sprite n="sort-alphabetically-16.png" x="227" y="208" w="12" h="8" pX="0.5" pY="0.5" oX="2" oY="4" oW="16" oH="16"/>
+    <sprite n="spinner-14-1.png" x="254" y="119" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-1~sel.png" x="242" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-2.png" x="254" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-2~sel.png" x="266" y="119" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-3.png" x="242" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-3~sel.png" x="254" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-4.png" x="266" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-4~sel.png" x="242" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-5.png" x="254" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-14-5~sel.png" x="266" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="spinner-16-1.png" x="254" y="119" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-1~sel.png" x="242" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-2.png" x="254" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-2~sel.png" x="266" y="119" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-3.png" x="242" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-3~sel.png" x="254" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-4.png" x="266" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-4~sel.png" x="242" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-5.png" x="254" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-16-5~sel.png" x="266" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="spinner-18-1.png" x="100" y="228" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-1~sel.png" x="100" y="244" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-2.png" x="100" y="260" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-2~sel.png" x="152" y="64" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-3.png" x="146" y="94" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-3~sel.png" x="146" y="110" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-4.png" x="146" y="126" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-4~sel.png" x="146" y="142" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-5.png" x="162" y="94" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="spinner-18-5~sel.png" x="162" y="110" w="16" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="18" oH="18"/>
+    <sprite n="star-16.png" x="145" y="263" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="star-hover-16.png" x="254" y="189" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-building-1-14.png" x="188" y="169" w="5" h="11" pX="0.5" pY="0.5" oX="1" oY="3" oW="14" oH="14"/>
+    <sprite n="status-building-1-16.png" x="219" y="29" w="5" h="10" pX="0.5" pY="0.5" oX="2" oY="4" oW="16" oH="16"/>
+    <sprite n="status-building-2-14.png" x="277" y="248" w="11" h="11" pX="0.5" pY="0.5" oX="1" oY="3" oW="14" oH="14"/>
+    <sprite n="status-building-2-16.png" x="227" y="261" w="11" h="10" pX="0.5" pY="0.5" oX="2" oY="4" oW="16" oH="16"/>
+    <sprite n="status-building-3-14.png" x="204" y="190" w="11" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-building-3-16.png" x="234" y="64" w="11" h="13" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="status-building-4-14.png" x="204" y="204" w="11" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-building-4-16.png" x="234" y="77" w="11" h="13" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="status-building-5-14.png" x="140" y="296" w="11" h="7" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-building-5-16.png" x="215" y="211" w="11" h="6" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="status-connecting-1-14.png" x="219" y="39" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-1-16.png" x="254" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-connecting-2-14.png" x="231" y="39" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-2-16.png" x="266" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-connecting-3-14.png" x="222" y="64" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-3-16.png" x="266" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-connecting-4-14.png" x="222" y="77" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-4-16.png" x="278" y="131" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-connecting-5-14.png" x="243" y="44" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-5-16.png" x="278" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-connecting-6-14.png" x="255" y="44" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-connecting-6-16.png" x="278" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-error-16.png" x="278" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-error-count-16.png" x="270" y="289" w="10" h="10" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="status-failure-14.png" x="245" y="57" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-1-14.png" x="278" y="119" w="11" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="14" oH="14"/>
+    <sprite n="status-opening-1-16.png" x="289" y="237" w="9" h="11" pX="0.5" pY="0.5" oX="3" oY="3" oW="16" oH="16"/>
+    <sprite n="status-opening-2-14.png" x="245" y="70" w="12" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-2-16.png" x="290" y="131" w="11" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="status-opening-3-14.png" x="100" y="290" w="14" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-3-16.png" x="114" y="169" w="13" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="status-opening-4-14.png" x="205" y="51" w="14" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-4-16.png" x="86" y="291" w="13" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="status-opening-5-14.png" x="208" y="78" w="14" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-5-16.png" x="257" y="57" w="13" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="status-opening-6-14.png" x="208" y="78" w="14" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-opening-6-16.png" x="257" y="57" w="13" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="16" oH="16"/>
+    <sprite n="status-parsing-16.png" x="290" y="143" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-1-14.png" x="257" y="69" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-pulling-1-16.png" x="290" y="155" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-2-14.png" x="269" y="69" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-pulling-2-16.png" x="290" y="167" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-3-14.png" x="281" y="58" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-pulling-3-16.png" x="217" y="217" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-4-14.png" x="217" y="229" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="14" oH="14"/>
+    <sprite n="status-pulling-4-16.png" x="217" y="241" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-5-14.png" x="227" y="196" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="14" oH="14"/>
+    <sprite n="status-pulling-5-16.png" x="266" y="189" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pulling-6-14.png" x="278" y="189" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="2" oW="14" oH="14"/>
+    <sprite n="status-pulling-6-16.png" x="290" y="189" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-pushing-1-14.png" x="239" y="199" w="12" h="11" pX="0.5" pY="0.5" oX="1" oY="3" oW="14" oH="14"/>
+    <sprite n="status-pushing-1-16.png" x="251" y="200" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="status-pushing-2-14.png" x="257" y="82" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-pushing-2-16.png" x="269" y="82" w="12" h="13" pX="0.5" pY="0.5" oX="2" oY="1" oW="16" oH="16"/>
+    <sprite n="status-pushing-3-14.png" x="205" y="218" w="12" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-pushing-3-16.png" x="205" y="232" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="0" oW="16" oH="16"/>
+    <sprite n="status-pushing-4-14.png" x="205" y="246" w="12" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-pushing-4-16.png" x="215" y="260" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="0" oW="16" oH="16"/>
+    <sprite n="status-pushing-5-14.png" x="218" y="274" w="12" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-pushing-5-16.png" x="228" y="288" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="0" oW="16" oH="16"/>
+    <sprite n="status-pushing-6-14.png" x="196" y="64" w="12" h="14" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-pushing-6-16.png" x="196" y="78" w="12" h="14" pX="0.5" pY="0.5" oX="2" oY="0" oW="16" oH="16"/>
+    <sprite n="status-ready-14.png" x="231" y="39" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-ready-16.png" x="127" y="183" w="13" h="10" pX="0.5" pY="0.5" oX="1" oY="3" oW="16" oH="16"/>
+    <sprite n="status-searching-1-14.png" x="205" y="92" w="12" h="13" pX="0.5" pY="0.5" oX="2" oY="1" oW="14" oH="14"/>
+    <sprite n="status-searching-1-16.png" x="263" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="4" oY="3" oW="16" oH="16"/>
+    <sprite n="status-searching-2-14.png" x="205" y="92" w="12" h="13" pX="0.5" pY="0.5" oX="0" oY="1" oW="14" oH="14"/>
+    <sprite n="status-searching-2-16.png" x="263" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="3" oY="4" oW="16" oH="16"/>
+    <sprite n="status-searching-3-14.png" x="205" y="92" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-searching-3-16.png" x="263" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="status-searching-4-14.png" x="205" y="92" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="0" oW="14" oH="14"/>
+    <sprite n="status-searching-4-16.png" x="263" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="3" oY="2" oW="16" oH="16"/>
+    <sprite n="status-success-14.png" x="205" y="105" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-success-16.png" x="275" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-1-16.png" x="287" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-2-16.png" x="229" y="216" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-3-16.png" x="229" y="228" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-4-16.png" x="229" y="240" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-5-16.png" x="251" y="211" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-downloading-6-16.png" x="263" y="213" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-paused-16.png" x="275" y="213" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-updates-ready-16.png" x="287" y="201" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-waiting-1-14.png" x="205" y="118" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-waiting-1-16.png" x="287" y="213" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-waiting-2-14.png" x="206" y="131" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-waiting-2-16.png" x="241" y="230" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-waiting-3-14.png" x="206" y="144" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-waiting-3-16.png" x="241" y="242" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-waiting-4-14.png" x="206" y="157" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-waiting-4-16.png" x="253" y="233" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-waiting-5-14.png" x="206" y="170" w="12" h="13" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-waiting-5-16.png" x="253" y="245" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-warning-14.png" x="272" y="225" w="12" h="12" pX="0.5" pY="0.5" oX="1" oY="1" oW="14" oH="14"/>
+    <sprite n="status-warning-16.png" x="265" y="237" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="status-warning-count-16.png" x="252" y="257" w="11" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="stop-16.png" x="284" y="225" w="12" h="12" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="tabbar-next-12.png" x="296" y="225" w="5" h="9" pX="0.5" pY="0.5" oX="4" oY="1" oW="12" oH="12"/>
+    <sprite n="tabbar-prev-12.png" x="298" y="234" w="5" h="9" pX="0.5" pY="0.5" oX="3" oY="1" oW="12" oH="12"/>
+    <sprite n="toggle-bookmark-16.png" x="182" y="64" w="14" h="16" pX="0.5" pY="0.5" oX="1" oY="0" oW="16" oH="16"/>
+    <sprite n="tree-popup-button-down.png" x="78" y="261" w="22" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="17"/>
+    <sprite n="tree-popup-button-hover.png" x="227" y="23" w="22" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="17"/>
+    <sprite n="tree-popup-button.png" x="249" y="28" w="22" h="16" pX="0.5" pY="0.5" oX="1" oY="1" oW="24" oH="17"/>
+    <sprite n="undo-16.png" x="263" y="259" w="11" h="10" pX="0.5" pY="0.5" oX="2" oY="3" oW="16" oH="16"/>
+    <sprite n="unstar-16.png" x="277" y="237" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="unstar-hover-16.png" x="265" y="248" w="12" h="11" pX="0.5" pY="0.5" oX="2" oY="2" oW="16" oH="16"/>
+    <sprite n="updates-16.png" x="208" y="64" w="14" h="14" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="warning-16.png" x="162" y="157" w="16" h="15" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="warning-24.png" x="78" y="223" w="22" h="21" pX="0.5" pY="0.5" oX="1" oY="2" oW="24" oH="24"/>
+    <sprite n="warning-32.png" x="197" y="0" w="30" h="29" pX="0.5" pY="0.5" oX="1" oY="2" oW="32" oH="32"/>
+    <sprite n="warning-48.png" x="92" y="0" w="44" h="43" pX="0.5" pY="0.5" oX="2" oY="3" oW="48" oH="48"/>
+    <sprite n="warning-8.png" x="295" y="44" w="8" h="8" pX="0.5" pY="0.5"/>
+    <sprite n="web-search-16.png" x="146" y="208" w="15" h="15" pX="0.5" pY="0.5" oX="0" oY="0" oW="16" oH="16"/>
+    <sprite n="workspace-16.png" x="162" y="126" w="16" h="16" pX="0.5" pY="0.5"/>
+    <sprite n="workspace-32.png" x="0" y="260" w="30" h="31" pX="0.5" pY="0.5" oX="1" oY="1" oW="32" oH="32"/>
+    <sprite n="zoom-in-16.png" x="161" y="193" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="zoom-in-16~sel.png" x="161" y="208" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="zoom-out-16.png" x="116" y="238" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+    <sprite n="zoom-out-16~sel.png" x="116" y="253" w="15" h="15" pX="0.5" pY="0.5" oX="1" oY="1" oW="16" oH="16"/>
+</TextureAtlas>

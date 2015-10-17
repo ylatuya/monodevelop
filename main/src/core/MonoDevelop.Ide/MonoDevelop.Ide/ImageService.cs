@@ -38,6 +38,9 @@ using MonoDevelop.Ide.Gui.Components;
 using System.Threading.Tasks;
 using System.Net;
 using Xwt.Backends;
+using Mono.Posix;
+using Xwt.Drawing;
+using Gtk;
 
 namespace MonoDevelop.Ide
 {
@@ -65,8 +68,29 @@ namespace MonoDevelop.Ide
 
 		static Gtk.Requisition[] iconSizes = new Gtk.Requisition[7];
 
+		static List<SpriteSheet> spriteSheets = new List<SpriteSheet> ();
+		static SpriteSheet mainSheet; 
+
 		static ImageService ()
 		{
+			var p = new FilePath (typeof(ImageService).Assembly.Location).ParentDirectory;
+			var s = new SpriteSheet ();
+			s.Load (p.Combine ("ide.xml"), SpriteSheetFileFormat.TexturePackerXml);
+			spriteSheets.Add (s);
+
+			s = new SpriteSheet ();
+			s.Load (p.Combine ("ide-2x.xml"), SpriteSheetFileFormat.TexturePackerXml);
+			spriteSheets.Add (s);
+			mainSheet = s;
+
+			s = new SpriteSheet ();
+			s.Load (p.Combine ("ide-dark.xml"), SpriteSheetFileFormat.TexturePackerXml);
+			spriteSheets.Add (s);
+
+			s = new SpriteSheet ();
+			s.Load (p.Combine ("ide-dark-2x.xml"), SpriteSheetFileFormat.TexturePackerXml);
+			spriteSheets.Add (s);
+
 			iconFactory.AddDefault ();
 			IconId.IconNameRequestHandler = delegate (string stockId) {
 				EnsureStockIconIsLoaded (stockId);
@@ -117,10 +141,13 @@ namespace MonoDevelop.Ide
 				if (!string.IsNullOrEmpty (resource) || !string.IsNullOrEmpty (imageFile)) {
 
 					if (resource != null) {
-						CustomImageLoader loader;
-						if (!imageLoaders.TryGetValue (addin, out loader))
-							loader = imageLoaders [addin] = new CustomImageLoader (addin);
-						img = Xwt.Drawing.Image.FromCustomLoader (loader, resource);
+						img = mainSheet.GetImage (resource);
+						if (img == null) {
+							CustomImageLoader loader;
+							if (!imageLoaders.TryGetValue (addin, out loader))
+								loader = imageLoaders [addin] = new CustomImageLoader (addin);
+							img = Xwt.Drawing.Image.FromCustomLoader (loader, resource);
+						}
 					}
 					else {
 						img = Xwt.Drawing.Image.FromFile (addin.GetFilePath (imageFile));
