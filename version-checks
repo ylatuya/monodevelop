@@ -17,8 +17,8 @@ DEP[0]=md-addins
 DEP_NAME[0]=MDADDINS
 DEP_PATH[0]=${top_srcdir}/../md-addins
 DEP_MODULE[0]=git@github.com:xamarin/md-addins.git
-DEP_NEEDED_VERSION[0]=f9184b96bd08188151de04d8b1906cca12a91337
-DEP_BRANCH_AND_REMOTE[0]="cycle6 origin/cycle6"
+DEP_NEEDED_VERSION[0]=c50dd76668d023f02afb4a394ce8a36f721f8994
+DEP_BRANCH_AND_REMOTE[0]="cycle6-cocoaapp-fsharp-wizard-fix origin/cycle6-cocoaapp-fsharp-wizard-fix"
 
 # heap-shot
 DEP[1]=heap-shot
