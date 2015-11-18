@@ -35,6 +35,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using MonoDevelop.Core;
+using NUnit.Core;
 
 namespace MonoDevelop.NUnit.External
 {
@@ -197,7 +198,7 @@ namespace MonoDevelop.NUnit.External
 			var passed = int.Parse (element.Attribute ("passed").Value);
 			var failures = int.Parse (element.Attribute ("failures").Value);
 			var ignored = int.Parse (element.Attribute ("ignored").Value);
-			var inconclusive = int.Parse (element.Attribute ("inconclusive").Value);
+			var notrun = int.Parse (element.Attribute ("notrun").Value);
 
 			var message = (string)element.Attribute ("message");
 			var stackTrace = (string)element.Attribute ("stack-trace");
@@ -207,8 +208,8 @@ namespace MonoDevelop.NUnit.External
 				Status = result,
 				Passed = passed,
 				Failures = failures,
-				Ignored = ignored,
-				Inconclusive = inconclusive,
+				Skipped = ignored,
+				NotRun = notrun,
 				Message = message,
 				StackTrace = stackTrace,
 				ConsoleOutput = output

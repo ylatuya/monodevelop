@@ -62,7 +62,7 @@ namespace MonoDevelop.NUnit.External
 			
 			// Add standard services to ServiceManager
 			ServiceManager.Services.AddService (new DomainManager ());
-			ServiceManager.Services.AddService (new ProjectService ());
+			//ServiceManager.Services.AddService (new ProjectService ());
 			ServiceManager.Services.AddService (new AddinRegistry ());
 			ServiceManager.Services.AddService (new AddinManager ());
 			ServiceManager.Services.AddService (new TestAgency ());
@@ -152,7 +152,17 @@ namespace MonoDevelop.NUnit.External
 		{
 			wrapped.TestFinished (GetTestName (result.Test), GetLocalTestResult (result));
 		}
-		
+
+		public void TestFinished (TestCaseResult result)
+		{
+			wrapped.TestFinished (GetTestName (result.Test), GetLocalTestResult (result));
+		}
+
+		public void SuiteFinished (TestSuiteResult result)
+		{
+			wrapped.TestFinished (GetTestName (result.Test), GetLocalTestResult (result));
+		}
+
 		public void TestOutput (TestOutput testOutput)
 		{
 			if (consoleOutput == null) {
@@ -196,12 +206,10 @@ namespace MonoDevelop.NUnit.External
 
 			UnitTestResult res = new UnitTestResult ();
 			var summary = new ResultSummarizer (t);
-			res.Failures = summary.Failures;
-			res.Errors = summary.Errors;
-			res.Ignored = summary.Ignored;
-			res.Inconclusive = summary.Inconclusive;
-			res.NotRunnable = summary.NotRunnable;
-			res.Passed = summary.Passed;
+			res.Failures = summary.FailureCount;
+			res.Skipped = summary.IgnoreCount;
+			res.NotRun = summary.SkipCount;
+			res.Passed = summary.ResultCount - summary.FailureCount - summary.SkipCount - summary.IgnoreCount;
 			res.StackTrace = t.StackTrace;
 			res.Time = TimeSpan.FromSeconds (t.Time);
 

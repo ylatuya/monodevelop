@@ -621,10 +621,10 @@ namespace MonoDevelop.NUnit
 					result.Failures++;
 					break;
 				case ResultStatus.Ignored:
-					result.Ignored++;
+					result.Skipped++;
 					break;
 				case ResultStatus.Inconclusive:
-					result.Inconclusive++;
+					result.NotRun++;
 					break;
 				}
 

@@ -80,7 +80,7 @@ namespace MonoDevelop.NUnit
 
 				UnitTestResult res = test.GetLastResult ();
 				if (res != null && treeBuilder.Options ["ShowTestCounters"] && (test is UnitTestGroup)) {
-					nodeInfo.Label += string.Format (GettextCatalog.GetString (" ({0} passed, {1} failed, {2} not run)"), res.Passed, res.ErrorsAndFailures, res.TestsNotRun);
+					nodeInfo.Label += string.Format (GettextCatalog.GetString (" ({0} passed, {1} failed, {2} skipped, {3} not run)"), res.Passed, res.Failures, res.Skipped, res.NotRun);
 				}
 
 				if (treeBuilder.Options ["ShowTestTime"]) {

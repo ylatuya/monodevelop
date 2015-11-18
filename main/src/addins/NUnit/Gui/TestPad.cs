@@ -632,7 +632,7 @@ namespace MonoDevelop.NUnit
 					foreach (UnitTest t in group.Tests) {
 						UnitTestResult res = t.Results.GetLastResult (chart.CurrentDate);
 						if (res != null)
-							detailsStore.AppendValues (t, t.Name, res.Passed.ToString (), res.ErrorsAndFailures.ToString (), res.Ignored.ToString());
+							detailsStore.AppendValues (t, t.Name, res.Passed.ToString (), res.Failures.ToString (), res.Skipped.ToString());
 						else
 							detailsStore.AppendValues (t, t.Name, "", "", "");
 					}

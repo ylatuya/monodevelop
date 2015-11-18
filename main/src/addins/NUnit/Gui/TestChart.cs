@@ -379,17 +379,17 @@ namespace MonoDevelop.NUnit
 			if (Type == TestChartType.Results) {
 				if (first != null) {
 					double x = timeScale ? first.TestDate.Ticks : results.Length;
-					serieFailed.AddData (x, first.ErrorsAndFailures);
+					serieFailed.AddData (x, first.Failures);
 					serieSuccess.AddData (x, first.Passed);
-					serieIgnored.AddData (x, first.TestsNotRun);
+					serieIgnored.AddData (x, first.Skipped);
 				}
 				
 				for (int n=0; n < results.Length; n++) {
 					UnitTestResult res = results [n];
 					double x = timeScale ? res.TestDate.Ticks : results.Length - n - 1;
-					serieFailed.AddData (x, res.ErrorsAndFailures);
+					serieFailed.AddData (x, res.Failures);
 					serieSuccess.AddData (x, res.Passed);
-					serieIgnored.AddData (x, res.TestsNotRun);
+					serieIgnored.AddData (x, res.Skipped);
 				}
 			} else {
 				if (first != null) {

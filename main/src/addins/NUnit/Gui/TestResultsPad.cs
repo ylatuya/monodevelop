@@ -174,15 +174,7 @@ namespace MonoDevelop.NUnit
 			buttonSuccess.TooltipText = GettextCatalog.GetString ("Show Successful Tests");
 			toolbar.Add (buttonSuccess);
 
-			buttonInconclusive = new ToggleButton ();
-			buttonInconclusive.Label = GettextCatalog.GetString ("Inconclusive Tests");
-			buttonInconclusive.Active = true;
-			buttonInconclusive.Image = new ImageView (TestStatusIcon.Inconclusive);
-			buttonInconclusive.Image.Show ();
-			buttonInconclusive.Toggled += new EventHandler (OnShowInconclusiveToggled);
-			buttonInconclusive.TooltipText = GettextCatalog.GetString ("Show Inconclusive Tests");
-			toolbar.Add (buttonInconclusive);
-			
+				
 			buttonFailures = new ToggleButton ();
 			buttonFailures.Label = GettextCatalog.GetString ("Failed Tests");
 			buttonFailures.Active = true;
@@ -200,6 +192,16 @@ namespace MonoDevelop.NUnit
 			buttonIgnored.Toggled += new EventHandler (OnShowIgnoredToggled);
 			buttonIgnored.TooltipText = GettextCatalog.GetString ("Show Ignored Tests");
 			toolbar.Add (buttonIgnored);
+
+			buttonInconclusive = new ToggleButton ();
+			buttonInconclusive.Label = GettextCatalog.GetString ("Not Run Tests");
+			buttonInconclusive.Active = true;
+			buttonInconclusive.Image = new ImageView (TestStatusIcon.Inconclusive);
+			buttonInconclusive.Image.Show ();
+			buttonInconclusive.Toggled += new EventHandler (OnShowInconclusiveToggled);
+			buttonInconclusive.TooltipText = GettextCatalog.GetString ("Show Not Run Tests");
+			toolbar.Add (buttonInconclusive);
+
 			
 			buttonOutput = new ToggleButton ();
 			buttonOutput.Label = GettextCatalog.GetString ("Output");
@@ -318,8 +320,8 @@ namespace MonoDevelop.NUnit
 		
 		string GetResultsMarkup ()
 		{
-			return string.Format (GettextCatalog.GetString ("<b>Passed</b>: {0}   <b>Failed</b>: {1}   <b>Errors</b>: {2}   <b>Inconclusive</b>: {3}   <b>Invalid</b>: {4}   <b>Ignored</b>: {5}   <b>Skipped</b>: {6}   <b>Time</b>: {7}"), 
-					                        resultSummary.Passed, resultSummary.Failures, resultSummary.Errors, resultSummary.Inconclusive, resultSummary.NotRunnable, resultSummary.Ignored, resultSummary.Skipped, resultSummary.Time);
+			return string.Format (GettextCatalog.GetString ("<b>Passed</b>: {0} <b>Failed</b>: {1} <b>Skipped</b>: {2} <b>Not Run</b>: {3}   <b>Time</b>: {4}"),
+			                      resultSummary.Passed, resultSummary.Failures, resultSummary.Skipped, resultSummary.NotRun, resultSummary.Time);
 		}
 		void UpdateCounters ()
 		{
@@ -711,14 +713,14 @@ namespace MonoDevelop.NUnit
 					failuresStore.AppendValues (testRow, null, Escape (result.Message), test);
 				failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
 			}
-			if (result.IsInconclusive) {
-				if (!buttonInconclusive.Active)
-					return;
-				TreeIter testRow = failuresStore.AppendValues (TestStatusIcon.Inconclusive, Escape (test.FullName), test);
-				if (result.Message != null)
-					failuresStore.AppendValues (testRow, null, Escape (result.Message), test);
-				failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
-			}
+			//if (result.IsInconclusive) {
+			//	if (!buttonInconclusive.Active)
+			//		return;
+			//	TreeIter testRow = failuresStore.AppendValues (TestStatusIcon.Inconclusive, Escape (test.FullName), test);
+			//	if (result.Message != null)
+			//		failuresStore.AppendValues (testRow, null, Escape (result.Message), test);
+			//	failuresTreeView.ScrollToCell (failuresStore.GetPath (testRow), null, false, 0, 0);
+			//}
 			
 			string msg = GettextCatalog.GetString ("Running {0} ...", test.FullName);
 			TextIter it = outputView.Buffer.EndIter;

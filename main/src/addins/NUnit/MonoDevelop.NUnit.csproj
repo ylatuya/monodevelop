@@ -63,17 +63,14 @@
     <Reference Include="Mono.Cairo" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Core" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.core">
-      <HintPath>..\..\..\packages\NUnit.Runners.2.6.4\tools\lib\nunit.core.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.Console.3.0.0\tools\lib\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces">
-      <HintPath>..\..\..\packages\NUnit.Runners.2.6.4\tools\lib\nunit.core.interfaces.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.Console.3.0.0\tools\lib\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.util">
-      <HintPath>..\..\..\packages\NUnit.Runners.2.6.4\tools\lib\nunit.util.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.Console.3.0.0\tools\lib\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="System.Reflection.Metadata">
       <HintPath>..\..\..\external\roslyn\Binaries\Release\System.Reflection.Metadata.dll</HintPath>
@@ -86,6 +83,9 @@
     <Reference Include="Microsoft.CodeAnalysis">
       <HintPath>..\..\..\external\roslyn\Binaries\Release\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\packages\NUnit.3.0.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

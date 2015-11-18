@@ -102,13 +102,12 @@ namespace MonoDevelop.NUnit.External
 			if (!string.IsNullOrEmpty (suiteName))
 				package.TestName = suiteName;
 			tr.Load (package);
-			return tr.Run (listener, filter, false, LoggingThreshold.All);
+			return tr.Run (listener, filter);
 		}
 		
 		public NunitTestInfo GetTestInfo (string path, List<string> supportAssemblies)
 		{
 			InitSupportAssemblies (supportAssemblies);
-			
 			TestSuite rootTS = new TestSuiteBuilder ().Build (new TestPackage (path));
 			return BuildTestInfo (rootTS);
 		}

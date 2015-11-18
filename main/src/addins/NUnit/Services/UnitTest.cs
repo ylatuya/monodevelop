@@ -210,15 +210,15 @@ namespace MonoDevelop.NUnit
 						return TestStatusIcon.None;
 					else if (res.Status == ResultStatus.Ignored)
 						return TestStatusIcon.NotRun;
-					else if (res.ErrorsAndFailures > 0 && res.Passed > 0)
+					else if (res.Failures > 0 && res.Passed > 0)
 						return IsHistoricResult ? TestStatusIcon.OldSuccessAndFailure : TestStatusIcon.SuccessAndFailure;
-					else if (res.IsInconclusive)
-						return IsHistoricResult ? TestStatusIcon.OldInconclusive : TestStatusIcon.Inconclusive;
+					//else if (res.IsInconclusive)
+					//	return IsHistoricResult ? TestStatusIcon.OldInconclusive : TestStatusIcon.Inconclusive;
 					else if (res.IsFailure)
 						return IsHistoricResult ? TestStatusIcon.OldFailure : TestStatusIcon.Failure;
 					else if (res.IsSuccess)
 						return IsHistoricResult ? TestStatusIcon.OldSuccess : TestStatusIcon.Success;
-					else if (res.IsNotRun || res.Ignored > 0)
+					else if (res.IsNotRun || res.Skipped > 0)
 						return TestStatusIcon.NotRun;
 					else
 						return TestStatusIcon.None;

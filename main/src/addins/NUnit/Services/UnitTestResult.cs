@@ -103,29 +103,20 @@ namespace MonoDevelop.NUnit
 		}
 		
 		public bool IsFailure {
-			get { return ErrorsAndFailures > 0; }
+			get { return Failures > 0; }
 		}
 
 		public bool IsSuccess {
-			get { return ErrorsAndFailures == 0 && Passed > 0; }
-		}
-
-		public bool IsInconclusive {
-			get { return Passed == 0 && ErrorsAndFailures == 0 && Inconclusive > 0; }
+			get { return Failures == 0 && Passed > 0; }
 		}
 
 		public bool IsNotRun {
 			get {
-				return Passed == 0 && ErrorsAndFailures == 0 && TestsNotRun > 0;
+				return Passed == 0 && Failures == 0 && Skipped > 0;
 			}
 		}
 
 		public int Passed {
-			get;
-			set;
-		}
-
-		public int Errors {
 			get;
 			set;
 		}
@@ -135,38 +126,16 @@ namespace MonoDevelop.NUnit
 			set;
 		}
 
-		public int ErrorsAndFailures {
-			get {
-				return Errors + Failures;
-			}
-		}
-
-		public int TestsNotRun {
-			get {
-				return Ignored + NotRunnable + Skipped;
-			}
-		}
-
-		public int Inconclusive {
-			get;
-			set;
-		}
-
-		public int NotRunnable {
-			get;
-			set;
-		}
-
 		public int Skipped {
 			get;
 			set;
 		}
 
-		public int Ignored {
+		public int NotRun {
 			get;
 			set;
 		}
-		
+
 		public TimeSpan Time {
 			get { return time; }
 			set { time = value; }
@@ -215,10 +184,10 @@ namespace MonoDevelop.NUnit
 		{
 			Time += res.Time;
 			Passed += res.Passed;
-			Errors += res.Errors;
+			//Errors += res.Errors;
 			Failures += res.Failures;
-			Ignored += res.Ignored;
-			Inconclusive += res.Inconclusive;
+			//Ignored += res.Ignored;
+			//Inconclusive += res.Inconclusive;
 			Skipped += res.Skipped;
 		}
 	}
