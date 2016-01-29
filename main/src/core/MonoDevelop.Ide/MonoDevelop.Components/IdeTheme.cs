@@ -246,22 +246,27 @@ namespace MonoDevelop.Components
 
 #if MAC
 		static Dictionary<NSWindow, NSObject> nsWindows = new Dictionary<NSWindow, NSObject> ();
+		static Dictionary<NSWindow, bool> nativeBackgrounds = new Dictionary<NSWindow, bool> ();
 
-		public static void ApplyTheme (NSWindow window)
+		public static void ApplyTheme (NSWindow window, bool nativeBackground = false)
 		{
 			if (!nsWindows.ContainsKey(window)) {
 				nsWindows [window] = NSNotificationCenter.DefaultCenter.AddObserver (NSWindow.WillCloseNotification, OnClose, window);
-				SetTheme (window);
+				nativeBackgrounds [window] = nativeBackground;
+				SetTheme (window, nativeBackground);
 			}
 		}
 
-		static void SetTheme (NSWindow window)
+		static void SetTheme (NSWindow window, bool nativeBackground = false)
 		{
 			if (IdeApp.Preferences.UserInterfaceSkin == Skin.Light)
 				window.Appearance = NSAppearance.GetAppearance (NSAppearance.NameAqua);
 			else
 				window.Appearance = NSAppearance.GetAppearance (NSAppearance.NameVibrantDark);
 
+			if (nativeBackground)
+				return;
+			
 			if (window is NSPanel)
 				window.BackgroundColor = MonoDevelop.Ide.Gui.Styles.BackgroundColor.ToNSColor ();
 			else {
@@ -286,12 +291,13 @@ namespace MonoDevelop.Components
 			var w = (NSWindow)note.Object;
 			NSNotificationCenter.DefaultCenter.RemoveObserver(nsWindows[w]);
 			nsWindows.Remove (w);
+			nativeBackgrounds.Remove (w);
 		}
 
 		static void UpdateMacWindows ()
 		{
 			foreach (var w in nsWindows.Keys)
-				SetTheme (w);
+				SetTheme (w, nativeBackgrounds [w]);
 		}
 
 		static void OnGtkWindowRealized (object s, EventArgs a)

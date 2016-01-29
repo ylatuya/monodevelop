@@ -734,7 +734,7 @@ namespace MonoDevelop.MacIntegration
 			NSWindow w = GtkQuartz.GetWindow (window);
 			w.IsOpaque = true;
 			w.StyleMask |= NSWindowStyle.UnifiedTitleAndToolbar;
-			IdeTheme.ApplyTheme (w);
+			IdeTheme.ApplyTheme (w, true);
 		}
 
 		internal override void RemoveWindowShadow (Gtk.Window window)
