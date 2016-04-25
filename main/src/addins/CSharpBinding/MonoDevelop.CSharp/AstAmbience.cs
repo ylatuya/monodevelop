@@ -210,7 +210,7 @@ namespace MonoDevelop.CSharp
 				sb.Append ("[");
 				//if (options.SpaceWithinIndexerDeclarationBracket)
 				//	sb.Append (" ");
-				
+
 				bool first = true;
 				foreach (var param in indexer.ParameterList.Parameters) {
 					if (!first) {
@@ -258,7 +258,11 @@ namespace MonoDevelop.CSharp
 			} else if (e is EnumMemberDeclarationSyntax) {
 				var enumMemberDecl = (EnumMemberDeclarationSyntax)e;
 				sb.Append (enumMemberDecl.Identifier);
-			} /*else if (e is MemberDeclarationSyntax) {
+			} else if (e is RegionDirectiveTriviaSyntax) {
+				var region = (RegionDirectiveTriviaSyntax)e;
+				sb.Append (region.ToString ().Substring ("#region".Length).Trim ());
+			}
+			/*else if (e is MemberDeclarationSyntax) {
 				LoggingService.LogWarning ("can't display : " + e);
 				//				var entity = (MemberDeclarationSyntax)e;
 				// sb.Append (entity.Name);

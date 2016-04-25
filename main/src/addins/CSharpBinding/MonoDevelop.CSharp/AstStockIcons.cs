@@ -133,6 +133,8 @@ namespace MonoDevelop.CSharp
 		{
 			Accessibility acc = Accessibility.Public;
 			bool isStatic = false;
+			if (element is RegionDirectiveTriviaSyntax)
+				return Ide.Gui.Stock.Region;
 			if (element is NamespaceDeclarationSyntax)
 				return Namespace;
 			
