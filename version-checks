@@ -17,7 +17,7 @@ DEP[0]=md-addins
 DEP_NAME[0]=MDADDINS
 DEP_PATH[0]=${top_srcdir}/../md-addins
 DEP_MODULE[0]=git@github.com:xamarin/md-addins.git
-DEP_NEEDED_VERSION[0]=77a59a65179d9db10b1eefb479f6de5f7724f205
+DEP_NEEDED_VERSION[0]=6bdccc6944737ce349b61d9e25540f77040a9215
 DEP_BRANCH_AND_REMOTE[0]="window-show-last-page-conditionally origin/window-show-last-page-conditionally"
 
 # heap-shot
