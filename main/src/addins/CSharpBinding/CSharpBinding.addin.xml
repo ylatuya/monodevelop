@@ -360,4 +360,8 @@
 	<Extension path = "/MonoDevelop/Ide/AutoInsertBracketHandler">
 		<Class class="MonoDevelop.CSharp.Features.AutoInsertBracket.CSharpAutoInsertBracketHandler" insertbefore="Default"/>
 	</Extension>
+	
+	<Extension path = "/MonoDevelop/Ide/NavigateToSearcherr">
+		<Class class="MonoDevelop.CSharp.CSharpNaviagateToSearcher"/>
+	</Extension>
 </ExtensionModel>

@@ -197,6 +197,11 @@
 		<Description>Algorithm for providing automatic bracket insertion.</Description>
 		<ExtensionNode name="Class"/>
 	</ExtensionPoint>
+	
+	<ExtensionPoint path = "/MonoDevelop/Ide/NavigateToSearcher" name = "Navigate to searchers">
+		<Description>Algorithm for providing semantic search results in current document.</Description>
+		<ExtensionNode name="Class"/>
+	</ExtensionPoint>
 
 	<!-- Extensions -->
 	

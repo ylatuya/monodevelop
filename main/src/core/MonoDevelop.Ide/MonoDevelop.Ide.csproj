@@ -8266,6 +8266,7 @@
     <Compile Include="MonoDevelop.Ide.Editor.Extension\DefaultCommandTextEditorExtension.cs" />
     <Compile Include="MonoDevelop.Ide.Editor\EditSession.cs" />
     <Compile Include="MonoDevelop.Ide.Editor.Extension\AutoInsertBracketTextEditorExtension.cs" />
+    <Compile Include="MonoDevelop.Ide.NavigateTo\NavigateToOpenDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile.am" />
@@ -8315,6 +8316,7 @@
     <Folder Include="MonoDevelop.Ide.Editor\MessageBubbles\" />
     <Folder Include="MonoDevelop.Ide.Editor\Projection\" />
     <Folder Include="MonoDevelop.Components\Windows\" />
+    <Folder Include="MonoDevelop.Ide.NavigateTo\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="gtkrc">

@@ -867,6 +867,12 @@
 			_description = "Jump to a item in the current workspace"
 			shortcut = "Control|,"
 			macShortcut = "Meta|." />
+	<Command id = "MonoDevelop.Components.MainToolbar.Commands.NavigateToInDocument"
+			defaultHandler = "MonoDevelop.Ide.NavigateTo.NavigateToOpenDocument"
+			_label = "Navigate To In Document..."
+			_description = "Jump to a item in the current document"
+			shortcut = "Control|Shift|,"
+			macShortcut = "Meta|Shift|." />
 
 	<Command id = "MonoDevelop.Ide.Commands.SearchCommands.ToggleBookmark"
 			icon = "md-bookmark-toggle"
