@@ -47,6 +47,7 @@ namespace MonoDevelop.Ide.Commands
 		ToggleMaximize,
 		ReopenClosedTab,
 		CloseAllExceptPinned,
+		PinTab,
 	}
 	
 	class CloseAllHandler : CommandHandler
@@ -105,6 +106,22 @@ namespace MonoDevelop.Ide.Commands
 				if (deleteCache.Exists(d => d == doc))
 					doc.Close();
 			}
+		}
+	}
+
+	class PinTabHandler : CommandHandler
+	{
+		protected override void Run ()
+		{
+			var active = IdeApp.Workbench.ActiveDocument;
+			if (active == null)
+				return;
+
+			var activeWindow = (SdiWorkspaceWindow)active.Window;
+			var tabControl = activeWindow.TabControl;
+			var tmp = tabControl.Tabs.FirstOrDefault (item => (item.Content as SdiWorkspaceWindow).Equals (activeWindow));
+			if (tmp != null)
+				tmp.IsPinned = !tmp.IsPinned;
 		}
 	}
 

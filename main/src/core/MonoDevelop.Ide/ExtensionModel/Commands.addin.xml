@@ -541,6 +541,12 @@
 			_description = "Close all files except pinned"
 			shortcut = "Control|Shift|P"
 			macShortcut = "Meta|Shift|P" />
+	<Command id = "MonoDevelop.Ide.Commands.FileTabCommands.PinTab"
+			defaultHandler = "MonoDevelop.Ide.Commands.PinTabHandler"
+			_label = "_Pin/Unpin Tab"
+			_description = "Pin/Unpin current Tab selected"
+			shortcut = "Control|P"
+			macShortcut = "Meta|P" />
 	</Category>
 
 	<!-- ViewCommands -->
