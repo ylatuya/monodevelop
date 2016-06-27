@@ -19,7 +19,7 @@ DEP_PATH[0]=${top_srcdir}/../md-addins
 DEP_MODULE[0]=git@github.com:xamarin/md-addins.git
 DEP_NEEDED_VERSION[0]=1a161daeb05b7347aa2a83b3e257d6a1aa0df77c
 DEP_BRANCH_AND_REMOTE[0]="cycle7-android-http-handler origin/cycle7-android-http-handler"
-
+ 
 # heap-shot
 DEP[1]=heap-shot
 DEP_NAME[1]=HEAPSHOT
