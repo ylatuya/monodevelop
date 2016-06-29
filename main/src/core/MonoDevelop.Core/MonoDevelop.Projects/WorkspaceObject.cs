@@ -551,24 +551,44 @@ namespace MonoDevelop.Projects
 						return;
 				}
 
-				while (lockRequests != null && lockRequests.Count > 0) {
-					// If readers have been awakened, we can't awaken a writer
-					if (readLocksTaken > 0 && lockRequests.Peek ().IsWriteLock)
-						return;
-					var next = lockRequests.Dequeue ();
-					if (next.IsWriteLock) {
-						// Only one writer at a time
-						next.TaskSource.SetResult (next);
-						return;
-					} else {
-						// All readers can be awakened at once
-						writeLockTaken = false;
-						readLocksTaken++;
-						next.TaskSource.SetResult (next);
+				List<ObjectLock> toSignal = null;
+
+				try {
+					while (lockRequests != null && lockRequests.Count > 0) {
+						// If readers have been awakened, we can't awaken a writer
+						if (readLocksTaken > 0 && lockRequests.Peek ().IsWriteLock)
+							return;
+						var next = lockRequests.Dequeue ();
+						if (next.IsWriteLock) {
+							// Only one writer at a time
+							writeLockTaken = true;
+							next.TaskSource.SetResult (next);
+							return;
+						} else {
+							// All readers can be awakened at once
+							writeLockTaken = false;
+							readLocksTaken++;
+							if (toSignal == null)
+								toSignal = new List<ObjectLock> ();
+							toSignal.Add (next);
+							// Don't awake the task here, if the task is completed synchronously it will
+							// reenter ReleaseLock before we are done with the loop, and that can mess up
+							// the current release opeartion
+						}
 					}
+					writeLockTaken = false;
+				} finally {
+					SignalAll (toSignal);
 				}
-				writeLockTaken = false;
 			}
+		}
+
+		void SignalAll (IEnumerable<ObjectLock> tasks)
+		{
+			if (tasks == null)
+				return;
+			foreach (var t in tasks)
+				t.TaskSource.SetResult (t);
 		}
 
 		class ObjectLock: IDisposable
