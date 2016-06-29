@@ -634,6 +634,7 @@ namespace MonoDevelop.Projects
 
 		internal static async Task<BuildResult> RunParallelBuildOperation (ProgressMonitor monitor, ConfigurationSelector configuration, IEnumerable<SolutionItem> sortedItems, Func<ProgressMonitor,SolutionItem,Task<BuildResult>> buildAction, bool ignoreFailed)
 		{
+			Console.WriteLine ("SolutionItem: RunParallelBuildOperation 1");
 			List<SolutionItem> toBuild = new List<SolutionItem> (sortedItems);
 			BuildResult cres = new BuildResult ();
 			cres.BuildCount = 0;
@@ -650,6 +651,7 @@ namespace MonoDevelop.Projects
 				if (monitor.CancellationToken.IsCancellationRequested)
 					break;
 
+				Console.WriteLine ("SolutionItem: RunParallelBuildOperation 2 " + itemToBuild.Name);
 				var item = itemToBuild;
 
 				var myStatus = buildStatus [item];
@@ -669,6 +671,7 @@ namespace MonoDevelop.Projects
 				var refTasks = refStatus.Select (bs => bs.Task);
 
 				myStatus.Task = Task.WhenAll (refTasks).ContinueWith (async t => {
+					Console.WriteLine ("SolutionItem: RunParallelBuildOperation 3");
 					if (!ignoreFailed && (refStatus.Any (bs => bs.Failed) || t.IsFaulted)) {
 						myStatus.Failed = true;
 					} else {
@@ -684,7 +687,9 @@ namespace MonoDevelop.Projects
 
 			// Wait for all tasks to end
 
+			Console.WriteLine ("SolutionItem: RunParallelBuildOperation 4");
 			await Task.WhenAll (buildStatus.Values.Select (bs => bs.Task));
+			Console.WriteLine ("SolutionItem: RunParallelBuildOperation 5");
 
 			// Generate the errors in the order they were supposed to build
 
@@ -694,6 +699,7 @@ namespace MonoDevelop.Projects
 					cres.Append (bs.Result);
 			}
 
+			Console.WriteLine ("SolutionItem: RunParallelBuildOperation 6");
 			return cres;
 		}
 

@@ -235,10 +235,13 @@ namespace MonoDevelop.Projects.MSBuild
 			var taskId = Interlocked.Increment (ref lastTaskId);
 			var cr = RegisterCancellation (cancellationToken, taskId);
 
+			Console.WriteLine ("RemoteProjectBuilder: Run 1");
 			var t = Task.Run (() => {
+				Console.WriteLine ("RemoteProjectBuilder: Run 2");
 				try {
 					BeginOperation ();
 					var res = builder.Run (configurations, logWriter, verbosity, runTargets, evaluateItems, evaluateProperties, globalProperties, taskId);
+					Console.WriteLine ("RemoteProjectBuilder: Run 3");
 					if (res == null && cancellationToken.IsCancellationRequested) {
 						MSBuildTargetResult err = new MSBuildTargetResult (file, false, "", "", file, 1, 1, 1, 1, "Build cancelled", "");
 						return new MSBuildResult (new [] { err });
@@ -253,6 +256,7 @@ namespace MonoDevelop.Projects.MSBuild
 					MSBuildResult res = new MSBuildResult (new [] { err });
 					return res;
 				} finally {
+					Console.WriteLine ("RemoteProjectBuilder: Run 4");
 					EndOperation ();
 				}
 			});

@@ -945,6 +945,7 @@ namespace MonoDevelop.Projects
 		/// </remarks>
 		internal protected virtual Task<TargetEvaluationResult> OnRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
+			Console.WriteLine ("Project: OnRunTarget");
 			if (target == ProjectService.BuildTarget)
 				return RunBuildTarget (monitor, configuration, context);
 			else if (target == ProjectService.CleanTarget)
@@ -1003,6 +1004,7 @@ namespace MonoDevelop.Projects
 		async Task<TargetEvaluationResult> RunMSBuildTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
 			if (CheckUseMSBuildEngine (configuration)) {
+				Console.WriteLine ("Project: RunMSBuildTarget 1");
 				LogWriter logWriter = new LogWriter (monitor.Log);
 				var configs = GetConfigurations (configuration);	
 
@@ -1020,6 +1022,7 @@ namespace MonoDevelop.Projects
 				MSBuildResult result = null;
 				await Task.Run (async delegate {
 
+					Console.WriteLine ("Project: RunMSBuildTarget 2");
 					TimerCounter buildTimer = null;
 					switch (target) {
 					case "Build": buildTimer = Counters.BuildMSBuildProjectTimer; break;
@@ -1033,16 +1036,19 @@ namespace MonoDevelop.Projects
 
 					RemoteProjectBuilder builder = await GetProjectBuilder ();
 					if (builder.IsBusy) {
+						Console.WriteLine ("Project: RunMSBuildTarget 3");
 						builder.ReleaseReference ();
 						newBuilderRequested = true;
 						builder = await RequestLockedBuilder ();
 					}
 					else
 						builder.Lock ();
+					Console.WriteLine ("Project: RunMSBuildTarget 4");
 
 					try {
 						result = await builder.Run (configs, logWriter, MSBuildProjectService.DefaultMSBuildVerbosity, new [] { target }, evaluateItems, evaluateProperties, globalProperties, monitor.CancellationToken);
 					} finally {
+						Console.WriteLine ("Project: RunMSBuildTarget 5");
 						builder.Unlock ();
 						builder.ReleaseReference ();
 						if (newBuilderRequested) {
@@ -1057,8 +1063,10 @@ namespace MonoDevelop.Projects
 					}
 
 					System.Runtime.Remoting.RemotingServices.Disconnect (logWriter);
+					Console.WriteLine ("Project: RunMSBuildTarget 6");
 				});
 
+				Console.WriteLine ("Project: RunMSBuildTarget 7");
 				var br = new BuildResult ();
 				foreach (var err in result.Errors) {
 					FilePath file = null;
@@ -1098,9 +1106,11 @@ namespace MonoDevelop.Projects
 					evItems.Add (eit);
 				}
 
+				Console.WriteLine ("Project: RunMSBuildTarget 8");
 				return new TargetEvaluationResult (br, evItems, props);
 			}
 			else {
+				Console.WriteLine ("Project: RunMSBuildTarget 9");
 				CleanupProjectBuilder ();
 				if (this is DotNetProject) {
 					var handler = new MonoDevelop.Projects.MD1.MD1DotNetProjectHandler ((DotNetProject)this);
@@ -1401,11 +1411,13 @@ namespace MonoDevelop.Projects
 
 		protected override async Task<BuildResult> OnBuild (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext)
 		{
+			Console.WriteLine ("Project: OnBuild");
 			return (await RunTarget (monitor, "Build", configuration, new TargetEvaluationContext (operationContext))).BuildResult;
 		}
 
 		async Task<TargetEvaluationResult> RunBuildTarget (ProgressMonitor monitor, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
+			Console.WriteLine ("Project: RunBuildTarget");
 			// create output directory, if not exists
 			ProjectConfiguration conf = GetConfiguration (configuration) as ProjectConfiguration;
 			if (conf == null) {
@@ -1417,12 +1429,15 @@ namespace MonoDevelop.Projects
 			StringParserService.Properties["Project"] = Name;
 			
 			if (UsingMSBuildEngine (configuration)) {
+				Console.WriteLine ("Project: RunBuildTarget 2");
 				var result = await RunMSBuildTarget (monitor, "Build", configuration, context);
+				Console.WriteLine ("Project: RunBuildTarget 3");
 				if (!result.BuildResult.Failed)
 					SetFastBuildCheckClean (configuration);
 				return result;			
 			}
-			
+			Console.WriteLine ("Project: RunBuildTarget 4");
+
 			string outputDir = conf.OutputDirectory;
 			try {
 				DirectoryInfo directoryInfo = new DirectoryInfo (outputDir);
@@ -1439,6 +1454,7 @@ namespace MonoDevelop.Projects
 			monitor.Log.WriteLine ("Performing main compilation...");
 			
 			BuildResult res = await DoBuild (monitor, configuration);
+			Console.WriteLine ("Project: RunBuildTarget 5");
 
 			if (res != null) {
 				string errorString = GettextCatalog.GetPluralString ("{0} error", "{0} errors", res.ErrorCount, res.ErrorCount);

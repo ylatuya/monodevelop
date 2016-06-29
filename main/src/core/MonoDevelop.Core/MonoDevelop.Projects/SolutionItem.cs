@@ -570,14 +570,19 @@ namespace MonoDevelop.Projects
 
 		async Task<BuildResult> BuildTask (ProgressMonitor monitor, ConfigurationSelector solutionConfiguration, bool buildReferences, OperationContext operationContext)
 		{
+			Console.WriteLine ("SolutionItem: BuildTask 1");
 			if (!buildReferences) {
 				try {
+					Console.WriteLine ("SolutionItem: BuildTask 2");
 					SolutionItemConfiguration iconf = GetConfiguration (solutionConfiguration);
 					string confName = iconf != null ? iconf.Id : solutionConfiguration.ToString ();
 					monitor.BeginTask (GettextCatalog.GetString ("Building: {0} ({1})", Name, confName), 1);
 
 					using (Counters.BuildProjectTimer.BeginTiming ("Building " + Name, GetProjectEventMetadata (solutionConfiguration))) {
-						return await InternalBuild (monitor, solutionConfiguration, operationContext);
+						Console.WriteLine ("SolutionItem: BuildTask 6");
+						var res = await InternalBuild (monitor, solutionConfiguration, operationContext);
+						Console.WriteLine ("SolutionItem: BuildTask 7");
+						return res;
 					}
 
 				} finally {
@@ -585,6 +590,7 @@ namespace MonoDevelop.Projects
 				}
 			}
 
+			Console.WriteLine ("SolutionItem: BuildTask 3");
 			ITimeTracker tt = Counters.BuildProjectAndReferencesTimer.BeginTiming ("Building " + Name, GetProjectEventMetadata (solutionConfiguration));
 			try {
 				// Get a list of all items that need to be built (including this),
@@ -601,25 +607,31 @@ namespace MonoDevelop.Projects
 				monitor.BeginTask (GettextCatalog.GetString ("Building: {0} ({1})", Name, confName), sortedReferenced.Count);
 
 				return await SolutionFolder.RunParallelBuildOperation (monitor, solutionConfiguration, sortedReferenced, (ProgressMonitor m, SolutionItem item) => {
+					Console.WriteLine ("SolutionItem: BuildTask Inside RunParallelBuildOperation");
 					return item.Build (m, solutionConfiguration, false, operationContext);
 				}, false);
 			} finally {
+				Console.WriteLine ("SolutionItem: BuildTask 4");
 				monitor.EndTask ();
 				tt.End ();
 			}
+			Console.WriteLine ("SolutionItem: BuildTask 5");
 		}
 
 		async Task<BuildResult> InternalBuild (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext)
 		{
+			Console.WriteLine ("SolutionItem: InternalBuild 1");
 			if (IsUnsupportedProject) {
 				var r = new BuildResult ();
 				r.AddError (UnsupportedProjectMessage);
+				Console.WriteLine ("SolutionItem: InternalBuild 2");
 				return r;
 			}
 
 			SolutionItemConfiguration conf = GetConfiguration (configuration) as SolutionItemConfiguration;
 			if (conf != null) {
 				if (conf.CustomCommands.CanExecute (this, CustomCommandType.BeforeBuild, null, configuration)) {
+					Console.WriteLine ("SolutionItem: InternalBuild 3");
 					if (!await conf.CustomCommands.ExecuteCommand (monitor, this, CustomCommandType.BeforeBuild, configuration)) {
 						var r = new BuildResult ();
 						r.AddError (GettextCatalog.GetString ("Custom command execution failed"));
@@ -628,11 +640,13 @@ namespace MonoDevelop.Projects
 				}
 			}
 
+			Console.WriteLine ("SolutionItem: InternalBuild 4");
 			if (monitor.CancellationToken.IsCancellationRequested)
 				return new BuildResult (new CompilerResults (null), "");
 
 			BuildResult res = await ItemExtension.OnBuild (monitor, configuration, operationContext);
 
+			Console.WriteLine ("SolutionItem: InternalBuild 5");
 			if (conf != null && !monitor.CancellationToken.IsCancellationRequested && !res.Failed) {
 				if (conf.CustomCommands.CanExecute (this, CustomCommandType.AfterBuild, null, configuration)) {
 					if (!await conf.CustomCommands.ExecuteCommand (monitor, this, CustomCommandType.AfterBuild, configuration))
