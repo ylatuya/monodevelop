@@ -945,7 +945,7 @@ namespace MonoDevelop.Projects
 		/// </remarks>
 		internal protected virtual Task<TargetEvaluationResult> OnRunTarget (ProgressMonitor monitor, string target, ConfigurationSelector configuration, TargetEvaluationContext context)
 		{
-			Console.WriteLine ("Project: OnRunTarget");
+			Console.WriteLine ("Project: OnRunTarget " + target);
 			if (target == ProjectService.BuildTarget)
 				return RunBuildTarget (monitor, configuration, context);
 			else if (target == ProjectService.CleanTarget)

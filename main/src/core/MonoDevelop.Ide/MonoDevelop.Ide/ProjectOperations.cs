@@ -1330,6 +1330,7 @@ namespace MonoDevelop.Ide
 
 		AsyncOperation<BuildResult> Build (IBuildTarget entry, bool skipPrebuildCheck, CancellationToken? cancellationToken = null, OperationContext operationContext = null)
 		{
+			Console.WriteLine ("ProjectOperations: Build 1");
 			if (currentBuildOperation != null && !currentBuildOperation.IsCompleted) return currentBuildOperation;
 
 			ITimeTracker tt = Counters.BuildItemTimer.BeginTiming ("Building " + entry.Name);
@@ -1338,11 +1339,17 @@ namespace MonoDevelop.Ide
 				if (cancellationToken != null)
 					cs = CancellationTokenSource.CreateLinkedTokenSource (cs.Token, cancellationToken.Value);
 				ProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetBuildProgressMonitor ().WithCancellationSource (cs);
+				Console.WriteLine ("ProjectOperations: Build 2");
 				BeginBuild (monitor, tt, false);
+				Console.WriteLine ("ProjectOperations: Build 3");
 				var t = BuildSolutionItemAsync (entry, monitor, tt, skipPrebuildCheck, operationContext);
+				Console.WriteLine ("ProjectOperations: Build 4");
 				currentBuildOperation = new AsyncOperation<BuildResult> (t, cs);
 				currentBuildOperationOwner = entry;
-				t.ContinueWith ((ta) => currentBuildOperationOwner = null);
+				t.ContinueWith ((ta) => {
+					currentBuildOperationOwner = null;
+					Console.WriteLine ("ProjectOperations: Build 5");
+				});
 			} catch {
 				tt.End ();
 				throw;
@@ -1352,19 +1359,25 @@ namespace MonoDevelop.Ide
 		
 		async Task<BuildResult> BuildSolutionItemAsync (IBuildTarget entry, ProgressMonitor monitor, ITimeTracker tt, bool skipPrebuildCheck = false, OperationContext operationContext = null)
 		{
+			Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 1 " + entry.Name);
 			BuildResult result = null;
 			try {
 				if (!skipPrebuildCheck) {
 					tt.Trace ("Pre-build operations");
 					result = await DoBeforeCompileAction ();
 				}
+				Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 2");
 
 				//wait for any custom tools that were triggered by the save, since the build may depend on them
 				await MonoDevelop.Ide.CustomTools.CustomToolService.WaitForRunningTools (monitor);
 
+				Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 3");
+			
 				if (skipPrebuildCheck || result.ErrorCount == 0) {
+					Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 4");
 					tt.Trace ("Building item");
 					result = await entry.Build (monitor, IdeApp.Workspace.ActiveConfiguration, true, operationContext);
+					Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 5");
 				}
 			} catch (Exception ex) {
 				monitor.ReportError (GettextCatalog.GetString ("Build failed."), ex);
@@ -1375,10 +1388,12 @@ namespace MonoDevelop.Ide
 					result.SourceTarget = entry;
 			} finally {
 				tt.Trace ("Done building");
+				Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 6");
 			}
 
-			BuildDone (monitor, result, entry, tt);	// BuildDone disposes the monitor
+			BuildDone (monitor, result, entry, tt); // BuildDone disposes the monitor
 
+			Console.WriteLine ("ProjectOperations: BuildSolutionItemAsync 7");
 			return result;
 		}
 		
@@ -1450,6 +1465,7 @@ namespace MonoDevelop.Ide
 			tt.Trace ("Begin reporting build result");
 			try {
 				if (result != null) {
+					Console.WriteLine ("ProjectOperations: BuildDone 1");
 					lastResult = result;
 					monitor.Log.WriteLine ();
 					monitor.Log.WriteLine (GettextCatalog.GetString ("---------------------- Done ----------------------"));
@@ -1483,9 +1499,12 @@ namespace MonoDevelop.Ide
 					}
 					tt.Trace ("End build event");
 					OnEndBuild (monitor, lastResult.FailedBuildCount == 0, lastResult, entry as SolutionFolderItem);
+					Console.WriteLine ("ProjectOperations: BuildDone 2");
 				} else {
+					Console.WriteLine ("ProjectOperations: BuildDone 3");
 					tt.Trace ("End build event");
 					OnEndBuild (monitor, false);
+					Console.WriteLine ("ProjectOperations: BuildDone 4");
 				}
 				
 				tt.Trace ("Showing results pad");
@@ -1511,7 +1530,8 @@ namespace MonoDevelop.Ide
 						goto case BuildResultStates.Never;
 					}
 				} catch {}
-				
+
+				Console.WriteLine ("ProjectOperations: BuildDone 5");
 				if (tasks != null) {
 					TaskListEntry jumpTask = null;
 					switch (IdeApp.Preferences.JumpToFirstErrorOrWarning.Value) {
@@ -1529,9 +1549,11 @@ namespace MonoDevelop.Ide
 				}
 				
 			} finally {
+				Console.WriteLine ("ProjectOperations: BuildDone 6");
 				monitor.Dispose ();
 				tt.End ();
 			}
+			Console.WriteLine ("ProjectOperations: BuildDone 7");
 		}
 		
 		public bool AddFilesToSolutionFolder (SolutionFolder folder)

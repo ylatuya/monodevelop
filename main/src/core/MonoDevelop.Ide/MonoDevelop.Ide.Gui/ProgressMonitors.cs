@@ -70,6 +70,7 @@ namespace MonoDevelop.Ide.Gui
 		
 		private ProgressMonitor GetBuildProgressMonitor (string statusText)
 		{
+			Console.WriteLine ("ProgressMonitorManager: GetBuildProgressMonitor 1");
 			Pad pad = IdeApp.Workbench.GetPad<ErrorListPad> ();
 			ErrorListPad errorPad = (ErrorListPad) pad.Content;
 			AggregatedProgressMonitor mon = new AggregatedProgressMonitor (errorPad.GetBuildProgressMonitor ());

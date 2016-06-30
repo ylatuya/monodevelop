@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using MonoDevelop.Ide.Gui.Dialogs;
 using MonoDevelop.Ide.ProgressMonitoring;
 using MonoDevelop.Core;
+using System;
 
 namespace MonoDevelop.Ide.Gui
 {
@@ -46,7 +47,7 @@ namespace MonoDevelop.Ide.Gui
 		
 		public StatusProgressMonitor (string title, string iconName, bool showErrorDialogs, bool showTaskTitles, bool lockGui, Pad statusSourcePad): base (Runtime.MainSynchronizationContext)
 		{
-
+			Console.WriteLine ("StatusProgressMonitor: ctor 1");
 			this.lockGui = lockGui;
 			this.showErrorDialogs = showErrorDialogs;
 			this.showTaskTitles = showTaskTitles;
@@ -89,6 +90,7 @@ namespace MonoDevelop.Ide.Gui
 				IdeApp.Workbench.UnlockGui ();
 
 			statusBar.EndProgress ();
+			Console.WriteLine ("StatusProgressMonitor: OnCompleted 1");
 
 			try {
 				if (Errors.Length > 0 || Warnings.Length > 0) {
@@ -99,11 +101,13 @@ namespace MonoDevelop.Ide.Gui
 					}
 
 					DesktopService.ShowGlobalProgressError ();
+					Console.WriteLine ("StatusProgressMonitor: OnCompleted 2");
 
 					base.OnCompleted ();
 
 					if (!CancellationToken.IsCancellationRequested && showErrorDialogs)
 						this.ShowResultDialog ();
+					Console.WriteLine ("StatusProgressMonitor: OnCompleted 3");
 					return;
 				}
 
@@ -113,11 +117,13 @@ namespace MonoDevelop.Ide.Gui
 			} finally {
 				statusBar.StatusSourcePad = statusSourcePad;
 				statusBar.Dispose ();
+				Console.WriteLine ("StatusProgressMonitor: OnCompleted 4");
 			}
 
 			DesktopService.SetGlobalProgress (Progress);
 
 			base.OnCompleted ();
+			Console.WriteLine ("StatusProgressMonitor: OnCompleted 5");
 		}
 	}
 }
