@@ -295,17 +295,28 @@ namespace MonoDevelop.Core.Text
 
 		public static async Task WriteTextAsync (string fileName, string text, Encoding encoding, bool hadBom)
 		{
+			Console.WriteLine ("TextFileUtility: WriteTextAsync 1");
 			var tmpPath = WriteTextInit (fileName, text, encoding);
+			Console.WriteLine ("TextFileUtility: WriteTextAsync 2");
 			using (var stream = new FileStream (tmpPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write)) {
 				if (hadBom) {
+					Console.WriteLine ("TextFileUtility: WriteTextAsync 3");
 					var bom = encoding.GetPreamble ();
-					if (bom != null && bom.Length > 0)
+					Console.WriteLine ("TextFileUtility: WriteTextAsync 4");
+					if (bom != null && bom.Length > 0) {
+						Console.WriteLine ("TextFileUtility: WriteTextAsync 5 " + bom.Length);
 						await stream.WriteAsync (bom, 0, bom.Length).ConfigureAwait (false);
+					}
+					Console.WriteLine ("TextFileUtility: WriteTextAsync 6");
 				}
+				Console.WriteLine ("TextFileUtility: WriteTextAsync 7");
 				byte[] bytes = encoding.GetBytes (text);
+				Console.WriteLine ("TextFileUtility: WriteTextAsync 8 " + bytes.Length);
 				await stream.WriteAsync (bytes, 0, bytes.Length).ConfigureAwait (false);
+				Console.WriteLine ("TextFileUtility: WriteTextAsync 9");
 			}
 			WriteTextFinal (tmpPath, fileName);
+			Console.WriteLine ("TextFileUtility: WriteTextAsync 10");
 		}
 
 		/// <summary>

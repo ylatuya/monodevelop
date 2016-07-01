@@ -630,18 +630,23 @@ namespace MonoDevelop.SourceEditor
 
 		public async Task Save (string fileName, Encoding encoding)
 		{
+			Console.WriteLine ("SourceEditorView: Save 1");
 			if (widget.HasMessageBar)
 				return;
 			if (encoding != null) {
 				this.encoding = encoding;
+				Console.WriteLine ("SourceEditorView: Save 2");
 				UpdateTextDocumentEncoding ();
 			}
+			Console.WriteLine ("SourceEditorView: Save 3");
 			if (ContentName != fileName) {
+				Console.WriteLine ("SourceEditorView: Save 4");
 				FileService.RequestFileEdit ((FilePath) fileName);
 				writeAllowed = true;
 				writeAccessChecked = true;
 			}
 
+			Console.WriteLine ("SourceEditorView: Save 5");
 			if (warnOverwrite) {
 				if (string.Equals (fileName, ContentName, FilePath.PathComparison)) {
 					string question = GettextCatalog.GetString (
@@ -655,9 +660,11 @@ namespace MonoDevelop.SourceEditor
 				widget.RemoveMessageBar ();
 				WorkbenchWindow.ShowNotification = false;
 			}
-			
+
+			Console.WriteLine ("SourceEditorView: Save 6");
 			if (PropertyService.Get ("AutoFormatDocumentOnSave", false)) {
 				try {
+					Console.WriteLine ("SourceEditorView: Save 7");
 					var formatter = CodeFormatterService.GetFormatter (Document.MimeType);
 					if (formatter != null) {
 						var document = WorkbenchWindow.Document;
@@ -678,12 +685,15 @@ namespace MonoDevelop.SourceEditor
 					LoggingService.LogError ("Error while formatting on save", e);
 				}
 			}
+			Console.WriteLine ("SourceEditorView: Save 8");
 
 			FileRegistry.SkipNextChange (fileName);
+			Console.WriteLine ("SourceEditorView: Save 9");
 			try {
 				object attributes = null;
 				if (File.Exists (fileName)) {
 					try {
+						Console.WriteLine ("SourceEditorView: Save 10");
 						attributes = DesktopService.GetFileAttributes (fileName);
 						var fileAttributes = File.GetAttributes (fileName);
 						if (fileAttributes.HasFlag (FileAttributes.ReadOnly)) {
@@ -709,9 +719,11 @@ namespace MonoDevelop.SourceEditor
 					}
 				}
 				try {
+					Console.WriteLine ("SourceEditorView: Save 11");
 					var writeEncoding = encoding;
 					var writeBom = hadBom;
 					var writeText = ProcessSaveText (Document.Text);
+					Console.WriteLine ("SourceEditorView: Save 12");
 					if (writeEncoding == null) {
 						if (this.encoding != null) {
 							writeEncoding = this.encoding;
@@ -723,9 +735,12 @@ namespace MonoDevelop.SourceEditor
 	//						writeBom =!Mono.TextEditor.Utils.TextFileUtility.IsASCII (writeText);
 						}
 					}
+					Console.WriteLine ("SourceEditorView: Save 13");
 					await MonoDevelop.Core.Text.TextFileUtility.WriteTextAsync (fileName, writeText, writeEncoding, writeBom);
+					Console.WriteLine ("SourceEditorView: Save 14");
 					this.encoding = writeEncoding;
 				} catch (InvalidEncodingException) {
+					Console.WriteLine ("SourceEditorView: Save 15");
 					var result = MessageService.AskQuestion (GettextCatalog.GetString ("Can't save file with current codepage."), 
 						GettextCatalog.GetString ("Some unicode characters in this file could not be saved with the current encoding.\nDo you want to resave this file as Unicode ?\nYou can choose another encoding in the 'save as' dialog."),
 						1,
@@ -746,6 +761,7 @@ namespace MonoDevelop.SourceEditor
 				} catch (Exception e) {
 					LoggingService.LogError ("Can't set file attributes", e);
 				}
+				Console.WriteLine ("SourceEditorView: Save 16");
 			} catch (UnauthorizedAccessException e) {
 				LoggingService.LogError ("Error while saving file", e);
 				MessageService.ShowError (GettextCatalog.GetString ("Can't save file - access denied"), e.Message);
@@ -754,14 +770,18 @@ namespace MonoDevelop.SourceEditor
 			//			if (encoding != null)
 			//				se.Buffer.SourceEncoding = encoding;
 			//			TextFileService.FireCommitCountChanges (this);
+			Console.WriteLine ("SourceEditorView: Save 17");
 			await Runtime.RunInMainThread (delegate {
+				Console.WriteLine ("SourceEditorView: Save 18");
 				Document.FileName = ContentName = fileName;
 				if (Document != null) {
 					UpdateMimeType (fileName);
 					Document.SetNotDirtyState ();
 				}
 				IsDirty = false;
+				Console.WriteLine ("SourceEditorView: Save 19");
 			});
+			Console.WriteLine ("SourceEditorView: Save 20");
 		}
 		
 		public void InformLoadComplete ()
