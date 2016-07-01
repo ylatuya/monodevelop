@@ -736,7 +736,8 @@ namespace MonoDevelop.SourceEditor
 						}
 					}
 					Console.WriteLine ("SourceEditorView: Save 13");
-					await MonoDevelop.Core.Text.TextFileUtility.WriteTextAsync (fileName, writeText, writeEncoding, writeBom);
+					MonoDevelop.Core.Text.TextFileUtility.WriteText (fileName, writeText, writeEncoding, writeBom);
+					//await MonoDevelop.Core.Text.TextFileUtility.WriteTextAsync (fileName, writeText, writeEncoding, writeBom);
 					Console.WriteLine ("SourceEditorView: Save 14");
 					this.encoding = writeEncoding;
 				} catch (InvalidEncodingException) {
