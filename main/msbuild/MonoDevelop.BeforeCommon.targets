@@ -8,7 +8,7 @@
 	<PropertyGroup Condition="'$(OS)'=='Unix'">
 		<_MonoBinDir>$(MSBuildBinPath)\..\..\..\4.5\</_MonoBinDir>
 		<CscToolExe>csc.exe</CscToolExe>
-		<CscToolPath>$(_MonoBinDir)</CscToolPath>
+		<CscToolPath>$(MSBuildBinPath)\Roslyn\</CscToolPath>
 		<DebugType>portable</DebugType>
 		<CscDebugFileExt>.pdb</CscDebugFileExt>
 		<_DebugFileExt>.pdb</_DebugFileExt>

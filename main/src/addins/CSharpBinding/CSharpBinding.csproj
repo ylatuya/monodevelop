@@ -187,9 +187,10 @@
       <Private>False</Private>
     </Reference>
     <!-- NOTE:  On Mono this conflicts with the one in mscorlib -->
-    <Reference Include="System.ValueTuple" Condition="'$(OS)' != 'Unix'">
+    <Reference Include="System.ValueTuple">
       <HintPath>..\..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Aliases>SystemValueTuple</Aliases>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
