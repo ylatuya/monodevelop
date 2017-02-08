@@ -65,7 +65,11 @@ namespace MonoDevelop.Projects.MSBuild
 			MSBuildResult result = null;
 			BuildEngine.RunSTA (taskId, delegate {
 				try {
+					var timer = System.Diagnostics.Stopwatch.StartNew ();
 					var project = SetupProject (configurations);
+					BuildEngine.DesktopLog ("SetupProject: {0}ms", timer.ElapsedMilliseconds);
+
+					timer.Restart ();
 					InitLogger (logWriter);
 
 					buildEngine.Engine.UnregisterAllLoggers ();
@@ -77,6 +81,7 @@ namespace MonoDevelop.Projects.MSBuild
 						consoleLogger.Verbosity = GetVerbosity (verbosity);
 						buildEngine.Engine.RegisterLogger (new TargetLogger (logWriter.RequiredEvents, LogEvent));
 					}
+					BuildEngine.DesktopLog ("InitLogger: {0}ms", timer.ElapsedMilliseconds);
 
 					if (runTargets != null && runTargets.Length > 0) {
 						if (globalProperties != null) {
@@ -84,9 +89,11 @@ namespace MonoDevelop.Projects.MSBuild
 								project.GlobalProperties.SetProperty (p.Key, p.Value);
                         }
 
+						timer.Restart ();
 						// We are using this BuildProject overload and the BuildSettings.None argument as a workaround to
 						// an xbuild bug which causes references to not be resolved after the project has been built once.
 						buildEngine.Engine.BuildProject (project, runTargets, new Hashtable (), BuildSettings.None);
+						BuildEngine.DesktopLog ("buildEngine.Engine.BuildProject: {0}ms", timer.ElapsedMilliseconds);
 
 						if (globalProperties != null) {
 							foreach (var p in globalProperties.Keys) {
@@ -99,11 +106,14 @@ namespace MonoDevelop.Projects.MSBuild
 					result = new MSBuildResult (logger.BuildResult.ToArray ());
 
 					if (evaluateProperties != null) {
+						timer.Restart ();
 						foreach (var name in evaluateProperties)
 							result.Properties [name] = project.GetEvaluatedProperty (name);
+						BuildEngine.DesktopLog ("project.GetEvaluatedProperty: {0}ms", timer.ElapsedMilliseconds);
 					}
 
 					if (evaluateItems != null) {
+						timer.Restart ();
 						foreach (var name in evaluateItems) {
 							BuildItemGroup grp = project.GetEvaluatedItemsByName (name);
 							var list = new List<MSBuildEvaluatedItem> ();
@@ -116,6 +126,7 @@ namespace MonoDevelop.Projects.MSBuild
 							}
 							result.Items[name] = list.ToArray ();
 						}
+						BuildEngine.DesktopLog ("project.GetEvaluatedItemsByName: {0}ms", timer.ElapsedMilliseconds);
 					}
 				} catch (InvalidProjectFileException ex) {
 					var r = new MSBuildTargetResult (
@@ -138,23 +149,35 @@ namespace MonoDevelop.Projects.MSBuild
 			var slnConfigContents = GenerateSolutionConfigurationContents (configurations);
 
 			foreach (var pc in configurations) {
+				var timer = System.Diagnostics.Stopwatch.StartNew ();
 				var p = buildEngine.Engine.GetLoadedProject (pc.ProjectFile);
 
 				if (p != null && pc.ProjectFile == file) {
 					// building the project may create new items and/or modify some properties,
 					// so we always need to use a new instance of the project when building
+					
 					buildEngine.Engine.UnloadProject (p);
 					p = null;
 				}
+				BuildEngine.DesktopLog ("Unloaded existing, if any: {0}ms", timer.ElapsedMilliseconds);
 
 				Environment.CurrentDirectory = Path.GetDirectoryName (Path.GetFullPath (file));
 
 				if (p == null) {
+					timer.Restart ();
 					p = new Project (buildEngine.Engine);
+					BuildEngine.DesktopLog ("new Project: {0}ms", timer.ElapsedMilliseconds);
+
+					timer.Restart ();
 					var content = buildEngine.GetUnsavedProjectContent (pc.ProjectFile);
+					BuildEngine.DesktopLog ("buildEngine.GetUnsavedProjectContent: {0}ms", timer.ElapsedMilliseconds);
+
 					if (content == null) {
+						timer.Restart ();
 						p.Load (pc.ProjectFile);
+						BuildEngine.DesktopLog ("p.Load (pc.ProjectFile: {0}ms", timer.ElapsedMilliseconds);
 					} else {
+						timer.Restart ();
 						p.FullFileName = Path.GetFullPath (pc.ProjectFile);
 
 						if (HasXbuildFileBug ()) {
@@ -165,6 +188,7 @@ namespace MonoDevelop.Projects.MSBuild
 						} else {
 							p.Load (new StringReader (content));
 						}
+						BuildEngine.DesktopLog ("p.Load (new StringReader (content));: {0}ms", timer.ElapsedMilliseconds);
 					}
 				}
 

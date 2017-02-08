@@ -203,13 +203,42 @@ namespace MonoDevelop.Projects.MSBuild
 			return msg.CreateResponse ();
 		}
 
+		static readonly object locker = new object ();
+		static StreamWriter desktopWriter;
+		static StreamWriter DesktopWriter {
+			get {
+				if (desktopWriter == null) {
+					desktopWriter = new StreamWriter (string.Format ("/Users/alan/Desktop/BuildEngine.{0}.log", Process.GetCurrentProcess ().Id));
+					desktopWriter.AutoFlush = true;
+				}
+				return desktopWriter;
+			}
+		}
+
+		public static void DesktopLog (string message)
+		{
+			lock (locker)
+				DesktopWriter.WriteLine (message);
+		}
+
+		public static void DesktopLog (string message, params object [] formatting)
+		{
+			lock (locker)
+				DesktopWriter.WriteLine (message, formatting);
+		}
+
 		[MessageHandler]
 		public BinaryMessage RunProject (RunProjectRequest msg)
 		{
 			var pb = GetProject (msg.ProjectId);
 			if (pb != null) {
+				var start = System.Diagnostics.Stopwatch.StartNew ();
 				var logger = msg.LogWriterId != -1 ? (IEngineLogWriter) new LogWriter (msg.LogWriterId, msg.EnabledLogEvents) : (IEngineLogWriter) new NullLogWriter ();
 				var res = pb.Run (msg.Configurations, logger, msg.Verbosity, msg.RunTargets, msg.EvaluateItems, msg.EvaluateProperties, msg.GlobalProperties, msg.TaskId);
+				lock (locker) {
+					DesktopLog ("Request: {0}", msg);
+					DesktopLog ("Duration: {0}ms", start.ElapsedMilliseconds);
+				}
 				return new RunProjectResponse { Result = res };
 			}
 			return msg.CreateResponse ();

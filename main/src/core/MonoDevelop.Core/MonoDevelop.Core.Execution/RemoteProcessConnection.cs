@@ -1,4 +1,4 @@
-﻿//#define DEBUG_MESSAGES
+﻿#define DEBUG_MESSAGES
 
 using System;
 using System.Threading;
