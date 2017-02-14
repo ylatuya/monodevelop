@@ -9,9 +9,8 @@
     <Import_RootNamespace>Mono.TextEditor.Platform</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-      <Compile Include="$(MSBuildThisFileDirectory)PlatformCatalog.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)PlatformExtensions.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)TagBasedSyntaxHighlighting.cs" />
+      <Compile Include="$(MSBuildThisFileDirectory)TagBasedSyntaxHighlightingFactory.cs" />
+      <Compile Include="$(MSBuildThisFileDirectory)PlatformAdapterService.cs" />
 
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Core\Impl\ContentType\ContentTypeImpl.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Core\Impl\ContentType\ContentTypeRegistryServiceImpl.cs" />
@@ -118,143 +117,6 @@
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\TextModel\StringRebuilder\LineSpan.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\TextModel\StringRebuilder\SimpleStringRebuilder.cs" />
 
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\Language\IWaitContext.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\Language\IWaitIndicator.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\Language\WaitHelper.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)Platform\Imaging\Impl\ImageMoniker.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\BulkObservableCollection.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Completion.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Completion2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Completion3.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Completion4.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionIcon.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionIcon2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionMatchType.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionPresenterStyle.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionSelectionStatus.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionSet.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CompletionSet2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\CurrentParameterChangedEventArgs.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\FilteredObservableCollection.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICompletionBroker.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICompletionSession.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICompletionSource.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICompletionSourceProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IconDescription.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICustomCommit.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICustomIntellisensePresenter.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ICustomKeyboardHandler.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IFocusableIntellisensePresenter.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IGlyphService.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseCommandTarget.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseController.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseControllerProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseFilter.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisensePresenter.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisensePresenterProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseSession.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseSessionStack.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IIntellisenseSessionStackMapService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IInteractiveQuickInfoContent.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ILightBulbBroker.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ILightBulbSession.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IntellisenseFilter.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IntellisenseKeyboardCommand.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IntellisenseSpaceReservationManagerNames.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IParameter.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IPopupIntellisensePresenter.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IQuickInfoBroker.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IQuickInfoSession.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IQuickInfoSession2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IQuickInfoSource.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IQuickInfoSourceProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISignature.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISignatureHelpBroker.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISignatureHelpSession.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISignatureHelpSource.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISignatureHelpSourceProvider.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISmartTagAction.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISmartTagBroker.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISmartTagSession.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISmartTagSource.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ISmartTagSourceProvider.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ITextFormattable.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IUIElementProvider.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\IWpfKeyboardTrackingService.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\LightBulbPresenterStyle.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\QuerySuggestedActionCompletionStatus.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\QuickInfoPresenterStyle.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SelectedSignatureChangedEventArgs.cs" />
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SignatureHelpPresenterStyle.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SmartTag.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SmartTagActionSet.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SmartTagState.cs" />-->
-      <!--<Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\SmartTagType.cs" />-->
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\StandardGlyphGroup.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\StandardGlyphItem.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\UIElementType.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\ValueChangedEventArgs.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedAction.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedAction2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionCategory.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionCategoryRegistryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionCategorySet.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionsSource.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionsSourceProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\ISuggestedActionWithFlavors.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\PredefinedSuggestedActionCategoryNames.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\SuggestedActionCategoryDefinition.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\SuggestedActionSet.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Def\Intellisense\Suggestions\SuggestedActionSetPriority.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\Editor\ITextEditorFactoryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\Editor\ConnectionReason.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\Editor\IWpfTextView.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\Editor\IWpfTextViewConnectionListener.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\Editor\IWpfTextViewCreationListener.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\TextUIWpf\RTF\IRtfBuilderService.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\ExtensionMethods.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\IThreadHelper.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\IObjectTracker.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\ITextBufferFactoryService2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\LazyObservableCollection.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\TrackingSpanTree.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextData\UnicodeWordExtent.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\IAccurateClassifier.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\IAccurateTagAggregator.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\IAccurateTagger.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\IElisionTag.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ILoggingServiceInternal.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\IPerformanceMarkerBlockProvider.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ITextModelOptionsSetter.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ITextSearchNavigator2.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ITextSearchResultTag.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ITextSearchTagger.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\ITextSearchTaggerFactoryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\PriorityAttribute.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextLogic\TagAggregatorOptions2.cs" />
-
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\Caret.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\DisplayTextPoint.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\DisplayTextRange.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\HowToShow.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IAccurateOutliningManager.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IBufferPrimitives.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IBufferPrimitivesFactoryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IEditorPrimitivesFactoryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IMapEditToData.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IViewPrimitives.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\IViewPrimitivesFactoryService.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\Selection.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\TextBuffer.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\TextPoint.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\TextRange.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Def\Internal\TextUI\TextView.cs" />
-
       <!-- <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Impl\StandardClassification\ClassificationFormatDefinitions.cs" /> wpf -->
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Impl\StandardClassification\StandardClassificationService.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Language\Impl\StandardClassification\Strings.Designer.cs">
@@ -341,6 +203,11 @@
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\WpfView\SmartIndentationService.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\WpfView\TextViewRoleSet.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\WpfView\VacuousTextDataModel.cs" />
+
+      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\MdView\CaretElement.cs" />
+      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\MdView\WpfTextEditorFactoryService.cs" />
+      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\MdView\WpfTextSelection.cs" />
+      <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Impl\MdView\WpfTextView.cs" />
 
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Util\TextDataUtil\ArgumentValidation.cs" />
       <Compile Include="$(MSBuildThisFileDirectory)\Platform\Text\Util\TextDataUtil\BufferTracker.cs" />

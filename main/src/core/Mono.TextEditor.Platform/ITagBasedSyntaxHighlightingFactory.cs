@@ -26,21 +26,31 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
+using MonoDevelop.Core;
+using MonoDevelop.Ide.Editor.Highlighting;
+using MonoDevelop.Ide.Editor;
+
+using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
 
 namespace Microsoft.VisualStudio.Platform
 {
-    public static class PlatformExtensions
+    public interface ITagBasedSyntaxHighlightingFactory
     {
-        public static ITextBuffer GetPlatformTextBuffer(this MonoDevelop.Ide.Editor.TextEditor textEditor)
-        {
-            return textEditor.GetContent<Mono.TextEditor.ITextEditorDataProvider>().GetTextEditorData().Document.TextBuffer;
-        }
-
-        public static MonoDevelop.Ide.Editor.ITextDocument GetTextEditor(this ITextBuffer textBuffer)
-        {
-            return textBuffer.Properties.GetProperty<MonoDevelop.Ide.Editor.ITextDocument>(typeof(MonoDevelop.Ide.Editor.ITextDocument));
-        }
+        ISyntaxHighlighting CreateSyntaxHighlighting(ITextBuffer textBuffer);
     }
 }

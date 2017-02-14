@@ -49,7 +49,16 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Microsoft.VisualStudio.Platform
 {
-	public sealed class TagBasedSyntaxHighlighting : ISyntaxHighlighting
+    [Export(typeof(ITagBasedSyntaxHighlightingFactory))]
+    public sealed class TagBasedSyntaxHighlightingFactory : ITagBasedSyntaxHighlightingFactory
+    {
+        public ISyntaxHighlighting CreateSyntaxHighlighting(ITextBuffer textBuffer)
+        {
+            return new TagBasedSyntaxHighlighting(textBuffer);
+        }
+    }
+
+    public sealed class TagBasedSyntaxHighlighting : ISyntaxHighlighting
 	{
 		public static ISyntaxHighlighting CreateSyntaxHighlighting(ITextBuffer textBuffer)
 		{

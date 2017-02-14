@@ -172,7 +172,27 @@
     <Reference Include="YamlDotNet">
       <HintPath>..\..\..\packages\YamlDotNet.Signed.4.0.1-pre291\lib\net35\YamlDotNet.dll</HintPath>
     </Reference>
-  </ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <HintPath>..\..\..\packages\Microsoft.VisualStudio.CoreUtility.15.0.26201\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data">
+      <HintPath>..\..\..\packages\Microsoft.VisualStudio.Text.Data.15.0.26201\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic">
+      <HintPath>..\..\..\packages\Microsoft.VisualStudio.Text.Logic.15.0.26201\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI">
+      <HintPath>..\..\..\packages\Microsoft.VisualStudio.Text.UI.15.0.26201\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.StandardClassification">
+      <HintPath>..\..\..\packages\Microsoft.VisualStudio.Language.StandardClassification.15.0.26201\lib\net45\Microsoft.VisualStudio.Language.StandardClassification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.Core\MonoDevelop.Core.csproj">
       <Project>{7525BB88-6142-4A26-93B9-A30C6983390A}</Project>
@@ -9313,6 +9333,7 @@
     <Folder Include="MonoDevelop.Ide.Editor.Highlighting\syntaxes\T4\" />
     <Folder Include="MonoDevelop.Ide.Editor.Highlighting\syntaxes\ASP\" />
   </ItemGroup>
+  <Import Project="..\Mono.TextEditor.Platform\Mono.TextEditor.PlatformDef.projitems" Label="Platform" Condition="Exists('..\Mono.TextEditor.Platform\Mono.TextEditor.Platform.projitems')" />
   <ItemGroup>
     <Content Include="gtkrc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

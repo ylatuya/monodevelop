@@ -49,6 +49,7 @@ namespace MonoDevelop.Ide.Editor
 {
 	public sealed class TextEditor : Control, ITextDocument, IDisposable
 	{
+        public readonly Microsoft.VisualStudio.Text.Editor.ITextView TextView;
 		readonly ITextEditorImpl textEditorImpl;
 		IReadonlyTextDocument ReadOnlyTextDocument { get { return textEditorImpl.Document; } }
 
@@ -1018,7 +1019,10 @@ namespace MonoDevelop.Ide.Editor
 				throw new ArgumentNullException (nameof (textEditorImpl));
 			this.textEditorImpl = textEditorImpl;
 			this.TextEditorType = textEditorType;
-			commandRouter = new InternalCommandRouter (this);
+
+            this.TextView = Microsoft.VisualStudio.Platform.PlatformCatalog.Instance.TextEditorFactoryService.CreateTextView(this, null);
+
+            commandRouter = new InternalCommandRouter (this);
 			fileTypeCondition.SetFileName (FileName);
 			ExtensionContext = AddinManager.CreateExtensionContext ();
 			ExtensionContext.RegisterCondition ("FileType", fileTypeCondition);

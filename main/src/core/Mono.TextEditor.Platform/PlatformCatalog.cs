@@ -45,6 +45,7 @@ using MonoDevelop.Ide.Editor.Highlighting;
 
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
@@ -87,7 +88,9 @@ namespace Microsoft.VisualStudio.Platform
             // TODO: add some mechanism to allow these to be updated at runtime.
             string[] assemblyNames =
                 {
-                "Microsoft.VisualStudio.Text.Logic"
+                    "Microsoft.VisualStudio.Text.Logic",
+                    "Microsoft.VisualStudio.Text.UI",
+                    "MonoDevelop.SourceEditor"
                 };
 
             foreach (string assemblyName in assemblyNames)
@@ -134,6 +137,16 @@ namespace Microsoft.VisualStudio.Platform
 
         [Import]
         internal ITextBufferFactoryService _textBufferFactoryService { get; private set; }
+
+        [Import]
+        internal ITextEditorFactoryService TextEditorFactoryService { get; private set; }
+
+
+        [Import]
+        internal ITagBasedSyntaxHighlightingFactory TagBasedSyntaxHighlightingFactory { get; private set; }
+
+        [Import]
+        internal IPlatformAdapterService PlatformAdapterService { get; private set; }
 
         [Import]
         internal IMimeToContentTypeRegistryService MimeToContentTypeRegistryService { get; private set; }
@@ -228,7 +241,7 @@ namespace Microsoft.VisualStudio.Platform
         private Tuple<ImmutableDictionary<string, IContentType>, ImmutableDictionary<IContentType, string>> maps = Tuple.Create(ImmutableDictionary<string, IContentType>.Empty, ImmutableDictionary<IContentType, string>.Empty);
     }
 
-#if false
+#if true
     [Export(typeof(ITaggerProvider))]
     [ContentType("text")]
     [TagType(typeof(IClassificationTag))]
