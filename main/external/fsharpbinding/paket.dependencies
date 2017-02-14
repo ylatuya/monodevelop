@@ -1,3 +1,4 @@
+framework: 45
 source https://nuget.org/api/v2/
 
 nuget ExtCore framework: >= net40
