@@ -100,7 +100,7 @@ module signatureHelp =
             let funs =
                 symbols
                 |> List.filter(fun s -> match s with 
-                                        | SymbolUse.MemberFunctionOrValue mfv when s.IsFromDefinition -> mfv.FullType.IsFunctionType
+                                        | SymbolUse.MemberFunctionOrValue mfv when s.IsFromDefinition -> true
                                         | _ -> false)
                 |> List.map(fun f -> f.RangeAlternate.StartLine, f)
                 |> Map.ofList
