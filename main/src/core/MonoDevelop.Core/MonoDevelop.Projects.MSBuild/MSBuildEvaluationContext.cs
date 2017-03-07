@@ -49,6 +49,7 @@ namespace MonoDevelop.Projects.MSBuild
 		HashSet<string> propertiesWithTransforms = new HashSet<string> ();
 		List<string> propertiesWithTransformsSorted = new List<string> ();
 		public Dictionary<string, bool> ExistsEvaluationCache { get; } = new Dictionary<string, bool> ();
+		public Dictionary<string, string> StringEvaluationCache { get; } = new Dictionary<string, string> ();
 
 		bool allResolved;
 		MSBuildProject project;
@@ -408,15 +409,39 @@ namespace MonoDevelop.Projects.MSBuild
 			return evaluationSbs.Dequeue ().Clear ();
 		}
 
+		struct EvaluationData
+		{
+			public string EvaluatedValue;
+			public bool NeedsItemEvaluation;
+		}
+		Dictionary<string, EvaluationData> evaluationCache = new Dictionary<string, EvaluationData> ();
+
+		string CacheEvaluate (string str, string value, bool needsItemEvaluation)
+		{
+			var data = new EvaluationData { EvaluatedValue = value, NeedsItemEvaluation = needsItemEvaluation };
+			lock (evaluationCache) {
+				evaluationCache [str] = data;
+			}
+			return value;
+		}
+
 		string Evaluate (string str, StringBuilder sb, List<MSBuildItemEvaluated> evaluatedItemsCollection, out bool needsItemEvaluation)
 		{
 			needsItemEvaluation = false;
 
 			if (str == null)
 				return null;
+
+			EvaluationData res;
+			lock (evaluationCache) {
+				if (evaluationCache.TryGetValue (str, out res)) {
+					needsItemEvaluation = res.NeedsItemEvaluation;
+					return res.EvaluatedValue;
+				}
+			}
 			int i = FindNextTag (str, 0);
 			if (i == -1)
-				return str;
+				return CacheEvaluate (str, str, needsItemEvaluation);
 
 			int last = 0;
 
@@ -440,7 +465,7 @@ namespace MonoDevelop.Projects.MSBuild
 				while (i != -1);
 
 				sb.Append (str, last, str.Length - last);
-				return sb.ToString ();
+				return CacheEvaluate (str, sb.ToString (), needsItemEvaluation);
 			} finally {
 				evaluationSbs.Enqueue (sb);
 			}

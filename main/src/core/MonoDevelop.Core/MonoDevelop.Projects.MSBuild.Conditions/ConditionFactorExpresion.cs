@@ -122,7 +122,7 @@ namespace MonoDevelop.Projects.MSBuild.Conditions {
 		{
 			return true;
 		}
-		
+
 		// FIXME: in some situations items might not be allowed
 		static Token EvaluateToken (Token token, IExpressionContext context)
 		{
