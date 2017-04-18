@@ -1,6 +1,7 @@
 ﻿namespace MonoDevelop.FSharp
 
 open Microsoft.FSharp.Compiler
+open MonoDevelop
 open MonoDevelop.Core
 open MonoDevelop.Ide
 open MonoDevelop.Ide.Editor
@@ -151,6 +152,6 @@ type FSharpParser() =
                             //let pt = match results.ParseTree with Some pt -> sprintf "%A" pt | _ -> ""
                             return! ParsedDocument.create parseOptions results defines (Some location)
                         with exn ->
-                            LoggingService.LogError ("FSharpParser: Error ParsedDocument on {0}", shortFilename, exn)
+                            LoggingService.logError "FSharpParser: Error ParsedDocument on %s\n%s" shortFilename (exn.ToString())
                             return FSharpParsedDocument(fileName, None) :> _
                     | None -> return FSharpParsedDocument(fileName, None) :> _ })
