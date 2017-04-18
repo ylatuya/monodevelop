@@ -344,24 +344,22 @@ type LanguageService(dirtyNotify, _extraProjectInfo) as x =
         let getReferencedProjects (project:DotNetProject) =
             project.GetReferencedAssemblyProjects config
             |> Seq.filter (fun p -> p <> project && p.SupportedLanguages |> Array.contains "F#")
+            |> Seq.toArray
 
-        let rec getOptions referencedProject =
-            let projectOptions = CompilerArguments.getArgumentsFromProject referencedProject
-            match projectOptions with
-            | Some projOptions ->
-                let referencedProjectOptions =
-                    referencedProject
-                    |> getReferencedProjects
-                    |> Seq.fold (fun acc reference ->
-                                     match getOptions reference with
-                                     | Some outFile, Some opts  -> (outFile, opts) :: acc
-                                     | _ -> acc) ([])
-                                    
-                (Some (referencedProject.GetOutputFileName(config).ChangeExtension(".ref").ToString()), Some ({ projOptions with ReferencedProjects = referencedProjectOptions |> Array.ofList } ))
-            | None -> None, None
-        let _file, projectOptions = getOptions project
-        projectOptions
-                
+        let projectOptions = CompilerArguments.getArgumentsFromProject project
+        match projectOptions with
+        | Some projOptions ->
+            let referencedProjectOutputs =
+                project
+                |> getReferencedProjects
+                |> Seq.fold (fun acc reference ->
+                                 let references = getReferencedProjects reference
+                                 acc 
+                                 |> Array.append (references 
+                                                  |> Array.map(fun r -> "-r:" + r.GetOutputFileName(config).ToString()))) [||]
+            Some { projOptions with OtherOptions = projOptions.OtherOptions |> Array.append referencedProjectOutputs }
+        | None -> None
+
     /// Constructs options for the interactive checker for a project under the given configuration.
     member x.GetProjectCheckerOptions(projFilename, ?properties) : FSharpProjectOptions option =
         let properties = defaultArg properties ["Configuration", "Debug"]
