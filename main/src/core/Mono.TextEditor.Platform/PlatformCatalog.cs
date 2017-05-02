@@ -1,4 +1,4 @@
-//
+﻿//
 //  Copyright (c) Microsoft Corporation. All rights reserved.
 //  Licensed under the MIT License. See License.txt in the project root for license information.
 //
@@ -49,6 +49,7 @@ namespace Microsoft.VisualStudio.Platform
 
             if (null != this.ContentTypeRegistryService.GetContentType("css"))
             {
+                this.MimeToContentTypeRegistryService.LinkTypes("text/x-cshtml-web", this.ContentTypeRegistryService.GetContentType("RazorCSharp"));   //HACK
                 this.MimeToContentTypeRegistryService.LinkTypes("text/x-css", this.ContentTypeRegistryService.GetContentType("css"));   //HACK
                 this.MimeToContentTypeRegistryService.LinkTypes("text/x-html", this.ContentTypeRegistryService.GetContentType("htmlx"));   //HACK
                 this.MimeToContentTypeRegistryService.LinkTypes("text/x-json", this.ContentTypeRegistryService.GetContentType("JSON"));   //HACK

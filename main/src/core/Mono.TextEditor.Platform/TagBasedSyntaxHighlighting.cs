@@ -189,6 +189,9 @@ namespace Microsoft.VisualStudio.Platform
                     styleName = "punctuation.separator.key-value.html";
                     break;
                 case "HTML Server-Side Script":
+                    //styleName = "punctuation.section.embedded.begin"; // suggested by mike, does nothing
+                    //styleName = "punctuation.section.embedded.begin.cs"; // suggested by mike, does nothing
+                    styleName = "meta.preprocessor.source.cs"; // TODO: Find a name to use here
                     //styleName = style.HtmlServerSideScript.Name;
                     break;
                 case "HTML Tag Delimiter":
