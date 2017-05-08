@@ -74,6 +74,8 @@
 				_label = "Import Glade file..." />
 		<Command id = "MonoDevelop.GtkCore.GtkCommands.EditIcons"
 				_label = "Edit Project Icons..." />
+		<Command id="MonoDevelop.GtkCore.GtkCommands.ReGenGUICode"
+				_label="Re-generate GUI code..." />
 		<Command id = "MonoDevelop.GtkCore.GtkCommands.GtkSettings"
 				_label = "GTK# Support Settings..." />
 		</Category>
@@ -97,6 +99,7 @@
 		<SeparatorItem />
 		<CommandItem id = "MonoDevelop.GtkCore.GtkCommands.EditIcons" />
 		<CommandItem id = "MonoDevelop.GtkCore.GtkCommands.ImportGladeFile" />
+		<CommandItem id = "MonoDevelop.GtkCore.GtkCommands.ReGenGUICode" />
 		<SeparatorItem />
 		<CommandItem id = "MonoDevelop.GtkCore.GtkCommands.GtkSettings" />
 	</Extension>

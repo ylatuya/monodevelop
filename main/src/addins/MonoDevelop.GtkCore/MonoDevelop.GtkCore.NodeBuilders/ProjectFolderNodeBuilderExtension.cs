@@ -28,6 +28,7 @@
 
 
 using System;
+using System.IO;
 using MonoDevelop.Projects;
 using MonoDevelop.Ide.Gui.Pads.ProjectPad;
 using MonoDevelop.Components.Commands;
@@ -125,7 +126,23 @@ namespace MonoDevelop.GtkCore.NodeBuilders
 		{
 			cinfo.Visible = CanAddWindow ();
 		}
-		
+
+		[CommandHandler (GtkCommands.ReGenGUICode)]
+		protected void OnGenCode ()
+		{
+			var project = CurrentNode.GetParentDataItem (typeof (Project), true) as DotNetProject;
+			GtkDesignInfo info = GtkDesignInfo.FromProject (project);
+			File.SetLastWriteTime (info.SteticFile, DateTime.Now);
+			info.GuiBuilderProject.SaveAll (true);
+			IdeApp.ProjectOperations.Rebuild (project);
+		}
+
+		[CommandUpdateHandler (GtkCommands.ReGenGUICode)]
+		protected void UpdateGenCode (CommandInfo cinfo)
+		{
+			cinfo.Visible = CanAddWindow ();
+		}
+
 		[CommandHandler (GtkCommands.EditIcons)]
 		protected void OnEditIcons ()
 		{
