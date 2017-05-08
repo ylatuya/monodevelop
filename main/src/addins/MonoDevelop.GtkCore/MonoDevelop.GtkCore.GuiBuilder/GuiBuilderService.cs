@@ -485,6 +485,7 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 						options.UsePartialClasses = project.UsePartialTypes;
 						options.GenerateSingleFile = false;
 						options.GenerateModifiedOnly = true;
+						options.FailForUnknownWidgets = true;
 						generationResult = SteticApp.GenerateProjectCode (options, info.GuiBuilderProject.SteticProject);
 						info.GuiBuilderProject.SteticProject.ResetModifiedWidgetFlags ();
 					} catch (Exception ex) {
@@ -668,7 +669,8 @@ namespace MonoDevelop.GtkCore.GuiBuilder
 			options.ImageResourceLoaderClass = resourceLoaderClass;
 			options.UsePartialClasses = usePartialClasses;
 			options.GenerateSingleFile = false;
-			
+			options.FailForUnknownWidgets = true;
+
 			return app.GenerateProjectCode (options, projects);
 		}
 	}
